@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "739235349405",
+    "project_id": "thesixproject-30679",
+    "storage_bucket": "thesixproject-30679.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:739235349405:android:f98dc83bb78126a3e5e574",
+        "android_client_info": {
+          "package_name": "com.example.thesix"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBro57y034heDalQzgsh1IWN9dThx68tys"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
