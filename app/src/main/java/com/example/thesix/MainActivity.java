@@ -34,26 +34,39 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    String qrData = "Unique Data Here"; // Replace with unique data
-                    QRCodeWriter writer = new QRCodeWriter();
-                    BitMatrix bitMatrix = writer.encode(qrData, BarcodeFormat.QR_CODE, 512, 512);
-                    Bitmap bitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
+                    String inviteQrData = "Unique Data Here"; // Replace with unique data
+                    String promoQrData = ""; // Replace with unique data
+                    QRCodeWriter inviteWriter = new QRCodeWriter();
+                    QRCodeWriter promoWriter = new QRCodeWriter();
+                    BitMatrix inviteBitMatrix = inviteWriter.encode(inviteQrData, BarcodeFormat.QR_CODE, 512, 512);
+                    Bitmap inviteBitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
+                    BitMatrix promoBitMatrix = promoWriter.encode(promoQrData, BarcodeFormat.QR_CODE, 512, 512);
+                    Bitmap promoBitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
 
                     for (int x = 0; x < 512; x++) {
                         for (int y = 0; y < 512; y++) {
-                            bitmap.setPixel(x, y, bitMatrix.get(x, y) ? getResources().getColor(R.color.black) : getResources().getColor(R.color.white));
+                            inviteBitmap.setPixel(x, y, inviteBitMatrix.get(x, y) ? getResources().getColor(R.color.black) : getResources().getColor(R.color.white));
+                        }
+                    }
+                    for (int x = 0; x < 512; x++) {
+                        for (int y = 0; y < 512; y++) {
+                            promoBitmap.setPixel(x, y, promoBitMatrix.get(x, y) ? getResources().getColor(R.color.black) : getResources().getColor(R.color.white));
                         }
                     }
 
                     // Display QR Code
-                    qrCodeImageView.setImageBitmap(bitmap);
+                    qrCodeImageView.setImageBitmap(inviteBitmap);
+                    qrCodeImageView.setImageBitmap(promoBitmap);
 
                     // Convert Bitmap to Base64 String
-                    String qrImageBase64 = bitmapToBase64(bitmap);
+                    String inviteQrImageBase64 = bitmapToBase64(inviteBitmap);
+                    String promoQrImageBase64 = bitmapToBase64(promoBitmap);
 
-                    // Save QR Code in Firestore
-                    MyQRCode qrCode = new MyQRCode(qrImageBase64);
-                    firestoreHelper.saveQRCode(qrCode);
+                    // Save invite QR Code in Firestore
+                    MyQRCode inviteQrCode = new MyQRCode(inviteQrImageBase64);
+                    firestoreHelper.saveInviteQRCode(inviteQrCode);
+                    MyQRCode promoQrCode = new MyQRCode(promoQrImageBase64);
+                    firestoreHelper.savePromoQRCode(promoQrCode);
 
                 } catch (WriterException e) {
                     Log.e("MainActivity", "Error generating QR code", e);
