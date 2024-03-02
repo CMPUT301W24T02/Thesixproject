@@ -11,26 +11,33 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button generateButton;
 
-
+    private Button generateEventButton;
+    private Button generateGuestButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        generateButton = findViewById(R.id.createEventButton);
+        generateEventButton = findViewById(R.id.createEventButton);
+        generateGuestButton = findViewById(R.id.guestListButton);
 
-
-        generateButton.setOnClickListener(new View.OnClickListener() {
+        generateEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 startActivity(new Intent(MainActivity.this, OrganizerCreateActivity.class));
             }
         });
-    }
 
+        generateGuestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                startActivity(new Intent(MainActivity.this, AttendeeListCreateActivity.class));
+            }
+        });
+    }
 
 }
