@@ -11,6 +11,7 @@
     <string name="share_invite_qr">SHARE INVITE QR</string>
     <string name="share_promo_qr">SHARE PROMO QR</string>
     <string name="save_changes">SAVE CHANGES</string>
+    <string name="back"><![CDATA[<<]]></string>
 
 
 </resources>
