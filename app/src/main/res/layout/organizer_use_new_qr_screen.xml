@@ -13,14 +13,14 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/generateButton"
+        android:id="@+id/createEventButton"
         android:text="CREATE"/>
 
     <ImageView
         android:id="@+id/qrCodeImageView"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_below="@id/generateButton"
+        android:layout_below="@id/createEventButton"
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:background="@android:color/darker_gray" />

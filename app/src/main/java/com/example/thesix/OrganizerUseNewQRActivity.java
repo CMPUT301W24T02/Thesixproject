@@ -33,7 +33,7 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_use_new_qr_screen);
         descriptionEditText = findViewById(R.id.editTextText);
-        createEventButton = findViewById(R.id.generateButton);
+        createEventButton = findViewById(R.id.createEventButton);
         qrCodeImageView = findViewById(R.id.qrCodeImageView);
         firestoreHelper = new QrCodeDB();
         backButton = findViewById(R.id.backButton);
