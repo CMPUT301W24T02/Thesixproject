@@ -9,20 +9,56 @@
     android:background="@color/black">
 
     <Button
-        android:id="@+id/backButton"
+        android:id="@+id/mapButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/black"
         android:fontFamily="sans-serif-condensed"
-        android:text="@string/back"
+        android:text="@string/map_button"
         android:textColor="@color/white"
-        android:textSize="35sp"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/generateNotificationButton"
+        app:layout_constraintStart_toStartOf="@+id/generateNotificationButton"
+        app:layout_constraintTop_toBottomOf="@+id/generateNotificationButton"
+        app:layout_constraintVertical_bias="0.223"
+        app:strokeColor="@color/white"
+        app:strokeWidth="3dp" />
+
+    <Button
+        android:id="@+id/generateNotificationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="144dp"
+        android:backgroundTint="@color/black"
+        android:fontFamily="sans-serif-condensed"
+        android:text="@string/notification"
+        android:textColor="@color/white"
+        android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.12"
+        app:layout_constraintHorizontal_bias="0.779"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.914"
+        app:layout_constraintVertical_bias="0.933"
+        app:strokeColor="@color/white"
+        app:strokeWidth="3dp" />
+
+    <Button
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:backgroundTint="@color/black"
+        android:fontFamily="sans-serif-condensed"
+        android:text="@string/back"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toBottomOf="@+id/mapButton"
+        app:layout_constraintEnd_toStartOf="@+id/mapButton"
+        app:layout_constraintHorizontal_bias="0.483"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/mapButton"
         app:strokeColor="@color/white"
         app:strokeWidth="3dp" />
 

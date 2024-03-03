@@ -15,5 +15,8 @@
     <string name="welcome_organizer">Welcome, Organizer</string>
     <string name="guest_list">Guest List</string>
     <string name="share_qr">Share QR Code</string>
+    <string name="generate_guest">Generate Guest List</string>
+    <string name="notification">Send Notification</string>
+    <string name="map_button">Checked In: Map</string>
 
 </resources>
