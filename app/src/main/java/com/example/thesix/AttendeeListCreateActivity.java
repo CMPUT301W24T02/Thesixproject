@@ -10,10 +10,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class AttendeeListCreateActivity extends AppCompatActivity {
     private Button backButton;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_list_screen);
+        backButton  =findViewById(R.id.backButton);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AttendeeListCreateActivity.this, MainActivity.class));
+            }
+        });
     }
+
+
 
 }
