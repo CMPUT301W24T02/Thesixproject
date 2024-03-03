@@ -9,6 +9,18 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
+    <ImageView
+        android:src="@drawable/event_poster"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/eventDescription"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/eventDescription"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -51,11 +63,12 @@
         android:textColor="@color/white"
         android:textSize="28sp"
         app:cornerRadius="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:strokeColor="@color/white"
         app:strokeWidth="3dp"
-        tools:layout_editor_absoluteX="107dp"
-        tools:layout_editor_absoluteY="374dp"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteY="374dp" />
 
     <Button
         android:id="@+id/sharePromoButton"
