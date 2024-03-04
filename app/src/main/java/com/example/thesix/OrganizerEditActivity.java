@@ -1,11 +1,14 @@
 package com.example.thesix;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class OrganizerEditActivity extends AppCompatActivity {
@@ -15,6 +18,7 @@ public class OrganizerEditActivity extends AppCompatActivity {
     private Button backButton;
     private EditText eventDescription;
     private ImageView eventPoster;
+    private Uri imageuri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +63,27 @@ public class OrganizerEditActivity extends AppCompatActivity {
         eventPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                choosePicture(); //Function to select images
             }
         });
+
+
+    }
+    // Function to select image from the storage
+    private void choosePicture() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1 && resultCode==RESULT_OK && data!=null && data.getData()!=null)
+        {
+            imageuri=data.getData();
+            eventPoster.setImageURI(imageuri);
+        }
     }
 }
