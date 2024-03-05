@@ -15,7 +15,7 @@ public class AttendeeDB {
         firestore = FirebaseFirestore.getInstance();
     }
 
-    public void saveAttendeeInfo(String deviceID, Attendee attendee) {
+    public void saveAttendeeInfo(Attendee attendee) {
         firestore.collection("AttendeeDB")
                 .add(attendee)
                 .addOnSuccessListener(documentReference ->
