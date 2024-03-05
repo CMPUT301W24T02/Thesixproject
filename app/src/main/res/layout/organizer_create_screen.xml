@@ -20,6 +20,4 @@
         android:id="@+id/backButton"
         android:text="@string/back"/>
 
-
-
 </LinearLayout>

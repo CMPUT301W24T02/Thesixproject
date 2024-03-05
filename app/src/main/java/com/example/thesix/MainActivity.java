@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-
     private Button generateEventButton;
     private Button generateGuestButton;
 
