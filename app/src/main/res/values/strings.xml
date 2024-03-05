@@ -18,5 +18,6 @@
     <string name="generate_guest">Generate Guest List</string>
     <string name="notification">Send Notification</string>
     <string name="map_button">Checked In: Map</string>
+    <string name="check_in">Guests Checked In: </string>
 
 </resources>
