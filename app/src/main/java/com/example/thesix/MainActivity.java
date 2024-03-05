@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button generateEventButton;
     private Button generateGuestButton;
+    private Button generateShareQRCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
         generateEventButton = findViewById(R.id.createEventButton);
         generateGuestButton = findViewById(R.id.guestListButton);
+        generateShareQRCode = findViewById(R.id.shareQRButton);
 
         generateEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,6 +40,20 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, AttendeeListCreateActivity.class));
             }
         });
+
+        /*
+        generateShareQRCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                startActivity(new Intent(MainActivity.this, ShareQRCodeActivity.class));
+            }
+        });
+        */
+
+
+
+
     }
 
 }
