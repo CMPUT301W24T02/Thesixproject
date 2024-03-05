@@ -42,6 +42,9 @@ public class OrganizerUseOldQRActivity extends AppCompatActivity {
         qrDataList = new ArrayList<>();
         backButton = findViewById(R.id.backButton);
 
+        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, qrDataList);
+        qrList.setAdapter(arrayAdapter);
+
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         oldQrRef = firestoreHelper.getOldQrRef(deviceID);
 
@@ -91,8 +94,6 @@ public class OrganizerUseOldQRActivity extends AppCompatActivity {
             }
         }
     }); */
-
-
 
 
 
