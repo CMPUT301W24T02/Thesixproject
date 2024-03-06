@@ -13,11 +13,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class AttendeeListCreateActivity extends AppCompatActivity {
+public class AttendeeListActivity extends AppCompatActivity {
     /*
         Creates Attendee List View
     */
     private Button backButton;
+    private Button mapButton;
+    private Button notificationButton;
     ListView attendeeList;
     ArrayAdapter<Attendee> attendeeAdapter;   // acts as a communication bridge between front and back end
     ArrayList<Attendee> dataList;
@@ -27,6 +29,8 @@ public class AttendeeListCreateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_list_screen);
         backButton = findViewById(R.id.backButton);
+        mapButton = findViewById(R.id.mapButton);
+        notificationButton = findViewById(R.id.notificationButton);
         attendeeList = findViewById(R.id.attendee_list_view);
 
         // Temp
@@ -45,7 +49,21 @@ public class AttendeeListCreateActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AttendeeListCreateActivity.this, MainActivity.class));
+                startActivity(new Intent(AttendeeListActivity.this, MainActivity.class));
+            }
+        });
+
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AttendeeListActivity.this, MapActivity.class));
+            }
+        });
+
+        notificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AttendeeListActivity.this, NotificationActivity.class));
             }
         });
     }

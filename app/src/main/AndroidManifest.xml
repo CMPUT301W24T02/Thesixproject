@@ -32,8 +32,12 @@
             android:label="OrganizerUseOldQRActivity"/>
         <activity android:name=".OrganizerUseNewQRActivity"
             android:label="OrganizerUseNewQRActivity"/>
-        <activity android:name=".AttendeeListCreateActivity"
+        <activity android:name=".AttendeeListActivity"
             android:label="AttendeeListActivity"/>
+        <activity android:name=".MapActivity"
+            android:label="MapActivity"/>
+        <activity android:name=".NotificationActivity"
+            android:label="NotificationActivity"/>
     </application>
 
 </manifest>
