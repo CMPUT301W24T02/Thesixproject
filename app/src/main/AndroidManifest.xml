@@ -27,6 +27,8 @@
         </activity>
         <activity android:name=".OrganizerCreateActivity"
             />
+        <activity android:name=".CreateEventActivity"
+            />
         <activity android:name=".OrganizerEditActivity"/>
         <activity android:name=".OrganizerUseOldQRActivity"
             android:label="OrganizerUseOldQRActivity"/>
