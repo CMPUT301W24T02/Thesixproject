@@ -4,8 +4,12 @@ import static android.app.PendingIntent.getActivity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Base64;
@@ -14,6 +18,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -94,6 +99,16 @@ public class OrganizerUseOldQRActivity extends AppCompatActivity {
 
             backButton = new Button(this);
             backButton.setText("Back");
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(550, 1250, 0, 0); // left margin: 150dp, top margin: 20dp
+            backButton.setLayoutParams(params);
+            backButton.setBackgroundColor(Color.BLACK);
+            backButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.black)));
+            backButton.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+            backButton.setTextColor(Color.WHITE);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
