@@ -43,6 +43,7 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
                 try {
                     String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
+                    Log.d("FirestoreHelper","deviceID: "+ deviceID);
                     String description = descriptionEditText.getText().toString();
                     String qrString = deviceID + description;
                     QRCodeWriter writer = new QRCodeWriter();

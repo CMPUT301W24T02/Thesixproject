@@ -1,23 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:layout_height="match_parent"
+<LinearLayout android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/black"
+    android:padding="16dp">
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/useExistingQrCodeButton"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="100dp"
+        android:backgroundTint="@color/black"
+        android:fontFamily="sans-serif-condensed"
+        app:strokeColor="@color/white"
+        app:strokeWidth="3dp"
         android:text="USE EXISTING QR CODE"/>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/createNewQrCodeButton"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="100dp"
+        android:backgroundTint="@color/black"
+        android:fontFamily="sans-serif-condensed"
+        app:strokeColor="@color/white"
+        app:strokeWidth="3dp"
         android:text="CREATE NEW QR CODE"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/backButton"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="140dp"
+        android:backgroundTint="@color/black"
+        android:fontFamily="sans-serif-condensed"
+        app:strokeColor="@color/white"
+        app:strokeWidth="3dp"
         android:text="@string/back"/>
 
 </LinearLayout>
