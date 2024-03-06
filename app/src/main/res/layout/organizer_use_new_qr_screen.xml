@@ -30,6 +30,8 @@
         app:strokeWidth="3dp"
         android:text="CREATE" />
 
+
+
     <ImageView
         android:id="@+id/qrCodeImageView"
         android:layout_width="200dp"
