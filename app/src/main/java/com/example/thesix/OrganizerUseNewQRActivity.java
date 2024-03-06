@@ -20,6 +20,9 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.io.ByteArrayOutputStream;
+/** Prompts user to create new activity with QRcode
+ * methods : Oncreate,Onclick
+ **/
 
 public class OrganizerUseNewQRActivity extends AppCompatActivity {
     private EditText descriptionEditText;

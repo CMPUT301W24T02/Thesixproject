@@ -8,6 +8,10 @@ import android.widget.Button;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+/** Organizer creates activity and QRcode+details pertaining to it
+ * methods : Oncreate,Onclick
+ **/
+
 public class OrganizerCreateActivity extends AppCompatActivity {
     private Button useExistingQrCodeButton;
     private Button createNewQrCodeButton;

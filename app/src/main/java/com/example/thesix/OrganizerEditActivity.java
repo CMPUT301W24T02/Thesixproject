@@ -10,8 +10,12 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+/** Organizer can edit a created activity
+ * methods : Oncreate,Onclick,ChoosePicture,OnActivityResult
+ **/
 
 public class OrganizerEditActivity extends AppCompatActivity {
+
     private Button saveChangeButton;
     private Button shareInviteButton;
     private Button sharePromoButton;

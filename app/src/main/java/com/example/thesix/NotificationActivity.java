@@ -7,6 +7,10 @@ import android.widget.Button;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+/** send notification to all attendees
+ * methods : onCreate , onClick
+ **/
+
 public class NotificationActivity extends AppCompatActivity {
     private Button back2AttendeesButton;
     @Override

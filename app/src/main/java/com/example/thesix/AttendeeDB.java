@@ -4,10 +4,12 @@ import android.util.Log;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * Connects to Firestore AttendeeDB and adds an Attendee Object
+ * methods : saveAttendeeInfo,
+ **/
+
 public class AttendeeDB {
-    /*
-     Connects to Firestore AttendeeDB and adds an Attendee Object
-    */
 
     private FirebaseFirestore firestore;
 

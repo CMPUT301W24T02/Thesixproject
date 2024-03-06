@@ -7,6 +7,9 @@ import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+/** Create mapview for attendees
+ * methods : Oncreate,Onclick
+ **/
 
 public class MapActivity extends AppCompatActivity {
 

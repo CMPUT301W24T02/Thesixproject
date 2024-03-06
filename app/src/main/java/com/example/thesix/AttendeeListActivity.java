@@ -13,10 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/** Create the array to hold invited guests using listview and adapter
+ * methods : Oncreate,Onclick
+ **/
+
 public class AttendeeListActivity extends AppCompatActivity {
-    /*
-        Creates Attendee List View
-    */
     private Button backButton;
     private Button mapButton;
     private Button notificationButton;

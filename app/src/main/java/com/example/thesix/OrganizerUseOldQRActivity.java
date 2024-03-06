@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Base64;
@@ -56,8 +57,13 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+/**
+ *  Reusing OldQrCode if the organizer desires to do so
+ * methods : onCreate , OnCallBack,OnItemClick,readData,Base64tobitmap
+ **/
 
 public class OrganizerUseOldQRActivity extends AppCompatActivity {
 

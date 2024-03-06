@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+/** Create buttons for organizer to prase through / main landing page
+ * methods : Oncreate,Onclick
+ **/
 
 public class MainActivity extends AppCompatActivity {
 
