@@ -148,3 +148,4 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 }
+

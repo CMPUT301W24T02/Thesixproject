@@ -1,6 +1,22 @@
 package com.example.thesix;
+import static android.app.PendingIntent.getActivity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Base64;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -8,131 +24,108 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class OrganizerUseOldQRActivity extends AppCompatActivity {
-    ListView qrList;
-    ArrayList<String> qrDataList;
-    ArrayAdapter arrayAdapter;
-    CollectionReference oldQrRef;
-    private QrCodeDB firestoreHelper;
-    private Button backButton;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.organizer_use_old_qr_screen);
+        ArrayList<String> desciptionDataList;
+        private ArrayAdapter<String> descriptionArrayAdapter;
+        private QrCodeDB firestoreHelper;
+        private Button backButton;
+        CollectionReference citiesRef;
 
-        firestoreHelper = new QrCodeDB();
+        @Override
+        protected void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
 
-        qrList = findViewById(R.id.qrcode_list);
-        qrDataList = new ArrayList<>();
-        backButton = findViewById(R.id.backButton);
+            desciptionDataList = new ArrayList<>();
+            firestoreHelper = new QrCodeDB();
+            String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
+            citiesRef = firestoreHelper.getOldQrRef(deviceID);
 
-        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, qrDataList);
-        qrList.setAdapter(arrayAdapter);
+            descriptionArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, desciptionDataList);
+            ListView descriptionList = new ListView(this);
+            descriptionList.setAdapter(descriptionArrayAdapter);
+            setContentView(descriptionList);
 
-        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        oldQrRef = firestoreHelper.getOldQrRef(deviceID);
-
-        oldQrRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-         @Override
-         public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException error) {
-             if (error != null) {
-                 Log.e("OrganizerUseOldQRActivity", "Error getting old QR codes", error);
-                 return;
-             }
-
-             qrDataList.clear();
-
-             for (QueryDocumentSnapshot document : querySnapshots) {
-                 String qrImageBase64 = document.getString("qrImageBase64");
-                 qrDataList.add(qrImageBase64);
-             }
-
-             arrayAdapter.notifyDataSetChanged();
-         }
-        });
-
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(OrganizerUseOldQRActivity.this, OrganizerCreateActivity.class));
-            }
-        });
-    }
-
-
- /*       oldQrRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-            if (task.isSuccessful()) {
-                // Clear previous data
-                qrDataList.clear();
-
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    String qrImageBase64 = document.getString("qrImageBase64");
-                    qrDataList.add(qrImageBase64);
+            readData(new MyCallback() {
+                @Override
+                public void onCallback(List<String> list) {
+                    desciptionDataList.clear();
+                    desciptionDataList.addAll(list);
+                    descriptionArrayAdapter.notifyDataSetChanged();
                 }
+            });
 
-                arrayAdapter.notifyDataSetChanged();
-            } else {
-                Log.e("OrganizerUseOldQRActivity", "Error getting old QR codes", task.getException());
-            }
+            descriptionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    firestoreHelper.getOldQrRef(deviceID);
+                }
+            });
+
+            backButton = new Button(this);
+            backButton.setText("Back");
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(OrganizerUseOldQRActivity.this,MainActivity.class));
+                }
+            });
+            setContentView(backButton);
         }
-    }); */
 
+        public interface MyCallback {
+            void onCallback(List<String> list);
+        }
 
+        public void readData(MyCallback myCallback) {
+            citiesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    List<String> dataList = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        String bit = document.getString("qrImageData");
+                        dataList.add(bit);
+                    }
+                    myCallback.onCallback(dataList);
+                }
+            });
+        }
 
-        // Set up back button click listener
-//        backButton.setOnClickListener(new View.OnClickListener() {
-//           @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(OrganizerUseOldQRActivity.this, OrganizerCreateActivity.class));
-//            }
-//       });
+        private Bitmap Base64Tobitmap(String base64String) {
+            String base64Image = base64String.split(",")[1];
+            byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        }
     }
 
 
-//        oldQrRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-//            @Override
-//            public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException error) {
-//                if (error != null) {
-//                    Log.e("UseOldQR", error.toString());
-//                    return;
-//                }
-//                qrDataList.clear();
-//                arrayAdapter.clear();
-//                for (QueryDocumentSnapshot doc:querySnapshots) {
-//                    String qrImageBase64 = doc.getId();
-//                    qrDataList.add(qrImageBase64);
-//                    arrayAdapter.notifyDataSetChanged();
-//
-//
-//                }
-//            }
-//        });
-//        qrList = findViewById(R.id.qrcode_list);
-
-//        backButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(OrganizerUseOldQRActivity.this, OrganizerCreateActivity.class));
-//            }
-//        });
-//    }
-
-//}
