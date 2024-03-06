@@ -12,6 +12,7 @@ import com.google.firebase.firestore.AggregateQuery;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -80,6 +81,12 @@ public class QrCodeDB {
                 .collection("inviteQrCodes");
         return qrRef;
 
+    }
+    public DocumentReference getDocRef(String deviceID) {
+        DocumentReference documentReference;
+        documentReference = firestore.collection("OrganizerdevicesDB")
+                .document(deviceID);
+        return documentReference;
     }
 
 
