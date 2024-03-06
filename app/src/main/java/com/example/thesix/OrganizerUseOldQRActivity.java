@@ -66,6 +66,7 @@ public class OrganizerUseOldQRActivity extends AppCompatActivity {
         protected void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
+
             desciptionDataList = new ArrayList<>();
             firestoreHelper = new QrCodeDB();
             String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
