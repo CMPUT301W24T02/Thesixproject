@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     private Button generateEventButton;
-    private Button generateGuestButton;
     private Button generateViewEventButton;
     private Button generateShareQRCode;
 
@@ -21,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
 
         generateEventButton = findViewById(R.id.createEventButton);
         generateViewEventButton = findViewById(R.id.viewEventButton);
-        generateGuestButton = findViewById(R.id.guestListButton);
         generateShareQRCode = findViewById(R.id.shareQRButton);
 
         generateEventButton.setOnClickListener(new View.OnClickListener() {
@@ -39,12 +37,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        generateGuestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, AttendeeListActivity.class));
-            }
-        });
 
         generateShareQRCode.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -82,7 +82,7 @@ public class EventDetailsAdapter extends AppCompatActivity {
         eventdescriptionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                startActivity(new Intent(EventDetailsAdapter.this, EventDetailsConnector.class));
             }
         });
         backButton.setOnClickListener(new View.OnClickListener() {

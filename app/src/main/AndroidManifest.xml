@@ -32,6 +32,8 @@
             />
         <activity android:name=".EventDetailsAdapter"
             />
+        <activity android:name=".EventDetailsConnector"
+            />
         <activity android:name=".OrganizerEditActivity"/>
         <activity android:name=".OrganizerUseOldQRActivity"
             android:label="OrganizerUseOldQRActivity"/>
