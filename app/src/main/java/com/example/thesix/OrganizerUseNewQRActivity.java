@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
@@ -30,6 +31,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 public class OrganizerUseNewQRActivity extends AppCompatActivity {
@@ -41,6 +43,8 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
     private ImageView eventPoster;
     private Uri imageuri;
+
+    private Bitmap eventImageBitmap;
 
     public Long count;
 
@@ -90,11 +94,16 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
                             // Convert Bitmap to Base64 String
                             String qrImageBase64 = bitmapToBase64(bitmap);
+                            Log.d("Test1", "1");
+                            String eventImageBase64 = BitMapToString(eventImageBitmap);
+                            Log.d("Test1", "2");
 
 
                             // Save invite QR Code in Firestore
-                            EventDetails eventdetail = new EventDetails(qrImageBase64, num, description, eventname);
+                            EventDetails eventdetail = new EventDetails(eventImageBase64, qrImageBase64, num, description, eventname);
+                            Log.d("Test1", "3");
                             firestoreHelper.saveInviteQRCode(deviceID, eventdetail);
+                            Log.d("Test1", "4");
                         } catch (WriterException e) {
                             Log.e("MainActivity", "Error generating QR code", e);
                         }
@@ -121,6 +130,7 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
     public void readData(MyCallback myCallback) {
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        Log.d("DeviceId", "DocumentSnapshot data: " + deviceID);
         firestoreHelper.getDocRef(deviceID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -139,6 +149,15 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    public String BitMapToString(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        String result = Base64.encodeToString(byteArray, Base64.DEFAULT);
+        return result;
 
     }
 
@@ -162,8 +181,13 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageuri = data.getData();
-            eventPoster.setImageURI(imageuri);
+            //eventPoster.setImageURI(imageuri);
+            try {
+                eventImageBitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), imageuri);
+                eventPoster.setImageBitmap(eventImageBitmap);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
-
