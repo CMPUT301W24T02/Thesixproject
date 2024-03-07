@@ -76,6 +76,7 @@ public class EventDetailsAdapter extends AppCompatActivity {
             public void onCallback(List<String> list1, List<Long> list2, List<String> list3) {
                 Log.d("callback", "3");
                 eventnameDataList = (ArrayList<String>) list1;
+                eventNumList = (ArrayList<Long>) list2;
                 Log.d("callback", "1" + eventnameDataList.get(0));
                 Log.d("callback", "2");
                 eventnameArrayAdapter.notifyDataSetChanged();
@@ -89,6 +90,7 @@ public class EventDetailsAdapter extends AppCompatActivity {
                 Intent i = new Intent(EventDetailsAdapter.this, EventDetailsConnector.class);
                 String eventName = (String) (eventdescriptionList.getItemAtPosition(position));
                 String eventDescription = "Singh";
+                long eventNum = eventNumList.get(position);
                 for (int j = 0; j < eventnameDataList.size(); j++) {
                     String eventName1 = (String) (eventnameDataList.get(j));
                      if(eventName.equalsIgnoreCase(eventName1))
@@ -100,6 +102,7 @@ public class EventDetailsAdapter extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 bundle.putString("eventName", eventName);
                 bundle.putString("eventDescription", eventDescription);
+                bundle.putLong("eventNum", eventNum);
                 i.putExtras(bundle);
                 startActivity(i);
             }

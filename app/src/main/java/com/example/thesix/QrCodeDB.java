@@ -61,9 +61,9 @@ public class QrCodeDB {
                 });
 
     }
-    public void savePromoQRCode(String deviceID, MyQRCode promoQrCode) {
+    public void savePromoQRCode(String deviceID, EventDetails eventdetail) {
         firestore.collection("promoQrCodes")
-                .add(promoQrCode)
+                .add(eventdetail)
                 .addOnSuccessListener(documentReference ->
                         Log.d("FirestoreHelper", "DocumentSnapshot added with ID: " + documentReference.getId()))
                 .addOnFailureListener(e ->
@@ -71,7 +71,7 @@ public class QrCodeDB {
         firestore.collection("OrganizerdevicesDB")
                 .document(deviceID)
                 .collection("promoQrCodes")
-                .add(promoQrCode)
+                .add(eventdetail)
                 .addOnSuccessListener(documentReference ->
                         Log.d("FirestoreHelper", "DocumentSnapshot added with ID: " + documentReference.getId()))
                 .addOnFailureListener(e ->

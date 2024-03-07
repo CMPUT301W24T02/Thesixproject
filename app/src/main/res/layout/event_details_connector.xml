@@ -111,6 +111,42 @@
         app:layout_constraintTop_toBottomOf="@+id/eventDescription"
         app:strokeColor="@color/white"
         app:strokeWidth="3dp" />
+    <Button
+        android:id="@+id/shareInviteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="80dp"
+        android:backgroundTint="@color/black"
+        android:fontFamily="sans-serif-condensed"
+        android:text="SHARE INVITE QR"
+        android:textColor="@color/white"
+        android:textSize="27sp"
+        app:layout_constraintEnd_toEndOf="@+id/guestListButton"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="@+id/guestListButton"
+        app:layout_constraintTop_toBottomOf="@+id/guestListButton"
+        app:strokeColor="@color/white"
+        app:strokeWidth="3dp" />
+    <Button
+        android:id="@+id/sharePromoButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="80dp"
+        android:backgroundTint="@color/black"
+        android:fontFamily="sans-serif-condensed"
+        android:text="SHARE PROMO QR"
+        android:textColor="@color/white"
+        android:textSize="27sp"
+        app:layout_constraintEnd_toEndOf="@+id/shareInviteButton"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="@+id/shareInviteButton"
+        app:layout_constraintTop_toBottomOf="@+id/shareInviteButton"
+        app:strokeColor="@color/white"
+        app:strokeWidth="3dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
