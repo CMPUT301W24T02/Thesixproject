@@ -48,7 +48,7 @@ public class OrganizerCreateActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(OrganizerCreateActivity.this, MainActivity.class));
+                startActivity(new Intent(OrganizerCreateActivity.this, OrganizerMainActivity.class));
             }
         });
 

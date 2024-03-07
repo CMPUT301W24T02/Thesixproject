@@ -119,7 +119,7 @@ public class EventDetailsAdapter extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(EventDetailsAdapter.this, MainActivity.class));
+                startActivity(new Intent(EventDetailsAdapter.this, OrganizerMainActivity.class));
             }
         });
 
