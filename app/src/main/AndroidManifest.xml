@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <application
         android:allowBackup="true"
@@ -40,6 +41,8 @@
             android:label="MapActivity"/>
         <activity android:name=".NotificationActivity"
             android:label="NotificationActivity"/>
+        <activity android:name=".ShareQRCodeActivity"
+            android:label="ShareQRCodeActivity"/>
     </application>
 
 </manifest>
