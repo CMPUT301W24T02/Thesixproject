@@ -26,9 +26,9 @@ public class QrCodeDB {
         firestore = FirebaseFirestore.getInstance();
     }
 
-    public void saveInviteQRCode(String deviceID, MyQRCode inviteQrCode) {
+    public void saveInviteQRCode(String deviceID, EventDetails eventdetail) {
         firestore.collection("inviteQrCodes")
-                .add(inviteQrCode)
+                .add(eventdetail)
                 .addOnSuccessListener(documentReference ->
                         Log.d("FirestoreHelper", "DocumentSnapshot added with ID: " + documentReference.getId()))
                 .addOnFailureListener(e ->
@@ -36,7 +36,7 @@ public class QrCodeDB {
         firestore.collection("OrganizerdevicesDB")
                 .document(deviceID)
                 .collection("inviteQrCodes")
-                .add(inviteQrCode)
+                .add(eventdetail)
                 .addOnSuccessListener(documentReference ->
                         Log.d("FirestoreHelper", "DocumentSnapshot added with ID: " + documentReference.getId()))
                 .addOnFailureListener(e ->

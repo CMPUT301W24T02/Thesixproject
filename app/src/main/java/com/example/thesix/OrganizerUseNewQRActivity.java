@@ -93,8 +93,8 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
 
                             // Save invite QR Code in Firestore
-                            MyQRCode qrCode = new MyQRCode(qrImageBase64, num, description, eventname);
-                            firestoreHelper.saveInviteQRCode(deviceID, qrCode);
+                            EventDetails eventdetail = new EventDetails(qrImageBase64, num, description, eventname);
+                            firestoreHelper.saveInviteQRCode(deviceID, eventdetail);
                         } catch (WriterException e) {
                             Log.e("MainActivity", "Error generating QR code", e);
                         }
