@@ -38,7 +38,7 @@ public class CreateEventActivity extends AppCompatActivity {
         saveChangeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firestoreHelper.saveEventDescription(eventDes);
+                //firestoreHelper.saveEventDescription(eventDes);
             }
         });
         sharePromoButton.setOnClickListener(new View.OnClickListener() {

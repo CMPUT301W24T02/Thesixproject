@@ -34,6 +34,7 @@ import java.util.List;
 
 public class OrganizerUseNewQRActivity extends AppCompatActivity {
     private EditText descriptionEditText;
+    private EditText eventnameEditText;
     private Button createEventButton;
     private QrCodeDB firestoreHelper;
     private Button backButton;
@@ -49,7 +50,8 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_use_new_qr_screen);
-        descriptionEditText = findViewById(R.id.editTextText);
+        descriptionEditText = findViewById(R.id.eventDescription);
+        eventnameEditText = findViewById(R.id.eventName);
         createEventButton = findViewById(R.id.createEventButton);
         firestoreHelper = new QrCodeDB();
         backButton = findViewById(R.id.backButton);
@@ -73,6 +75,7 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
                         try {
                             String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
                             String description = descriptionEditText.getText().toString();
+                            String eventname = eventnameEditText.getText().toString();
                             String qrString = deviceID + description + num;
                             QRCodeWriter writer = new QRCodeWriter();
                             BitMatrix bitMatrix = writer.encode(qrString, BarcodeFormat.QR_CODE, 512, 512);
@@ -90,7 +93,7 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
 
                             // Save invite QR Code in Firestore
-                            MyQRCode qrCode = new MyQRCode(qrImageBase64, num, description);
+                            MyQRCode qrCode = new MyQRCode(qrImageBase64, num, description, eventname);
                             firestoreHelper.saveInviteQRCode(deviceID, qrCode);
                         } catch (WriterException e) {
                             Log.e("MainActivity", "Error generating QR code", e);

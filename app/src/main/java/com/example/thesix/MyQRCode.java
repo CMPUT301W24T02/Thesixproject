@@ -3,14 +3,15 @@ package com.example.thesix;
 public class MyQRCode {
     private String qrImageData;
     private Long eventNum;
-    private String description;
+    private String eventdescription;
 
+    private String eventname;
 
-
-    public MyQRCode(String qrImageData, long eventNum,String description) {
+    public MyQRCode(String qrImageData, long eventNum, String description, String name) {
         this.qrImageData = qrImageData;
         this.eventNum = eventNum;
-        this.description = description;
+        this.eventdescription = description;
+        this.eventname = name;
     }
 
     public String getQrImageData() {
@@ -30,11 +31,19 @@ public class MyQRCode {
     }
 
     public String getDescription() {
-        return description;
+        return eventdescription;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.eventdescription = description;
+    }
+
+    public String getName() {
+        return eventname;
+    }
+
+    public void setName(String name) {
+        this.eventname = name;
     }
 }
 
