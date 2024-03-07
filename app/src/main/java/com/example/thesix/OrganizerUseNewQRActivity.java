@@ -1,3 +1,4 @@
+
 package com.example.thesix;
 
 import android.content.Intent;
@@ -27,11 +28,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
+import java.io.IOException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 public class OrganizerUseNewQRActivity extends AppCompatActivity {
@@ -80,30 +81,37 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
                             String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
                             String description = descriptionEditText.getText().toString();
                             String eventname = eventnameEditText.getText().toString();
-                            String qrString = deviceID + description + num;
+                            String inviteQrString = deviceID + description + num;
+                            String promoQrString = "promo" + inviteQrString;
                             QRCodeWriter writer = new QRCodeWriter();
-                            BitMatrix bitMatrix = writer.encode(qrString, BarcodeFormat.QR_CODE, 512, 512);
-                            Bitmap bitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
+                            BitMatrix inviteBitMatrix = writer.encode(inviteQrString, BarcodeFormat.QR_CODE, 512, 512);
+                            BitMatrix promoBitMatrix = writer.encode(promoQrString, BarcodeFormat.QR_CODE, 512, 512);
+                            Bitmap Invitebitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
+                            Bitmap Promobitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
+
 
                             for (int x = 0; x < 512; x++) {
                                 for (int y = 0; y < 512; y++) {
-                                    bitmap.setPixel(x, y, bitMatrix.get(x, y) ? getResources().getColor(R.color.black) : getResources().getColor(R.color.white));
+                                    Invitebitmap.setPixel(x, y, inviteBitMatrix.get(x, y) ? getResources().getColor(R.color.black) : getResources().getColor(R.color.white));
+                                }
+                            }
+                            for (int x = 0; x < 512; x++) {
+                                for (int y = 0; y < 512; y++) {
+                                    Promobitmap.setPixel(x, y, promoBitMatrix.get(x, y) ? getResources().getColor(R.color.black) : getResources().getColor(R.color.white));
                                 }
                             }
 
 
                             // Convert Bitmap to Base64 String
-                            String qrImageBase64 = bitmapToBase64(bitmap);
-                            Log.d("Test1", "1");
+                            String inviteQrImageBase64 = bitmapToBase64(Invitebitmap);
+                            String promoQrImageBase64 = bitmapToBase64(Promobitmap);
                             String eventImageBase64 = BitMapToString(eventImageBitmap);
-                            Log.d("Test1", "2");
 
 
                             // Save invite QR Code in Firestore
-                            EventDetails eventdetail = new EventDetails(eventImageBase64, qrImageBase64, num, description, eventname);
-                            Log.d("Test1", "3");
+                            EventDetails eventdetail = new EventDetails(eventImageBase64, inviteQrImageBase64,promoQrImageBase64, num, description, eventname);
                             firestoreHelper.saveInviteQRCode(deviceID, eventdetail);
-                            Log.d("Test1", "4");
+                            firestoreHelper.savePromoQRCode(deviceID,eventdetail);
                         } catch (WriterException e) {
                             Log.e("MainActivity", "Error generating QR code", e);
                         }
@@ -130,7 +138,6 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
     public void readData(MyCallback myCallback) {
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        Log.d("DeviceId", "DocumentSnapshot data: " + deviceID);
         firestoreHelper.getDocRef(deviceID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
