@@ -19,6 +19,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 public class QrCodeDB {
+    /*
+        connect to Qr Code DB
+    */
 
     private FirebaseFirestore firestore;
 
