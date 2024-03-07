@@ -1,24 +1,26 @@
 package com.example.thesix;
 
 public class EventDetails {
-    private String qrImageData;
+    private String inviteQrImageData;
+    private String promoQrImageData;
     private Long eventNum;
     private String eventdescription;
     private String eventname;
 
-    public EventDetails(String qrImageData, long eventNum, String description, String name) {
-        this.qrImageData = qrImageData;
+    public EventDetails(String inviteQrImageData,String promoQrImageData, long eventNum, String description, String name) {
+        this.inviteQrImageData = inviteQrImageData;
+        this.promoQrImageData = promoQrImageData;
         this.eventNum = eventNum;
         this.eventdescription = description;
         this.eventname = name;
     }
 
     public String getQrImageData() {
-        return qrImageData;
+        return inviteQrImageData;
     }
 
     public void setQrImageData(String qrImageData) {
-        this.qrImageData = qrImageData;
+        this.inviteQrImageData = qrImageData;
     }
 
     public Long getEventNum() {
@@ -43,5 +45,13 @@ public class EventDetails {
 
     public void setName(String name) {
         this.eventname = name;
+    }
+
+    public String getPromoQrImageData() {
+        return promoQrImageData;
+    }
+
+    public void setPromoQrImageData(String promoQrImageData) {
+        this.promoQrImageData = promoQrImageData;
     }
 }
