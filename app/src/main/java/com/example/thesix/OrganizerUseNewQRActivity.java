@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
@@ -26,6 +27,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
+import java.io.IOException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
@@ -41,6 +43,8 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
     private ImageView eventPoster;
     private Uri imageuri;
+    
+    private Bitmap eventImageBitmap;
 
     public Long count;
 
@@ -100,10 +104,11 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
                             // Convert Bitmap to Base64 String
                             String inviteQrImageBase64 = bitmapToBase64(Invitebitmap);
                             String promoQrImageBase64 = bitmapToBase64(Promobitmap);
+                            String eventImageBase64 = BitMapToString(eventImageBitmap);
 
 
                             // Save invite QR Code in Firestore
-                            EventDetails eventdetail = new EventDetails(inviteQrImageBase64,promoQrImageBase64, num, description, eventname);
+                            EventDetails eventdetail = new EventDetails(eventImageBase64, inviteQrImageBase64,promoQrImageBase64, num, description, eventname);
                             firestoreHelper.saveInviteQRCode(deviceID, eventdetail);
                             firestoreHelper.savePromoQRCode(deviceID,eventdetail);
                         } catch (WriterException e) {
@@ -153,6 +158,15 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
     }
 
+    public String BitMapToString(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        String result = Base64.encodeToString(byteArray, Base64.DEFAULT);
+        return result;
+
+    }
+
     private String bitmapToBase64(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
@@ -173,7 +187,13 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageuri = data.getData();
-            eventPoster.setImageURI(imageuri);
+            //eventPoster.setImageURI(imageuri);
+            try {
+                eventImageBitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), imageuri);
+                eventPoster.setImageBitmap(eventImageBitmap);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
