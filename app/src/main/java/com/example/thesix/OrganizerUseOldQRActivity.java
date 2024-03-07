@@ -57,6 +57,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrganizerUseOldQRActivity extends AppCompatActivity {
+    /*
+        This activity allow user to reuse old qr code.
+    */
     ArrayList<Long> eventNumList;
 
     ArrayList<String> desciptionDataList;
