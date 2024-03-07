@@ -1,7 +1,5 @@
 package com.example.thesix;
 
-
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +11,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button generateEventButton;
     private Button generateGuestButton;
+    private Button generateViewEventButton;
     private Button generateShareQRCode;
 
     @Override
@@ -21,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         generateEventButton = findViewById(R.id.createEventButton);
+        generateViewEventButton = findViewById(R.id.viewEventButton);
         generateGuestButton = findViewById(R.id.guestListButton);
         generateShareQRCode = findViewById(R.id.shareQRButton);
 
@@ -32,14 +32,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        generateGuestButton.setOnClickListener(new View.OnClickListener() {
+        generateViewEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                startActivity(new Intent(MainActivity.this, AttendeeListActivity.class));
+                startActivity(new Intent(MainActivity.this, EventDetailsAdapter.class));
             }
         });
 
+        generateGuestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, AttendeeListActivity.class));
+            }
+        });
 
         generateShareQRCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, ShareQRCodeActivity.class));
             }
         });
-
-
 
 
     }
