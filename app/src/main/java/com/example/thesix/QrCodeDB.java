@@ -19,6 +19,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 public class QrCodeDB {
+    /*
+        connect to Qr Code DB
+    */
 
     private FirebaseFirestore firestore;
 
@@ -79,6 +82,14 @@ public class QrCodeDB {
         qrRef = firestore.collection("OrganizerdevicesDB")
                 .document(deviceID)
                 .collection("inviteQrCodes");
+        return qrRef;
+
+    }
+    public CollectionReference getOldQrRef2(String deviceID) {
+        CollectionReference qrRef;
+        qrRef = firestore.collection("OrganizerdevicesDB")
+                .document(deviceID)
+                .collection("promoQrCodes");
         return qrRef;
 
     }
