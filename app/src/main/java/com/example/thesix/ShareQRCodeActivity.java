@@ -41,6 +41,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShareQRCodeActivity extends AppCompatActivity {
+    /*
+        This Activity show a list of qr code and allow organizer to share them.
+    */
     ArrayList<Long> eventNumList;
 
     ArrayList<String> desciptionDataList;
