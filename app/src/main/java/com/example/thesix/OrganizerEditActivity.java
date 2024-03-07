@@ -1,5 +1,6 @@
 package com.example.thesix;
 
+public class OrganizerEditActivity {
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

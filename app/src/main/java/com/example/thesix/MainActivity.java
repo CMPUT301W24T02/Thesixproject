@@ -1,7 +1,5 @@
 package com.example.thesix;
 
-
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     private Button generateEventButton;
-    private Button generateGuestButton;
+    private Button generateViewEventButton;
     private Button generateShareQRCode;
 
     @Override
@@ -21,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         generateEventButton = findViewById(R.id.createEventButton);
-        generateGuestButton = findViewById(R.id.guestListButton);
+        generateViewEventButton = findViewById(R.id.viewEventButton);
         generateShareQRCode = findViewById(R.id.shareQRButton);
 
         generateEventButton.setOnClickListener(new View.OnClickListener() {
@@ -32,11 +30,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        generateGuestButton.setOnClickListener(new View.OnClickListener() {
+        generateViewEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                startActivity(new Intent(MainActivity.this, AttendeeListActivity.class));
+                startActivity(new Intent(MainActivity.this, EventDetailsAdapter.class));
             }
         });
 
@@ -48,8 +45,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, ShareQRCodeActivity.class));
             }
         });
-
-
 
 
     }
