@@ -13,8 +13,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-/** Create the array to hold invited guests using listview and adapter
- * methods : Oncreate,Onclick
+/**
+ *
+ *AttendeeListActivity class manages the display of a list of attendees within an Android application.
+ *Initializes UI components such as buttons and a list view in the onCreate method.
+ *Utilizes buttons (backButton, mapButton, notificationButton) to navigate to different activities.
+ *Temporarily creates an Attendee object (testAttendee) for testing purposes.
+ *Creates an array of Attendee objects (attendeeArray) and initializes an ArrayList (dataList) with these objects.
+ *Initializes an ArrayAdapter (attendeeAdapter) to act as a communication bridge between the front-end UI and back-end data.
+ *Sets the adapter to display the list of attendees (dataList) in the attendeeList ListView.
+ *Handles button clicks to navigate to other activities (EventDetailsConnector, MapActivity, NotificationActivity)
  **/
 
 public class AttendeeListActivity extends AppCompatActivity {

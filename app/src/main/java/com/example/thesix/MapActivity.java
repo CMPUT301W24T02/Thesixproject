@@ -7,9 +7,14 @@ import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-/** Create mapview for attendees
- * methods : Oncreate,Onclick
- **/
+
+/**
+ * MapActivity class facilitates the display of a map screen within the application.
+ * Initializes a UI component, a Button named back2AttendeesButton, in the onCreate method.
+ * Sets a click listener for the back2AttendeesButton to handle navigation back to the AttendeeListActivity.
+ * Upon clicking the button, it starts an intent to navigate to the AttendeeListActivity.
+ *
+ */
 
 public class MapActivity extends AppCompatActivity {
 

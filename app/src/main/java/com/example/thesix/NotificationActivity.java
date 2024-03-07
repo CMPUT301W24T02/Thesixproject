@@ -6,10 +6,13 @@ import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
-/** send notification to all attendees
- * methods : onCreate , onClick
- **/
+/**
+NotificationActivity class manages notifications within the application.
+        Initializes UI components, Button (back2AttendeesButton, sendNotificationButton), in the onCreate method.
+        Sets a click listener for the back2AttendeesButton button to navigate back to the AttendeeListActivity.
+        Upon clicking the back2AttendeesButton, it starts an intent to navigate to the AttendeeListActivity.
+        Provides an empty click listener for the sendNotificationButton, which would handle the functionality to send notifications.
+**/
 
 public class NotificationActivity extends AppCompatActivity {
     private Button back2AttendeesButton;

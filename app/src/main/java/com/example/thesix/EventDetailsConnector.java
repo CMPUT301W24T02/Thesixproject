@@ -15,6 +15,15 @@ import androidx.core.app.ActivityCompat;
 
 import java.util.ArrayList;
 
+/**
+ * EventDetailsConnector class manages the display of event details and provides options for generating guest lists within an Android application.
+ * Initializes UI components such as TextView (eventName, eventDescription), ImageView (eventPoster), and Button (backButton, generateGuestButton) in the onCreate method.
+ * Retrieves event details from the intent extras passed from the previous activity (eventName and eventDescription) and sets them to the respective TextViews.
+ * Handles button clicks to navigate to other activities (EventDetailsAdapter, AttendeeListActivity) using intents.
+ * Upon clicking the backButton, it navigates to the EventDetailsAdapter activity.
+ * Upon clicking the generateGuestButton, it navigates to the AttendeeListActivity activity.
+ */
+
 public class EventDetailsConnector extends AppCompatActivity {
 
     private TextView eventName;
