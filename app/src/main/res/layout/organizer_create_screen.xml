@@ -37,7 +37,6 @@
         android:textSize="27sp"
         app:layout_constraintEnd_toEndOf="@id/useExistingQrCodeButton"
         app:layout_constraintStart_toStartOf="@id/useExistingQrCodeButton"
-        app:layout_constraintTop_toBottomof ="@id/useExistingQrCodeButton"
         app:strokeColor="@color/white"
         app:strokeWidth="3dp"
         android:text="CREATE NEW QR CODE"/>
@@ -54,7 +53,6 @@
         android:textSize="27sp"
         app:layout_constraintEnd_toEndOf="@id/createNewQrCodeButton"
         app:layout_constraintStart_toStartOf="@id/createNewQrCodeButton"
-        app:layout_constraintTop_toBottomof ="@id/createNewQrCodeButton"
         app:strokeColor="@color/white"
         app:strokeWidth="3dp"
         android:text="@string/back"/>
