@@ -33,9 +33,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 public class OrganizerUseNewQRActivity extends AppCompatActivity {
-    /*
-        This Activity allow organizer to create a new Activity using a new QR code.
-    */
     private EditText descriptionEditText;
     private EditText eventnameEditText;
     private Button createEventButton;
@@ -44,7 +41,6 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
     private ImageView eventPoster;
     private Uri imageuri;
-    String deviceID;
 
     public Long count;
 
@@ -61,8 +57,6 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         eventPoster = findViewById(R.id.eventPoster);
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
 
         eventPoster.setOnClickListener(new View.OnClickListener() {
@@ -91,54 +85,6 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
                                 for (int y = 0; y < 512; y++) {
                                     bitmap.setPixel(x, y, bitMatrix.get(x, y) ? getResources().getColor(R.color.black) : getResources().getColor(R.color.white));
                                 }
-
-
-                    readData(new MyCallback() {
-                        @Override
-                        public void onCallback(long num) {
-                            Log.d("callback", String.valueOf(num));
-                            try {
-
-                                String description = descriptionEditText.getText().toString();
-                                String inviteqrString = deviceID + description + num;
-                                String promoqrString = "promo"+ inviteqrString;
-                                QRCodeWriter writer = new QRCodeWriter();
-                                BitMatrix bitMatrix = writer.encode(inviteqrString, BarcodeFormat.QR_CODE, 512, 512);
-                                BitMatrix bitMatrix2 = writer.encode(promoqrString, BarcodeFormat.QR_CODE, 512, 512);
-                                Bitmap bitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
-
-                                for (int x = 0; x < 512; x++) {
-                                    for (int y = 0; y < 512; y++) {
-                                        bitmap.setPixel(x, y, bitMatrix.get(x, y) ? getResources().getColor(R.color.black) : getResources().getColor(R.color.white));
-                                    }
-                                }
-                                Bitmap bitmap2 = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
-
-                                for (int x = 0; x < 512; x++) {
-                                    for (int y = 0; y < 512; y++) {
-                                        bitmap2.setPixel(x, y, bitMatrix2.get(x, y) ? getResources().getColor(R.color.black) : getResources().getColor(R.color.white));
-                                    }
-                                }
-
-
-                                // Display QR Code
-                                qrCodeImageView.setImageBitmap(bitmap);
-
-
-                                // Convert Bitmap to Base64 String
-                                String inviteQrImageBase64 = bitmapToBase64(bitmap);
-                                String promoQrImageBase64 = bitmapToBase64(bitmap2);
-
-
-                                // Save invite QR Code in Firestore
-                                MyQRCode promoQrCode = new MyQRCode(inviteQrImageBase64,num,description);
-                                firestoreHelper.saveInviteQRCode(deviceID, promoQrCode);
-                                MyQRCode inviteQrCode = new MyQRCode(promoQrImageBase64,num,description);
-                                firestoreHelper.savePromoQRCode(deviceID, inviteQrCode);
-                            }
-                            catch (WriterException e) {
-                                Log.e("MainActivity", "Error generating QR code", e);
-
                             }
 
 
