@@ -31,6 +31,9 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 public class OrganizerUseNewQRActivity extends AppCompatActivity {
+    /*
+        This Activity allow organizer to create a new Activity using a new QR code.
+    */
     private EditText descriptionEditText;
     private Button createEventButton;
     private ImageView qrCodeImageView;
