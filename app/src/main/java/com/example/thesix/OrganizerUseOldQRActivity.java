@@ -51,81 +51,87 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrganizerUseOldQRActivity extends AppCompatActivity {
+    ArrayList<Long> eventNumList;
 
-        ArrayList<String> desciptionDataList;
-        private ArrayAdapter<String> descriptionArrayAdapter;
-        private QrCodeDB firestoreHelper;
-        private Button backButton;
-        CollectionReference citiesRef;
+    ArrayList<String> desciptionDataList;
+    private Button backButton;
+    private QrCodeDB firestoreHelper;
+    String deviceID;
+    CollectionReference QrRef;
+    private ArrayAdapter<String> descriptionArrayAdapter;
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.organizer_use_old_qr_screen);
+        desciptionDataList = new ArrayList<>();
+        eventNumList = new ArrayList<>();
+        backButton = findViewById(R.id.backButton);
+        firestoreHelper = new QrCodeDB();
+        deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        QrRef = firestoreHelper.getOldQrRef(deviceID);
+        descriptionArrayAdapter = new ArrayAdapter<String>(
+                OrganizerUseOldQRActivity.this,
+                R.layout.share_qr_view,R.id.itemTextView,desciptionDataList);
+        ListView descriptionList = findViewById(R.id.qrcode_list);
+        descriptionList.setAdapter(descriptionArrayAdapter);
+        readData(new OldQrCallback() {
+            @Override
+            public void onOldQrCallback(List<String> list1, List<Long> list2) {
+                desciptionDataList = (ArrayList<String>) list1;
+                Log.d("callback","1"+desciptionDataList.get(0));
+                Log.d("callback","2");
+                eventNumList = (ArrayList<Long>) list2;
+                descriptionArrayAdapter.notifyDataSetChanged();
+            }
+        });
+        descriptionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("hihi","1: "+ String.valueOf(eventNumList.get(position)));
+                Intent myIntent = new Intent(OrganizerUseOldQRActivity.this, OrganizerEditActivity.class);
+                myIntent.putExtra("eventNum", eventNumList.get(position));
+                startActivity(myIntent);
 
-        @Override
-        protected void onCreate(@Nullable Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
+            }
+        });
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(OrganizerUseOldQRActivity.this, OrganizerCreateActivity.class));
+            }
+        });
 
-            desciptionDataList = new ArrayList<>();
-            firestoreHelper = new QrCodeDB();
-            String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
-            citiesRef = firestoreHelper.getOldQrRef(deviceID);
 
-            descriptionArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, desciptionDataList);
-            ListView descriptionList = new ListView(this);
-            descriptionList.setAdapter(descriptionArrayAdapter);
-            setContentView(descriptionList);
-
-            readData(new MyCallback() {
-                @Override
-                public void onCallback(List<String> list) {
-                    desciptionDataList.clear();
-                    desciptionDataList.addAll(list);
-                    descriptionArrayAdapter.notifyDataSetChanged();
-                }
-            });
-
-            descriptionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    firestoreHelper.getOldQrRef(deviceID);
-                }
-            });
-
-            backButton = new Button(this);
-            backButton.setText("Back");
-            backButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(OrganizerUseOldQRActivity.this,MainActivity.class));
-                }
-            });
-            setContentView(backButton);
-        }
-
-        public interface MyCallback {
-            void onCallback(List<String> list);
-        }
-
-        public void readData(MyCallback myCallback) {
-            citiesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                @Override
-                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                    List<String> dataList = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        String bit = document.getString("qrImageData");
-                        dataList.add(bit);
-                    }
-                    myCallback.onCallback(dataList);
-                }
-            });
-        }
-
-        private Bitmap Base64Tobitmap(String base64String) {
-            String base64Image = base64String.split(",")[1];
-            byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
-            return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        }
     }
+    public interface OldQrCallback {
+        void onOldQrCallback(List<String> list1,List<Long> list2);
+    }
+    public void readData(OldQrCallback oldQrCallback) {
+        QrRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot document: queryDocumentSnapshots) {
+                    String description = document.getString("description");
+                    Long eventNum = document.getLong("eventNum");
+                    String base64String = document.getString("qrImageData");
+
+                    eventNumList.add(eventNum);
+                    desciptionDataList.add(description);
+                    Log.d("list",document.getId()+ "=>"+document.getData());
+                    Log.d("list",desciptionDataList.get(0));
+                }
+                oldQrCallback.onOldQrCallback(desciptionDataList,eventNumList);
+
+            }
+        });
+    }
+
+}
 
 
