@@ -9,7 +9,7 @@
     android:background="@color/black">
 
     <ListView
-        android:id="@+id/qrcode_list"
+        android:id="@+id/event_list"
         android:layout_width="402dp"
         android:layout_height="638dp"
         android:background="@color/white"
