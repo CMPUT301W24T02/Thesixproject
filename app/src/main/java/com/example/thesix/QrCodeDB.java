@@ -19,6 +19,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 public class QrCodeDB {
+    /*
+        connect to Qr Code DB
+    */
 
     private FirebaseFirestore firestore;
 
@@ -26,9 +29,9 @@ public class QrCodeDB {
         firestore = FirebaseFirestore.getInstance();
     }
 
-    public void saveInviteQRCode(String deviceID, MyQRCode inviteQrCode) {
+    public void saveInviteQRCode(String deviceID, EventDetails eventdetail) {
         firestore.collection("inviteQrCodes")
-                .add(inviteQrCode)
+                .add(eventdetail)
                 .addOnSuccessListener(documentReference ->
                         Log.d("FirestoreHelper", "DocumentSnapshot added with ID: " + documentReference.getId()))
                 .addOnFailureListener(e ->
@@ -36,7 +39,7 @@ public class QrCodeDB {
         firestore.collection("OrganizerdevicesDB")
                 .document(deviceID)
                 .collection("inviteQrCodes")
-                .add(inviteQrCode)
+                .add(eventdetail)
                 .addOnSuccessListener(documentReference ->
                         Log.d("FirestoreHelper", "DocumentSnapshot added with ID: " + documentReference.getId()))
                 .addOnFailureListener(e ->
@@ -79,6 +82,14 @@ public class QrCodeDB {
         qrRef = firestore.collection("OrganizerdevicesDB")
                 .document(deviceID)
                 .collection("inviteQrCodes");
+        return qrRef;
+
+    }
+    public CollectionReference getOldQrRef2(String deviceID) {
+        CollectionReference qrRef;
+        qrRef = firestore.collection("OrganizerdevicesDB")
+                .document(deviceID)
+                .collection("promoQrCodes");
         return qrRef;
 
     }

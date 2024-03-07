@@ -7,6 +7,38 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
+    <EditText
+        android:id="@+id/sendNotification"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="361dp"
+        android:layout_height="151dp"
+        android:layout_marginTop="136dp"
+        android:background="@color/white"
+        android:hint="Enter notification here"
+        android:textSize="20sp"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/sendNotificationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:backgroundTint="@color/black"
+        android:fontFamily="sans-serif-condensed"
+        android:text="Send Notification"
+        app:cornerRadius="0dp"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="@+id/sendNotification"
+        app:layout_constraintStart_toStartOf="@+id/sendNotification"
+        app:layout_constraintTop_toBottomOf="@+id/sendNotification"
+        app:strokeColor="@color/white"
+        app:strokeWidth="3dp" />
+
     <Button
         android:id="@+id/noti2AttendeesButton"
         android:layout_width="wrap_content"

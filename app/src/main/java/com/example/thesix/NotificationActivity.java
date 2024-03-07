@@ -13,12 +13,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class NotificationActivity extends AppCompatActivity {
     private Button back2AttendeesButton;
+
+    private Button sendNotificationButton;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notification_screen);
 
         back2AttendeesButton = findViewById(R.id.noti2AttendeesButton);
+        sendNotificationButton = findViewById(R.id.sendNotificationButton);
 
         back2AttendeesButton.setOnClickListener(new View.OnClickListener() {
         @Override
@@ -26,5 +29,11 @@ public class NotificationActivity extends AppCompatActivity {
             startActivity(new Intent(NotificationActivity.this, AttendeeListActivity.class));
         }
     });
+        sendNotificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 }
 }

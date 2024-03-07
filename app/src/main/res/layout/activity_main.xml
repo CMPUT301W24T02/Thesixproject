@@ -1,5 +1,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -42,16 +43,17 @@
         app:strokeColor="@color/white"
         app:strokeWidth="3dp" />
 
+
     <Button
-        android:id="@+id/guestListButton"
+        android:id="@+id/viewEventButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="80dp"
         android:backgroundTint="@color/black"
         android:fontFamily="sans-serif-condensed"
-        android:text="@string/guest_list"
+        android:text="@string/view_events"
         android:textColor="@color/white"
         android:textSize="27sp"
         app:layout_constraintEnd_toEndOf="@+id/createEventButton"
@@ -60,22 +62,21 @@
         app:strokeColor="@color/white"
         app:strokeWidth="3dp" />
 
-
     <Button
         android:id="@+id/shareQRButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="80dp"
         android:backgroundTint="@color/black"
         android:fontFamily="sans-serif-condensed"
         android:text="@string/share_qr"
         android:textColor="@color/white"
         android:textSize="27sp"
-        app:layout_constraintEnd_toEndOf="@+id/guestListButton"
-        app:layout_constraintStart_toStartOf="@+id/guestListButton"
-        app:layout_constraintTop_toBottomOf="@+id/guestListButton"
+        app:layout_constraintEnd_toEndOf="@+id/viewEventButton"
+        app:layout_constraintStart_toStartOf="@+id/viewEventButton"
+        app:layout_constraintTop_toBottomOf="@+id/viewEventButton"
         app:strokeColor="@color/white"
         app:strokeWidth="3dp" />
 

@@ -8,6 +8,7 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="create_event">Create Event</string>
+    <string name="view_events">View Events</string>
     <string name="share_invite_qr">SHARE INVITE QR</string>
     <string name="share_promo_qr">SHARE PROMO QR</string>
     <string name="save_changes">SAVE CHANGES</string>
