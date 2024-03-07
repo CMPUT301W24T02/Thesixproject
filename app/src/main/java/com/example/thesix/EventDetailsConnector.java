@@ -34,6 +34,14 @@ public class EventDetailsConnector extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         generateGuestButton = findViewById(R.id.guestListButton);
 
+
+
+        Bundle bundle = getIntent().getExtras();
+        String eventName1 = bundle.getString("eventName");
+        String eventDescription1 = bundle.getString("eventDescription");
+        eventName.setText(eventName1);
+        eventDescription.setText(eventDescription1);
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
