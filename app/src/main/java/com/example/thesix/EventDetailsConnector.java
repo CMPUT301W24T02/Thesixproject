@@ -28,9 +28,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class EventDetailsConnector extends AppCompatActivity {
@@ -46,6 +48,7 @@ public class EventDetailsConnector extends AppCompatActivity {
     CollectionReference QrRef;
     private QrCodeDB firestoreHelper;
     String deviceID;
+    String imageBaseString;
     String inviteBase64;
     String promoBase64;
 
@@ -70,6 +73,14 @@ public class EventDetailsConnector extends AppCompatActivity {
         eventNum = bundle.getLong("eventNum");
         eventName.setText(eventName1);
         eventDescription.setText(eventDescription1);
+        eventPosterImage(new EventPosterCallback() {
+            @Override
+            public void onEventPosterCallback(String string) {
+                Bitmap b=StringToBitMap(string);
+                eventPoster.setImageBitmap(b);
+            }
+        });
+
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,6 +139,32 @@ public class EventDetailsConnector extends AppCompatActivity {
     private interface SharePromoCallback{
         void onSharePromoCallback(String string);
     }
+
+    private interface EventPosterCallback{
+        void onEventPosterCallback(String string);
+    }
+
+    public void eventPosterImage(EventPosterCallback eventPosterCallback) {
+        QrRef.whereEqualTo("eventNum",eventNum).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                imageBaseString = document.getString("eventImageData");
+
+                                Log.d("getevent", document.getId() + " => " + document.getData());
+                            }
+                        } else {
+                            Log.d("getevent", "Error getting documents: ", task.getException());
+                        }
+                        eventPosterCallback.onEventPosterCallback(imageBaseString);
+
+                    }
+
+                });
+    }
+
     public void shareInvite(ShareInviteCallback shareInviteCallback) {
         QrRef.whereEqualTo("eventNum",eventNum).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -187,5 +224,18 @@ public class EventDetailsConnector extends AppCompatActivity {
             Log.d("save_image", "IOException while trying to write file for sharing: " + e.getMessage());
         }
         return uri;
+    }
+
+    public Bitmap StringToBitMap(String image){
+        try{
+            byte [] encodeByte=Base64.decode(image,Base64.DEFAULT);
+
+            InputStream inputStream  = new ByteArrayInputStream(encodeByte);
+            Bitmap bitmap  = BitmapFactory.decodeStream(inputStream);
+            return bitmap;
+        }catch(Exception e){
+            e.getMessage();
+            return null;
+        }
     }
 }
