@@ -1,7 +1,9 @@
+
+
 package com.example.thesix;
 
 public class EventDetails {
-    
+
     private String eventImageData;
     private String inviteQrImageData;
     private String promoQrImageData;

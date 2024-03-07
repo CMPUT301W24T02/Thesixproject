@@ -1,3 +1,4 @@
+
 package com.example.thesix;
 
 import android.content.Intent;
@@ -43,7 +44,7 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
     private ImageView eventPoster;
     private Uri imageuri;
-    
+
     private Bitmap eventImageBitmap;
 
     public Long count;
@@ -197,4 +198,3 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
         }
     }
 }
-
