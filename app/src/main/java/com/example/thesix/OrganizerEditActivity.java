@@ -31,6 +31,9 @@ import java.io.IOException;
 import java.util.List;
 
 public class OrganizerEditActivity extends AppCompatActivity {
+    /*
+        This activity allow organizer to edit the poster and description of an event.
+    */
     private Button saveChangeButton;
     private Button shareInviteButton;
     private Button sharePromoButton;
