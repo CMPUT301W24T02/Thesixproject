@@ -1,5 +1,12 @@
 package com.example.thesix;
 
+/**
+ *  Keeps attendee information
+ *  Keeps profile picture Data(if uploaded)
+ *  Generates user profile picture
+ * methods : AttendeeConstructor
+ **/
+
 public class Attendee {
     /*
     Keeps attendee information

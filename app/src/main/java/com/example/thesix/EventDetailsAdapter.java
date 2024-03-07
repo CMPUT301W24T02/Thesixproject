@@ -40,6 +40,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *EventDetailsAdapter class manages event details display and navigation within an Android application.
+ * Initializes UI components like lists, adapters, and buttons in the onCreate method.
+ * Requests necessary permissions and sets up the layout for event listing.
+ * Retrieves event details asynchronously from a Firebase Firestore database using the readData method.
+ * Handles item clicks to navigate to another activity (EventDetailsConnector) with selected event details.
+ * Provides a method (saveImageExternal) to save Bitmap images as PNG files in the app's external storage directory.
+ */
+
 public class EventDetailsAdapter extends AppCompatActivity {
     ArrayList<Long> eventNumList;
 
