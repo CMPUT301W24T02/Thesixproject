@@ -36,7 +36,7 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
     private ImageView qrCodeImageView;
     private QrCodeDB firestoreHelper;
     private Button backButton;
-
+    String deviceID;
 
     public Long count;
     @Override
@@ -50,7 +50,7 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
         qrCodeImageView = findViewById(R.id.qrCodeImageView);
         firestoreHelper = new QrCodeDB();
         backButton = findViewById(R.id.backButton);
-        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
 
 
@@ -64,16 +64,25 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
                         public void onCallback(long num) {
                             Log.d("callback", String.valueOf(num));
                             try {
-                                String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
+
                                 String description = descriptionEditText.getText().toString();
-                                String qrString = deviceID + description + num;
+                                String inviteqrString = deviceID + description + num;
+                                String promoqrString = "promo"+ inviteqrString;
                                 QRCodeWriter writer = new QRCodeWriter();
-                                BitMatrix bitMatrix = writer.encode(qrString, BarcodeFormat.QR_CODE, 512, 512);
+                                BitMatrix bitMatrix = writer.encode(inviteqrString, BarcodeFormat.QR_CODE, 512, 512);
+                                BitMatrix bitMatrix2 = writer.encode(promoqrString, BarcodeFormat.QR_CODE, 512, 512);
                                 Bitmap bitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
 
                                 for (int x = 0; x < 512; x++) {
                                     for (int y = 0; y < 512; y++) {
                                         bitmap.setPixel(x, y, bitMatrix.get(x, y) ? getResources().getColor(R.color.black) : getResources().getColor(R.color.white));
+                                    }
+                                }
+                                Bitmap bitmap2 = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
+
+                                for (int x = 0; x < 512; x++) {
+                                    for (int y = 0; y < 512; y++) {
+                                        bitmap2.setPixel(x, y, bitMatrix2.get(x, y) ? getResources().getColor(R.color.black) : getResources().getColor(R.color.white));
                                     }
                                 }
 
@@ -83,12 +92,15 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
 
                                 // Convert Bitmap to Base64 String
-                                String qrImageBase64 = bitmapToBase64(bitmap);
+                                String inviteQrImageBase64 = bitmapToBase64(bitmap);
+                                String promoQrImageBase64 = bitmapToBase64(bitmap2);
 
 
                                 // Save invite QR Code in Firestore
-                                MyQRCode qrCode = new MyQRCode(qrImageBase64,num,description);
-                                firestoreHelper.saveInviteQRCode(deviceID, qrCode);
+                                MyQRCode promoQrCode = new MyQRCode(inviteQrImageBase64,num,description);
+                                firestoreHelper.saveInviteQRCode(deviceID, promoQrCode);
+                                MyQRCode inviteQrCode = new MyQRCode(promoQrImageBase64,num,description);
+                                firestoreHelper.savePromoQRCode(deviceID, inviteQrCode);
                             }
                             catch (WriterException e) {
                                 Log.e("MainActivity", "Error generating QR code", e);

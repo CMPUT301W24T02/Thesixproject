@@ -82,6 +82,14 @@ public class QrCodeDB {
         return qrRef;
 
     }
+    public CollectionReference getOldQrRef2(String deviceID) {
+        CollectionReference qrRef;
+        qrRef = firestore.collection("OrganizerdevicesDB")
+                .document(deviceID)
+                .collection("promoQrCodes");
+        return qrRef;
+
+    }
     public DocumentReference getDocRef(String deviceID) {
         DocumentReference documentReference;
         documentReference = firestore.collection("OrganizerdevicesDB")
