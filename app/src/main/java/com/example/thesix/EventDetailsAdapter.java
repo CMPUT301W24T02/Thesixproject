@@ -44,6 +44,7 @@ public class EventDetailsAdapter extends AppCompatActivity {
     ArrayList<Long> eventNumList;
 
     ArrayList<String> eventnameDataList;
+    ArrayList<String> eventdescriptionDataList;
     ArrayList<String> eventImageDataList;
     private ArrayAdapter<String> eventnameArrayAdapter;
     private QrCodeDB firestoreHelper;
@@ -56,6 +57,7 @@ public class EventDetailsAdapter extends AppCompatActivity {
         setContentView(R.layout.event_list);
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
         eventnameDataList = new ArrayList<>();
+        eventdescriptionDataList = new ArrayList<>();
         eventNumList = new ArrayList<>();
         eventImageDataList = new ArrayList<>();
         backButton = findViewById(R.id.backButton);
@@ -85,9 +87,15 @@ public class EventDetailsAdapter extends AppCompatActivity {
                 //startActivity(new Intent(EventDetailsAdapter.this, EventDetailsConnector.class));
 
                 Intent i = new Intent(EventDetailsAdapter.this, EventDetailsConnector.class);
-
-                String eventName = "Arjun";
+                String eventName = (String) (eventdescriptionList.getItemAtPosition(position));
                 String eventDescription = "Singh";
+                for (int j = 0; j < eventnameDataList.size(); j++) {
+                    String eventName1 = (String) (eventnameDataList.get(j));
+                     if(eventName.equalsIgnoreCase(eventName1))
+                     {
+                         eventDescription = (String) (eventdescriptionDataList.get(j));
+                     }
+                }
 
                 Bundle bundle = new Bundle();
                 bundle.putString("eventName", eventName);
@@ -121,6 +129,7 @@ public class EventDetailsAdapter extends AppCompatActivity {
                     eventImageDataList.add(base64String);
                     eventNumList.add(eventNum);
                     eventnameDataList.add(eventname);
+                    eventdescriptionDataList.add(description);
                     Log.d("list", document.getId() + "=>" + document.getData());
                     Log.d("list", eventnameDataList.get(0));
                 }
