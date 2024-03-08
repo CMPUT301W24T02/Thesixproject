@@ -12,18 +12,27 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
+/**
+ * AttendeeListActivity is an activity class responsible for displaying a list of attendees.
+ * It provides options to navigate back to the MainActivity, view the map, and access notifications.
+ * @Author Danielle
+ * @See AppCompatActivity
+ */
 public class AttendeeListActivity extends AppCompatActivity {
-    /*
-        Creates Attendee List View
-    */
+
     private Button backButton;
     private Button mapButton;
     private Button notificationButton;
     ListView attendeeList;
     ArrayAdapter<Attendee> attendeeAdapter;   // acts as a communication bridge between front and back end
     ArrayList<Attendee> dataList;
-
+    /**
+     * Called when the activity is starting. Initializes UI components and sets up event listeners.
+     *
+     * @param savedInstanceState    If the activity is being re-initialized after previously being shut down
+     *                              then this Bundle contains the data it most recently supplied in
+     *                              onSaveInstanceState(Bundle). Note: Otherwise, it is null.
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

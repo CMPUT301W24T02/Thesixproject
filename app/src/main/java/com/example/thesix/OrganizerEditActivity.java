@@ -10,6 +10,12 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+/**
+ * OrganizerEditActivity is an activity class for editing event details and sharing event information.
+ * It allows users to edit event descriptions, choose event posters, save changes, and share event invitations or promotions.
+ * @Author David Lee, Arjun
+ * @See AppCompatActivity
+ */
 
 public class OrganizerEditActivity extends AppCompatActivity {
     private Button saveChangeButton;
@@ -20,6 +26,13 @@ public class OrganizerEditActivity extends AppCompatActivity {
     private ImageView eventPoster;
     private Uri imageuri;
 
+    /**
+     * Called when the activity is starting. Initializes UI components and sets up event listeners.
+     *
+     * @param savedInstanceState    If the activity is being re-initialized after previously being shut down
+     *                              then this Bundle contains the data it most recently supplied in
+     *                              onSaveInstanceState(Bundle). Note: Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,14 +82,24 @@ public class OrganizerEditActivity extends AppCompatActivity {
 
 
     }
-    // Function to select image from the storage
+    /**
+     * Function to select image from the storage.
+     */
     private void choosePicture() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, 1);
     }
-
+    /**
+     * Called when an activity you launched exits, giving you the requestCode you started it with,
+     * the resultCode it returned, and any additional data from it.
+     *
+     * @param requestCode   The integer request code originally supplied to startActivityForResult(),
+     *                      allowing you to identify who this result came from.
+     * @param resultCode    The integer result code returned by the child activity through its setResult().
+     * @param data          An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

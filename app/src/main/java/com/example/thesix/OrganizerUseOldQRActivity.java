@@ -53,6 +53,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+/**
+ * OrganizerUseOldQRActivity is an activity class for displaying and using old QR codes saved in Firestore database.
+ * It extends AppCompatActivity and provides functionalities for retrieving and displaying old QR codes.
+ * @Author Melrita, David Lee
+ * @See AppCompatActivity
+ */
 
 public class OrganizerUseOldQRActivity extends AppCompatActivity {
 
@@ -61,7 +67,13 @@ public class OrganizerUseOldQRActivity extends AppCompatActivity {
         private QrCodeDB firestoreHelper;
         private Button backButton;
         CollectionReference citiesRef;
-
+    /**
+     * Called when the activity is starting. Initializes UI components and retrieves old QR codes from Firestore.
+     *
+     * @param savedInstanceState    If the activity is being re-initialized after previously being shut down
+     *                              then this Bundle contains the data it most recently supplied in
+     *                              onSaveInstanceState(Bundle). Note: Otherwise, it is null.
+     */
         @Override
         protected void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -102,11 +114,17 @@ public class OrganizerUseOldQRActivity extends AppCompatActivity {
             });
             setContentView(backButton);
         }
-
+    /**
+     * Interface for a callback to be invoked when data is read from Firestore.
+     */
         public interface MyCallback {
             void onCallback(List<String> list);
         }
-
+    /**
+     * Reads old QR code data from Firestore database and invokes the callback with the retrieved data.
+     *
+     * @param myCallback    The callback to be invoked with the retrieved data.
+     */
         public void readData(MyCallback myCallback) {
             citiesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                 @Override
@@ -120,7 +138,12 @@ public class OrganizerUseOldQRActivity extends AppCompatActivity {
                 }
             });
         }
-
+    /**
+     * Converts a Base64 encoded string to a Bitmap.
+     *
+     * @param base64String  The Base64 encoded string representing the image.
+     * @return              The decoded Bitmap.
+     */
         private Bitmap Base64Tobitmap(String base64String) {
             String base64Image = base64String.split(",")[1];
             byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);

@@ -29,7 +29,13 @@ import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
-
+        /**
+        * OrganizerUseNewQRActivity is an activity class for creating and displaying new QR codes for events.
+        * It extends AppCompatActivity and provides functionalities for generating QR codes based on user input
+        * and saving them in Firestore database.
+         * @Author David Lee
+         * @See AppCompatActivity
+        */
 public class OrganizerUseNewQRActivity extends AppCompatActivity {
     private EditText descriptionEditText;
     private Button createEventButton;
@@ -39,6 +45,13 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
 
     public Long count;
+    /**
+     * Called when the activity is starting. Initializes UI components and sets up event listeners.
+     *
+     * @param savedInstanceState    If the activity is being re-initialized after previously being shut down
+     *                              then this Bundle contains the data it most recently supplied in
+     *                              onSaveInstanceState(Bundle). Note: Otherwise, it is null.
+     */
     @Override
 
 
@@ -116,9 +129,17 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
 
     }
+    /**
+     * Interface for a callback to be invoked when data is read from Firestore.
+     */
     public interface MyCallback {
         void onCallback(long num);
     }
+    /**
+     * Reads the count of invites from Firestore and invokes the callback with the retrieved count.
+     *
+     * @param myCallback    The callback to be invoked with the retrieved count.
+     */
     public void readData(MyCallback myCallback) {
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         firestoreHelper.getDocRef(deviceID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -141,6 +162,12 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
         });
 
     }
+    /**
+     * Converts a Bitmap to a Base64 encoded string.
+     *
+     * @param bitmap    The Bitmap to be converted.
+     * @return          The Base64 encoded string representation of the Bitmap.
+     */
     private String bitmapToBase64(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);

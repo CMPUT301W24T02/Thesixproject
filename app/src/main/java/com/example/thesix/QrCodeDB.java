@@ -17,15 +17,24 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-
+/**
+ * QrCodeDB is a class responsible for managing QR codes in Firestore database.
+ * @author David Lee
+ */
 public class QrCodeDB {
+
 
     private FirebaseFirestore firestore;
 
     public QrCodeDB() {
         firestore = FirebaseFirestore.getInstance();
     }
-
+    /**
+     * Saves an invite QR code to Firestore database along with updating invite count for the device.
+     *
+     * @param deviceID      The ID of the device associated with the QR code.
+     * @param inviteQrCode  The invite QR code object to be saved.
+     */
     public void saveInviteQRCode(String deviceID, MyQRCode inviteQrCode) {
         firestore.collection("inviteQrCodes")
                 .add(inviteQrCode)
@@ -58,6 +67,12 @@ public class QrCodeDB {
                 });
 
     }
+    /**
+     * Saves a promo QR code to Firestore database.
+     *
+     * @param deviceID      The ID of the device associated with the QR code.
+     * @param promoQrCode   The promo QR code object to be saved.
+     */
     public void savePromoQRCode(String deviceID, MyQRCode promoQrCode) {
         firestore.collection("promoQrCodes")
                 .add(promoQrCode)
@@ -74,6 +89,12 @@ public class QrCodeDB {
                 .addOnFailureListener(e ->
                         Log.e("FirestoreHelper", "Error adding document", e));
     }
+    /**
+     * Retrieves the reference to the collection of old QR codes associated with a device.
+     *
+     * @param deviceID      The ID of the device.
+     * @return              The reference to the collection of old QR codes.
+     */
     public CollectionReference getOldQrRef(String deviceID) {
         CollectionReference qrRef;
         qrRef = firestore.collection("OrganizerdevicesDB")
@@ -82,6 +103,12 @@ public class QrCodeDB {
         return qrRef;
 
     }
+    /**
+     * Retrieves the reference to the document associated with a device.
+     *
+     * @param deviceID      The ID of the device.
+     * @return              The reference to the document associated with the device.
+     */
     public DocumentReference getDocRef(String deviceID) {
         DocumentReference documentReference;
         documentReference = firestore.collection("OrganizerdevicesDB")
