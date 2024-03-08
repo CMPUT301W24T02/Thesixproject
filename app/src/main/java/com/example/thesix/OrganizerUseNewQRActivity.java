@@ -38,6 +38,10 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ Makaing a newQr code for organizer specific to device id
+ **/
+
 public class OrganizerUseNewQRActivity extends AppCompatActivity {
     private EditText descriptionEditText;
     private EditText eventnameEditText;
@@ -55,6 +59,11 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
     @Override
 
+    /**
+     getting deviceId , creating new database
+     @param :Bundle savedInstanceState
+     @return Documentreference
+     **/
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +75,10 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         eventPoster = findViewById(R.id.eventPoster);
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        /**
+         Choose picture for event
+         **/
         eventPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,6 +86,9 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         Creating event button , with required event details
+         **/
         createEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -141,6 +157,9 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
                 }
             }
         });
+        /**
+         Back button to take user back to main acitvity
+         **/
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,10 +171,17 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
     }
 
+    /**
+     Call back interface
+     @param : Long num
+     **/
     public interface MyCallback {
         void onCallback(long num);
     }
-
+    /**
+     Reading Data from QR code
+     @param : MycCallBcak callBack
+     **/
     public void readData(MyCallback myCallback) {
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         firestoreHelper.getDocRef(deviceID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -178,6 +204,11 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
         });
 
     }
+    /**
+     Decoding QrCode to make it useable for other functions
+     @param : BitMap bitmap
+     @return String
+     **/
 
     public String BitMapToString(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -187,6 +218,11 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
         return result;
 
     }
+    /**
+     Encoding QRcode Data
+     @param : Bitmap bitmap
+     @return String
+     **/
 
     private String bitmapToBase64(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -196,12 +232,23 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
     }
 
     // Function to select image from the storage
+    /**
+     Choosing picture from device
+     @param : void
+     @return void
+     **/
     private void choosePicture() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, 1);
     }
+
+    /**
+     Setting all acquired Data to event
+     @param : int requestcode , int resultcode , intentData
+     @return void
+     **/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

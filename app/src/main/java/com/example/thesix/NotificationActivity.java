@@ -18,6 +18,8 @@ public class NotificationActivity extends AppCompatActivity {
     private Button back2AttendeesButton;
 
     private Button sendNotificationButton;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
