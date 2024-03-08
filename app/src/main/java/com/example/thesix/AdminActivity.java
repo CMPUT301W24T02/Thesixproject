@@ -24,12 +24,11 @@ public class AdminActivity extends AppCompatActivity {
         viewEvents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                startActivity(new Intent(AdminActivity.this, OrganizerCreateActivity.class));
+                startActivity(new Intent(AdminActivity.this, AdminEventsActivity.class));
             }
         });
 
-        viewEvents.setOnClickListener(new View.OnClickListener() {
+        viewProfiles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
             }

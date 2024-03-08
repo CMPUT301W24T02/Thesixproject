@@ -32,7 +32,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * Clicking generateShareQRCode navigates to the ShareQRCodeActivity, where users can share QR codes associated with events.
  **/
 public class MainActivity extends AppCompatActivity {
-    private String adminId = "5b7e97595edb9027";
+    private String adminId = "c4a3f3f0780278c1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
