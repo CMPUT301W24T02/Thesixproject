@@ -93,7 +93,7 @@ public class AdminEventsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent i = new Intent(AdminEventsActivity.this, EventDetailsConnector.class);
+                Intent i = new Intent(AdminEventsActivity.this, AdminEventDetails.class);
                 String eventName = (String) (eventdescriptionList.getItemAtPosition(position));
                 String eventDescription = "Singh";
                 long eventNum = eventNumList.get(position);
