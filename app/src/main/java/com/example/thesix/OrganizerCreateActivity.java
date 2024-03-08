@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
  */
 
 public class OrganizerCreateActivity extends AppCompatActivity {
-    private Button useExistingQrCodeButton;
     private Button createNewQrCodeButton;
     private QrCodeDB firestoreHelper;
     private Button backButton;
@@ -28,17 +27,10 @@ public class OrganizerCreateActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_create_screen);
-        useExistingQrCodeButton = findViewById(R.id.useExistingQrCodeButton);
         createNewQrCodeButton = findViewById(R.id.createNewQrCodeButton);
         firestoreHelper = new QrCodeDB();
         backButton  =findViewById(R.id.backButton);
 
-        useExistingQrCodeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(OrganizerCreateActivity.this, OrganizerUseOldQRActivity.class));
-            }
-        });
         createNewQrCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
