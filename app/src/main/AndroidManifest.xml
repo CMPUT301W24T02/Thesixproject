@@ -32,6 +32,10 @@
             />
         <activity android:name=".AdminActivity"
             />
+        <activity android:name=".AdminEventsActivity"
+            />
+        <activity android:name=".AdminEventDetails"
+            />
         <activity android:name=".CreateEventActivity"
             />
         <activity android:name=".EventDetailsAdapter"
