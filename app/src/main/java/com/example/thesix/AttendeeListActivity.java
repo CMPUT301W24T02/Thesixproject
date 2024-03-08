@@ -1,5 +1,6 @@
 package com.example.thesix;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -9,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -54,9 +56,12 @@ public class AttendeeListActivity extends AppCompatActivity {
     List<Long> checkinCount;
     private long totalCount;
 
+    private String eventName;
+
     private QrCodeDB firestoreHelper;
     String deviceID;
     String imageBaseString;
+    private OrganizerMainActivity oma = new OrganizerMainActivity();
 
 
     @Override
@@ -95,6 +100,13 @@ public class AttendeeListActivity extends AppCompatActivity {
                 Log.d("here", "here2 " + totalCount);
                 String total_count = Long.toString(totalCount);
                 totalcheckinNumber.setText(total_count);
+                String text = +totalCount + " people have checked into " + eventName;
+                if(totalCount == 5 ) {
+                    Toast.makeText(AttendeeListActivity.this, text, Toast.LENGTH_SHORT).show();
+                }
+                if(totalCount == 10 ) {
+                    Toast.makeText(AttendeeListActivity.this, text, Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -139,6 +151,7 @@ public class AttendeeListActivity extends AppCompatActivity {
                                 attendeeString = (List<String>) document.get("attendeeList");
                                 checkinCount = (List<Long>) document.get("checkIn");
                                 totalCount = (long) document.get("totalCheckIn");
+                                eventName = (String) document.get("name");
                                 Log.d("hih", "here6 " +totalCount);
                                 for (int i = 0; i < attendeeString.size(); i++) {
                                     Attendee attendee = new Attendee(attendeeString.get(i), checkinCount.get(i));
