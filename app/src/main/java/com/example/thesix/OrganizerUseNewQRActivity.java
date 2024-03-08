@@ -28,7 +28,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
+
 import java.io.IOException;
+
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
@@ -44,6 +46,7 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
     private ImageView eventPoster;
     private Uri imageuri;
+    private boolean imageChanged = false;
 
     private Bitmap eventImageBitmap;
 
@@ -62,63 +65,77 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         eventPoster = findViewById(R.id.eventPoster);
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
-
         eventPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 choosePicture(); //Function to select images
             }
         });
+
         createEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                readData(new MyCallback() {
-                    @Override
-                    public void onCallback(long num) {
-                        Log.d("callback", String.valueOf(num));
-                        try {
-                            String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
-                            String description = descriptionEditText.getText().toString();
-                            String eventname = eventnameEditText.getText().toString();
-                            String inviteQrString = deviceID + description + num;
-                            String promoQrString = "promo" + inviteQrString;
-                            QRCodeWriter writer = new QRCodeWriter();
-                            BitMatrix inviteBitMatrix = writer.encode(inviteQrString, BarcodeFormat.QR_CODE, 512, 512);
-                            BitMatrix promoBitMatrix = writer.encode(promoQrString, BarcodeFormat.QR_CODE, 512, 512);
-                            Bitmap Invitebitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
-                            Bitmap Promobitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
+                String even = eventnameEditText.getText().toString();
+                String desc = descriptionEditText.getText().toString();
+                if (even.matches("")) {
+                    Toast.makeText(OrganizerUseNewQRActivity.this, "Please enter event name.", Toast.LENGTH_SHORT).show();
+                }
+                else if((desc.matches("")))
+                {
+                    Toast.makeText(OrganizerUseNewQRActivity.this, "Please enter event description.", Toast.LENGTH_SHORT).show();
+                }
+                else if (imageChanged == false)
+                {
+                    Toast.makeText(OrganizerUseNewQRActivity.this, "Please select an event poster.", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    readData(new MyCallback() {
+                        @Override
+                        public void onCallback(long num) {
+                            Log.d("callback", String.valueOf(num));
+                            try {
+                                String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
+                                String description = descriptionEditText.getText().toString();
+                                String eventname = eventnameEditText.getText().toString();
+                                String inviteQrString = deviceID + description + num;
+                                String promoQrString = "promo" + inviteQrString;
+                                QRCodeWriter writer = new QRCodeWriter();
+                                BitMatrix inviteBitMatrix = writer.encode(inviteQrString, BarcodeFormat.QR_CODE, 512, 512);
+                                BitMatrix promoBitMatrix = writer.encode(promoQrString, BarcodeFormat.QR_CODE, 512, 512);
+                                Bitmap Invitebitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
+                                Bitmap Promobitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
 
 
-                            for (int x = 0; x < 512; x++) {
-                                for (int y = 0; y < 512; y++) {
-                                    Invitebitmap.setPixel(x, y, inviteBitMatrix.get(x, y) ? getResources().getColor(R.color.black) : getResources().getColor(R.color.white));
+                                for (int x = 0; x < 512; x++) {
+                                    for (int y = 0; y < 512; y++) {
+                                        Invitebitmap.setPixel(x, y, inviteBitMatrix.get(x, y) ? getResources().getColor(R.color.black) : getResources().getColor(R.color.white));
+                                    }
                                 }
-                            }
-                            for (int x = 0; x < 512; x++) {
-                                for (int y = 0; y < 512; y++) {
-                                    Promobitmap.setPixel(x, y, promoBitMatrix.get(x, y) ? getResources().getColor(R.color.black) : getResources().getColor(R.color.white));
+                                for (int x = 0; x < 512; x++) {
+                                    for (int y = 0; y < 512; y++) {
+                                        Promobitmap.setPixel(x, y, promoBitMatrix.get(x, y) ? getResources().getColor(R.color.black) : getResources().getColor(R.color.white));
+                                    }
                                 }
+
+
+                                // Convert Bitmap to Base64 String
+                                String inviteQrImageBase64 = bitmapToBase64(Invitebitmap);
+                                String promoQrImageBase64 = bitmapToBase64(Promobitmap);
+                                String eventImageBase64 = BitMapToString(eventImageBitmap);
+
+
+                                // Save invite QR Code in Firestore
+                                EventDetails eventdetail = new EventDetails(eventImageBase64, inviteQrImageBase64, promoQrImageBase64, num, description, eventname);
+                                firestoreHelper.saveInviteQRCode(deviceID, eventdetail);
+                                firestoreHelper.savePromoQRCode(deviceID, eventdetail);
+                            } catch (WriterException e) {
+                                Log.e("MainActivity", "Error generating QR code", e);
                             }
 
-
-                            // Convert Bitmap to Base64 String
-                            String inviteQrImageBase64 = bitmapToBase64(Invitebitmap);
-                            String promoQrImageBase64 = bitmapToBase64(Promobitmap);
-                            String eventImageBase64 = BitMapToString(eventImageBitmap);
-
-
-                            // Save invite QR Code in Firestore
-                            EventDetails eventdetail = new EventDetails(eventImageBase64, inviteQrImageBase64,promoQrImageBase64, num, description, eventname);
-                            firestoreHelper.saveInviteQRCode(deviceID, eventdetail);
-                            firestoreHelper.savePromoQRCode(deviceID,eventdetail);
-                        } catch (WriterException e) {
-                            Log.e("MainActivity", "Error generating QR code", e);
                         }
-
-                    }
-                });
-                Toast.makeText(OrganizerUseNewQRActivity.this, "Your Event has been created.", Toast.LENGTH_SHORT).show();
+                    });
+                    Toast.makeText(OrganizerUseNewQRActivity.this, "Your Event has been created.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -192,6 +209,7 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
             try {
                 eventImageBitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), imageuri);
                 eventPoster.setImageBitmap(eventImageBitmap);
+                imageChanged= true;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
