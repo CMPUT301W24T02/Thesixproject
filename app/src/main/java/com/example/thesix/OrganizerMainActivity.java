@@ -11,7 +11,6 @@ public class OrganizerMainActivity extends AppCompatActivity {
 
     private Button generateEventButton;
     private Button generateViewEventButton;
-    private Button generateShareQRCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +19,6 @@ public class OrganizerMainActivity extends AppCompatActivity {
 
         generateEventButton = findViewById(R.id.createEventButton);
         generateViewEventButton = findViewById(R.id.viewEventButton);
-        generateShareQRCode = findViewById(R.id.shareQRButton);
 
         generateEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,13 +36,6 @@ public class OrganizerMainActivity extends AppCompatActivity {
         });
 
 
-        generateShareQRCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                startActivity(new Intent(OrganizerMainActivity.this, ShareQRCodeActivity.class));
-            }
-        });
 
 
     }
