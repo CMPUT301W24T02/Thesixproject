@@ -1,6 +1,7 @@
 package com.example.thesix;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,7 @@ public class AttendeeListAdapter extends ArrayAdapter<Attendee> {
         TextView checkedIn = view.findViewById(R.id.checkedin_text);
 
         attendeeName.setText(attendee.getName());
-        checkedIn.setText(attendee.getCheckin());
+        checkedIn.setText(String.valueOf(attendee.getCheckin()));
 
         return view;
     }

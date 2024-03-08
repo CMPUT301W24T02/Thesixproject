@@ -102,7 +102,8 @@ public class EventDetailsConnector extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(EventDetailsConnector.this, AttendeeListActivity.class);
-                myIntent.putExtra("intVariableName", eventNum);
+                Log.d("hihi","Before ID: "+ eventNum);
+                myIntent.putExtra("eventNum", eventNum);
                 startActivity(myIntent);
             }
         });

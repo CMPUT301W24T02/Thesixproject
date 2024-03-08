@@ -50,8 +50,7 @@
             android:label="MapActivity"/>
         <activity android:name=".NotificationActivity"
             android:label="NotificationActivity"/>
-        <activity android:name=".ShareQRCodeActivity"
-            android:label="ShareQRCodeActivity"/>
+
     </application>
 
 </manifest>

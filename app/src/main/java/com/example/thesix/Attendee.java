@@ -14,9 +14,9 @@ public class Attendee {
     Generates user profile picture
     */
     private String name;
-    private Integer checkin;
+    private Long checkin;
 
-    public Attendee(String name, Integer checkin){
+    public Attendee(String name, Long checkin){
         // Temporary Constructor
         this.name = name;
         this.checkin = checkin;
@@ -30,11 +30,11 @@ public class Attendee {
         this.name = name;
     }
 
-    public Integer getCheckin() {
+    public Long getCheckin() {
         return checkin;
     }
 
-    public void setCheckin(Integer checkin) {
+    public void setCheckin(Long checkin) {
         this.checkin = checkin;
     }
 }

@@ -50,7 +50,7 @@ public class AttendeeListActivity extends AppCompatActivity {
     AttendeeListAdapter attendeeAdapter;   // acts as a communication bridge between front and back end
     ArrayList<Attendee> dataList;
     List<String> attendeeString;
-    List<Integer> checkinCount;
+    List<Long> checkinCount;
 
     private QrCodeDB firestoreHelper;
     String deviceID;
@@ -59,42 +59,42 @@ public class AttendeeListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.d("hihi", "here1" );
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_list_screen);
+        firestoreHelper = new QrCodeDB();
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         backButton = findViewById(R.id.backButton);
         mapButton = findViewById(R.id.mapButton);
         notificationButton = findViewById(R.id.notificationButton);
         attendeeList = findViewById(R.id.attendee_list_view);
-        Log.d("hi", deviceID );
+        Log.d("hihi", deviceID );
         QrRef = firestoreHelper.getOldQrRef(deviceID);
         Intent mIntent = getIntent();
-        eventNum = mIntent.getIntExtra("intVariableName", 0);
+        dataList = new ArrayList<>();
+        eventNum = mIntent.getLongExtra("eventNum", 0);
+        // Find the ListView item from front-end to communicate with
+        attendeeAdapter = new AttendeeListAdapter(AttendeeListActivity.this, dataList);
 
+        // Set your adapter to show the List of Attendees
+        attendeeList.setAdapter(attendeeAdapter);
         setAttendeeList(new AttendeeCallback() {
             @Override
-            public void onAttendeeCallback(List<String> list1, List<Integer> list2) {
+            public void onAttendeeCallback(List<Attendee> list1) {
                 // Create the array to hold invited guests
                 // Combine Lists
-                for (int i =0; i < list1.size(); i++){
-                    for (int j = 0; j < list2.size(); j++) {
-                        Attendee attendee = new Attendee(list1.get(i), list2.get(j));
-                        dataList.add(attendee);
-                    }
-                }
-                dataList.notify();
+
+
+
+                attendeeAdapter.notifyDataSetChanged();
             }
         });
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AttendeeListActivity.this, EventDetailsConnector.class));
-                // Find the ListView item from front-end to communicate with
-                attendeeAdapter = new AttendeeListAdapter(AttendeeListActivity.this, dataList);
+                startActivity(new Intent(AttendeeListActivity.this, EventDetailsAdapter.class));
 
-                // Set your adapter to show the List of Attendees
-                attendeeList.setAdapter(attendeeAdapter);
             }
         });
 
@@ -113,29 +113,39 @@ public class AttendeeListActivity extends AppCompatActivity {
         });
     }
 
+
+
+    private interface AttendeeCallback{
+        void onAttendeeCallback(List<Attendee> list1);
+    }
     public void setAttendeeList(AttendeeCallback attendeeCallback) {
+        Log.d("hihi","here3: "+eventNum);
         QrRef.whereEqualTo("eventNum",eventNum).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        Log.d("hihi","here4");
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                attendeeString = (List<String>) document.get("attendeeList");
-                                checkinCount = (List<Integer>) document.get("checkedinCount");
-
-                                Log.d("getevent", document.getId() + " => " + document.getData());
+                                Log.d("hihi","here5");
+                                attendeeString=  (List<String>) document.get("attendeeList");
+                                checkinCount = (List<Long>) document.get("checkIn");
+                                for (int i=0;i<attendeeString.size();i++) {
+                                    Attendee attendee = new Attendee(attendeeString.get(i),checkinCount.get(i));
+                                    dataList.add(attendee);
+                                }
+                                Log.d("hihi", document.getId() + " => " + document.getData());
                             }
+                            Log.d("hihi","here6");
                         } else {
                             Log.d("getevent", "Error getting documents: ", task.getException());
+                            Log.d("hihi","here7");
                         }
-                        attendeeCallback.onAttendeeCallback(attendeeString, checkinCount);
+                        Log.d("hihi","here8");
+                        attendeeCallback.onAttendeeCallback(dataList);
                     }
 
                 });
-    }
-
-    private interface AttendeeCallback{
-        void onAttendeeCallback(List<String> list1,List<Integer> list2);
     }
 
 
