@@ -77,6 +77,19 @@
         app:layout_constraintHorizontal_bias="0.546"
         app:layout_constraintStart_toStartOf="@+id/notificationButton" />
 
+    <TextView
+        android:id="@+id/totalCheckin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:text="89"
+        android:textAlignment="viewStart"
+        android:textColor="@color/gold"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/checked_in"
+        app:layout_constraintTop_toTopOf="@+id/checked_in"
+        tools:ignore="DuplicateIds,MissingConstraints" />
+
     <ListView
         android:id="@+id/attendee_list_view"
         android:layout_width="match_parent"
@@ -88,5 +101,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
