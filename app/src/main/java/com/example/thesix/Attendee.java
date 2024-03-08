@@ -42,7 +42,7 @@ public class Attendee {
      * sets profile Name
      * @param :
      * @return : String
-     *//
+     */
 
 
     public void setName(String name) {
