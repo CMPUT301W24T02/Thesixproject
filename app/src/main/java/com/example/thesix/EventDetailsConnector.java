@@ -138,11 +138,7 @@ public class EventDetailsConnector extends AppCompatActivity {
                     @Override
                     public void onSharePromoCallback(String string) {
                         Bitmap bitmap = Base64Tobitmap(string);
-                        Uri uri = saveImageExternal(bitmap);
-                        Intent intent = new Intent(Intent.ACTION_SEND);
-                        intent.setType("image/*");
-                        intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(String.valueOf(uri)));
-                        startActivity(Intent.createChooser(intent, "Share the Image ... "));
+                        shareImage(bitmap);
                     }
                 });
 
@@ -161,11 +157,7 @@ public class EventDetailsConnector extends AppCompatActivity {
                     @Override
                     public void onShareInviteCallback(String string) {
                         Bitmap bitmap = Base64Tobitmap(string);
-                        Uri uri = saveImageExternal(bitmap);
-                        Intent intent = new Intent(Intent.ACTION_SEND);
-                        intent.setType("image/*");
-                        intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(String.valueOf(uri)));
-                        startActivity(Intent.createChooser(intent, "Share the Image ... "));
+                        shareImage(bitmap);
 
                     }
                 });
@@ -303,6 +295,39 @@ public class EventDetailsConnector extends AppCompatActivity {
             uri = Uri.fromFile(file);
         } catch (IOException e) {
             Log.d("save_image", "IOException while trying to write file for sharing: " + e.getMessage());
+        }
+        return uri;
+    }
+    private void shareImage(Bitmap bitmap) {
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder(); //https://stackoverflow.com/questions/48117511/exposed-beyond-app-through-clipdata-item-geturi
+        StrictMode.setVmPolicy(builder.build());
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("image/png");
+        Uri bmpUri;
+        String textToShare = "Share Tutorial";
+        bmpUri=saveImage(bitmap,getApplicationContext());
+        share.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        share.putExtra(Intent.EXTRA_STREAM,bmpUri);
+        share.putExtra(Intent.EXTRA_SUBJECT,"New App");
+        share.putExtra(Intent.EXTRA_TEXT,textToShare);
+        startActivity(Intent.createChooser(share,"Share Content"));
+    }
+    private static Uri saveImage(Bitmap image, Context context) {
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder(); //https://stackoverflow.com/questions/48117511/exposed-beyond-app-through-clipdata-item-geturi
+        StrictMode.setVmPolicy(builder.build());
+        File imagesFolder = new File(context.getCacheDir(),"images");
+        Uri uri = null;
+        try{
+            imagesFolder.mkdirs();
+            File file = new File(imagesFolder, "shared_images.png");
+            FileOutputStream stream = new FileOutputStream(file);
+            image.compress(Bitmap.CompressFormat.PNG,90,stream);
+            stream.flush();
+            stream.close();
+            uri = FileProvider.getUriForFile(Objects.requireNonNull(context.getApplicationContext()),"com.example.thesix"+".provider",file);
+        }
+        catch(IOException e) {
+            Log.d("TAG","Exception"+e.getMessage());
         }
         return uri;
     }
