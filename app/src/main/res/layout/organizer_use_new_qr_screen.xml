@@ -85,42 +85,8 @@
         app:strokeColor="@color/white"
         app:strokeWidth="3dp" />
 
-    <Button
-        android:id="@+id/shareInviteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/black"
-        android:fontFamily="sans-serif-condensed"
-        android:text="@string/share_invite_qr"
-        android:textColor="@color/white"
-        android:textSize="28sp"
-        app:cornerRadius="0dp"
-        app:layout_constraintEnd_toEndOf="@+id/createEventButton"
-        app:layout_constraintHorizontal_bias="0.508"
-        app:layout_constraintStart_toStartOf="@+id/createEventButton"
-        app:layout_constraintTop_toBottomOf="@+id/createEventButton"
-        app:strokeColor="@color/white"
-        app:strokeWidth="3dp"
-        tools:ignore="MissingConstraints" />
 
-    <Button
-        android:id="@+id/sharePromoButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/black"
-        android:fontFamily="sans-serif-condensed"
-        android:text="@string/share_promo_qr"
-        android:textColor="@color/white"
-        android:textSize="28sp"
-        app:cornerRadius="0dp"
-        app:layout_constraintEnd_toEndOf="@+id/shareInviteButton"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/shareInviteButton"
-        app:layout_constraintTop_toBottomOf="@+id/shareInviteButton"
-        app:strokeColor="@color/white"
-        app:strokeWidth="3dp"
-        tools:ignore="MissingConstraints" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

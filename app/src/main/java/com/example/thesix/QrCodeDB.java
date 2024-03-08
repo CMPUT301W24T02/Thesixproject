@@ -66,7 +66,7 @@ public class QrCodeDB {
         CollectionReference qrRef;
         qrRef = firestore.collection("OrganizerdevicesDB")
                 .document(deviceID)
-                .collection("inviteQrCodes");
+                .collection("event");
         return qrRef;
 
     }
@@ -74,7 +74,7 @@ public class QrCodeDB {
         CollectionReference qrRef;
         qrRef = firestore.collection("OrganizerdevicesDB")
                 .document(deviceID)
-                .collection("promoQrCodes");
+                .collection("event");
         return qrRef;
 
     }
