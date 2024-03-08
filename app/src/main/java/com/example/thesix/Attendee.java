@@ -13,13 +13,28 @@ public class Attendee {
     Keeps profile picture Data(if uploaded)
     Generates user profile picture
     */
-
     private String name;
-    public Attendee(String name){
+    private Integer checkin;
+
+    public Attendee(String name, Integer checkin){
         // Temporary Constructor
         this.name = name;
-
+        this.checkin = checkin;
     }
 
+    public String getName() {
+        return name;
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getCheckin() {
+        return checkin;
+    }
+
+    public void setCheckin(Integer checkin) {
+        this.checkin = checkin;
+    }
 }

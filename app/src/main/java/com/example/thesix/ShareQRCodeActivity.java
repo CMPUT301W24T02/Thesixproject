@@ -64,7 +64,6 @@ public class ShareQRCodeActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         firestoreHelper = new QrCodeDB();
 
-
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
         citiesRef = firestoreHelper.getOldQrRef(deviceID);
         descriptionArrayAdapter = new ArrayAdapter<String>(

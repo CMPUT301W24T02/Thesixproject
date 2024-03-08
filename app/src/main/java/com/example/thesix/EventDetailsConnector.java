@@ -101,9 +101,12 @@ public class EventDetailsConnector extends AppCompatActivity {
         generateGuestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(EventDetailsConnector.this, AttendeeListActivity.class));
+                Intent myIntent = new Intent(EventDetailsConnector.this, AttendeeListActivity.class);
+                myIntent.putExtra("intVariableName", eventNum);
+                startActivity(myIntent);
             }
         });
+
         sharePromoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,7 +173,6 @@ public class EventDetailsConnector extends AppCompatActivity {
                         eventPosterCallback.onEventPosterCallback(imageBaseString);
 
                     }
-
                 });
     }
 
