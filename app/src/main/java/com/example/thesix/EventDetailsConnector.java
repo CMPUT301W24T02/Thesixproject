@@ -37,11 +37,6 @@ import java.util.ArrayList;
 
 /**
  * EventDetailsConnector class manages the display of event details and provides options for generating guest lists within an Android application.
- * Initializes UI components such as TextView (eventName, eventDescription), ImageView (eventPoster), and Button (backButton, generateGuestButton) in the onCreate method.
- * Retrieves event details from the intent extras passed from the previous activity (eventName and eventDescription) and sets them to the respective TextViews.
- * Handles button clicks to navigate to other activities (EventDetailsAdapter, AttendeeListActivity) using intents.
- * Upon clicking the backButton, it navigates to the EventDetailsAdapter activity.
- * Upon clicking the generateGuestButton, it navigates to the AttendeeListActivity activity.
  */
 
 public class EventDetailsConnector extends AppCompatActivity {
@@ -60,6 +55,12 @@ public class EventDetailsConnector extends AppCompatActivity {
     String imageBaseString;
     String inviteBase64;
     String promoBase64;
+
+    /**
+     nitializes UI components such as TextView (eventName, eventDescription), ImageView (eventPoster), and Button (backButton, generateGuestButton)
+     @param :Bundle savedInstanceState
+     @return
+     **/
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,7 +83,14 @@ public class EventDetailsConnector extends AppCompatActivity {
         eventNum = bundle.getLong("eventNum");
         eventName.setText(eventName1);
         eventDescription.setText(eventDescription1);
+
+
         eventPosterImage(new EventPosterCallback() {
+            /**
+             Sets Image to Bitmap
+             @param : String String
+             @return :void
+             **/
             @Override
             public void onEventPosterCallback(String string) {
                 Bitmap b=StringToBitMap(string);
@@ -90,7 +98,11 @@ public class EventDetailsConnector extends AppCompatActivity {
             }
         });
 
-
+        /**
+         Naviagtes User Back to EventDetails Adapter
+         @param : View v
+         @return : void
+         **/
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,6 +110,12 @@ public class EventDetailsConnector extends AppCompatActivity {
             }
         });
 
+
+        /**
+         Generating guest Button , and signing them in
+         @param : View view
+         @return : void
+         **/
         generateGuestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,6 +126,11 @@ public class EventDetailsConnector extends AppCompatActivity {
             }
         });
 
+        /**
+         Allows user to Share promo code
+         @param : View v
+         @return : void
+         **/
         sharePromoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,6 +148,12 @@ public class EventDetailsConnector extends AppCompatActivity {
 
             }
         });
+
+        /**
+         Allows for User to Share InviteQRCode
+         @param : View v
+         @return
+         **/
         shareInviteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,16 +175,36 @@ public class EventDetailsConnector extends AppCompatActivity {
             }
         });
     }
+    /**
+     Callback Interface to share InviteQRCode
+     @param : String
+     @return
+     **/
     private interface ShareInviteCallback{
         void onShareInviteCallback(String string);
     }
+    /**
+     Callback Interface to share PromoQrcode
+     @param : String
+     @return
+     **/
     private interface SharePromoCallback{
         void onSharePromoCallback(String string);
     }
+    /**
+     Callback Interface to share EventPosterCallBack
+     @param : String
+     @return
+     **/
 
     private interface EventPosterCallback{
         void onEventPosterCallback(String string);
     }
+    /**
+    Getting eventPoster Image
+     @param : EventPosterCallback
+     @return
+     **/
 
     public void eventPosterImage(EventPosterCallback eventPosterCallback) {
         QrRef.whereEqualTo("eventNum",eventNum).get()
@@ -176,6 +225,11 @@ public class EventDetailsConnector extends AppCompatActivity {
                     }
                 });
     }
+    /**
+     Allows user to Share Invite
+     @param : ShareInviteCallback ShareInviteCallback
+     @return void
+     **/
 
     public void shareInvite(ShareInviteCallback shareInviteCallback) {
         QrRef.whereEqualTo("eventNum",eventNum).get()
@@ -197,6 +251,11 @@ public class EventDetailsConnector extends AppCompatActivity {
 
                 });
     }
+    /**
+     Allows user to Share PromoQR
+     @param : SharePromoCallback SharePromoCallback
+     @return void
+     **/
     public void sharePromo(SharePromoCallback sharePromoCallback) {
         firestoreHelper.getOldQrRef2(deviceID).whereEqualTo("eventNum",eventNum).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -217,10 +276,20 @@ public class EventDetailsConnector extends AppCompatActivity {
 
                 });
     }
+    /**
+     Coverts  string to bitmap
+     @param : String base64String
+     @return :Bitmap
+     **/
     private Bitmap Base64Tobitmap(String base64String) {
         byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
+    /**
+     saves Image
+     @param : Bitmap image
+     @return : Uri
+     **/
     private Uri saveImageExternal(Bitmap image) {
         //TODO - Should be processed in another thread
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder(); //https://stackoverflow.com/questions/48117511/exposed-beyond-app-through-clipdata-item-geturi
@@ -237,7 +306,11 @@ public class EventDetailsConnector extends AppCompatActivity {
         }
         return uri;
     }
-
+    /**
+     Coverts  string to bitmap
+     @param : String base64String
+     @return :Bitmap
+     **/
     public Bitmap StringToBitMap(String image){
         try{
             byte [] encodeByte=Base64.decode(image,Base64.DEFAULT);
