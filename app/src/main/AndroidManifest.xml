@@ -36,15 +36,12 @@
             />
         <activity android:name=".AdminEventDetails"
             />
-        <activity android:name=".CreateEventActivity"
-            />
+
         <activity android:name=".EventDetailsAdapter"
             />
         <activity android:name=".EventDetailsConnector"
             />
-        <activity android:name=".OrganizerEditActivity"/>
-        <activity android:name=".OrganizerUseOldQRActivity"
-            android:label="OrganizerUseOldQRActivity"/>
+
         <activity android:name=".OrganizerUseNewQRActivity"
             android:label="OrganizerUseNewQRActivity"/>
         <activity android:name=".AttendeeListActivity"

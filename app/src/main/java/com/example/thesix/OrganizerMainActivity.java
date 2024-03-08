@@ -24,7 +24,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(OrganizerMainActivity.this, OrganizerCreateActivity.class));
+                startActivity(new Intent(OrganizerMainActivity.this, OrganizerUseNewQRActivity.class));
             }
         });
 
