@@ -37,12 +37,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
- * AdminEventDetails class manages the display of event details and provides options for generating guest lists within an Android application.
- * Initializes UI components such as TextView (eventName, eventDescription), ImageView (eventPoster), and Button (backButton, generateGuestButton) in the onCreate method.
- * Retrieves event details from the intent extras passed from the previous activity (eventName and eventDescription) and sets them to the respective TextViews.
- * Handles button clicks to navigate to other activities (EventDetailsAdapter, AttendeeListActivity) using intents.
- * Upon clicking the backButton, it navigates to the EventDetailsAdapter activity.
- * Upon clicking the generateGuestButton, it navigates to the AttendeeListActivity activity.
+ * AdminEventDetails class manages the display of event details..
+ * Initializes UI components such as TextView (eventName, eventDescription), ImageView (eventPoster), and Button (backButton) in the onCreate method.
+ * Retrieves event details from the intent extras passed from the previous activity (eventName, eventPoster and eventDescription) and sets them to the respective TextViews.
+ * Handles button clicks to navigate to other activities (AdminEventsActivity) using intents.
+ * Upon clicking the backButton, it navigates to the AdminActivity activity.
+ * Upon clicking an item (event) in listview, UI goes to AdminEventDetails to display details of that event.
  */
 
 public class AdminEventDetails extends AppCompatActivity {

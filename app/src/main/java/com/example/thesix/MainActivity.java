@@ -24,12 +24,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
- * MainActivity class serves as the entry point of the application and provides options for users to navigate to different functionalities.
- * Initializes UI components such as Button (generateEventButton, generateViewEventButton, generateShareQRCode) in the onCreate method.
- * Sets click listeners for each button to handle navigation to corresponding activities.
- * Clicking generateEventButton navigates to the OrganizerCreateActivity, allowing users to create new events.
- * Clicking generateViewEventButton navigates to the EventDetailsAdapter activity, enabling users to view existing events.
- * Clicking generateShareQRCode navigates to the ShareQRCodeActivity, where users can share QR codes associated with events.
+ * MainActivity checks if the user trying to enter the app is organizer or and admin and redirects accordingly.
+ * If user is admin redirect to AdminActivity.
+ * if user is organizer redirect to OrganizerMainActivity.
  **/
 public class MainActivity extends AppCompatActivity {
     private String adminId = "c4a3f3f0780278c1";

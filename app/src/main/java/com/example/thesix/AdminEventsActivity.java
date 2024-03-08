@@ -42,12 +42,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *AdminEventsActivity class manages event details display and navigation within an Android application.
+ * AdminEventsActivity class manages all event names display and navigation within an Android application.
  * Initializes UI components like lists, adapters, and buttons in the onCreate method.
  * Requests necessary permissions and sets up the layout for event listing.
+ * Lists all events in the listview created in the app.
  * Retrieves event details asynchronously from a Firebase Firestore database using the readData method.
- * Handles item clicks to navigate to another activity (EventDetailsConnector) with selected event details.
- * Provides a method (saveImageExternal) to save Bitmap images as PNG files in the app's external storage directory.
+ * Handles item clicks to navigate to another activity (AdminEventDetails) with selected event details.
  */
 
 public class AdminEventsActivity extends AppCompatActivity {

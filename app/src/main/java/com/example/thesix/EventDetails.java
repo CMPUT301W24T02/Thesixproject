@@ -5,18 +5,23 @@ package com.example.thesix;
 import java.util.List;
 
 /**
- *EventDetails class encapsulates details of an event including QR code image data, event number, description, and name.
+ * EventDetails class encapsulates details of an event including QR code image data, event number, description, and name.
  * Provides a constructor to initialize the event details.
  * Accessor (get) and mutator (set) methods are provided for each attribute.
- * getQrImageData() retrieves the QR code image data.
- * setQrImageData(String qrImageData) sets the QR code image data.
+ * getEventImageData() retrieves the event poster.
+ * setEventImageData(String eventImageData) sets event poster.
+ * getInviteQrImageData() retrieves the invite QR code image data.
+ * setInviteQrImageData(String qrImageData) sets the invite QR code image data.
+ * getPromoQrImageData() retrieves the promo QR code image data.
+ * setPromoQrImageData(String qrImageData) sets the promo QR code image data.
  * getEventNum() retrieves the event number.
  * setEventNum(Long eventNum) sets the event number.
  * getDescription() retrieves the event description.
  * setDescription(String description) sets the event description.
- * getName() retrieves the event name.
- * setName(String name) sets the event name
- *
+ * getCheckIn() retrieves checkIn number.
+ * setCheckIn(List<Long> checkIn) sets the checkIn number
+ * getAttendeeList() retrieves the attendee list..
+ * setAttendeeList(List<String> attendeeList) sets the attendee list.
  */
 
 
@@ -31,8 +36,8 @@ public class EventDetails {
     private List<String> attendeeList;
     private List<Long> checkIn;
 
-    public EventDetails(String eventImageData, String inviteQrImageData,String promoQrImageData, long eventNum, String description,
-                        String name,List<String> attendeeList,List<Long> checkIn) {
+    public EventDetails(String eventImageData, String inviteQrImageData, String promoQrImageData, long eventNum, String description,
+                        String name, List<String> attendeeList, List<Long> checkIn) {
         this.eventImageData = eventImageData;
         this.inviteQrImageData = inviteQrImageData;
         this.promoQrImageData = promoQrImageData;
@@ -42,6 +47,7 @@ public class EventDetails {
         this.attendeeList = attendeeList;
         this.checkIn = checkIn;
     }
+
     public String getEventImageData() {
         return eventImageData;
     }
