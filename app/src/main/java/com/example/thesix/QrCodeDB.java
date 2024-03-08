@@ -18,17 +18,25 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+/**
+ * Contains all functions and methods required to interact with QRCode Firebase
+ *
+ */
+
 public class QrCodeDB {
-    /*
-        connect to Qr Code DB
-    */
 
     private FirebaseFirestore firestore;
 
+    /**
+    Creating instance of firebase
+     **/
     public QrCodeDB() {
         firestore = FirebaseFirestore.getInstance();
     }
 
+    /**
+    Saving the Invite QR code to database
+     **/
     public void saveInviteQRCode(String deviceID, EventDetails eventdetail) {
         firestore.collection("inviteQrCodes")
                 .add(eventdetail)
