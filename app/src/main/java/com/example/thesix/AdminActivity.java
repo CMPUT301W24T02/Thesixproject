@@ -6,7 +6,14 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+/**
+ * AdminActivity class allows organizers to view vents, profiles and view images.
+ * Initializes UI components such as Button (viewEvents,viewProfile, viewImages) in the onCreate method.
+ * Sets click listeners for each button to handle navigation to corresponding activities.
+ * Clicking viewEvents navigates to AdminEventsActivity to display all events created on app.
+ * Clicking viewImages is not implemented yet.
+ * Clicking viewProfiles is not implemented yet.
+ */
 public class AdminActivity extends AppCompatActivity {
     private Button viewEvents;
     private Button viewProfiles;
