@@ -38,7 +38,7 @@ public class QrCodeDB {
                         Log.e("FirestoreHelper", "Error adding document", e));
         firestore.collection("OrganizerdevicesDB")
                 .document(deviceID)
-                .collection("inviteQrCodes")
+                .collection("event")
                 .add(eventdetail)
                 .addOnSuccessListener(documentReference ->
                         Log.d("FirestoreHelper", "DocumentSnapshot added with ID: " + documentReference.getId()))
@@ -61,22 +61,7 @@ public class QrCodeDB {
                 });
 
     }
-    public void savePromoQRCode(String deviceID, EventDetails eventdetail) {
-        firestore.collection("promoQrCodes")
-                .add(eventdetail)
-                .addOnSuccessListener(documentReference ->
-                        Log.d("FirestoreHelper", "DocumentSnapshot added with ID: " + documentReference.getId()))
-                .addOnFailureListener(e ->
-                        Log.e("FirestoreHelper", "Error adding document", e));
-        firestore.collection("OrganizerdevicesDB")
-                .document(deviceID)
-                .collection("promoQrCodes")
-                .add(eventdetail)
-                .addOnSuccessListener(documentReference ->
-                        Log.d("FirestoreHelper", "DocumentSnapshot added with ID: " + documentReference.getId()))
-                .addOnFailureListener(e ->
-                        Log.e("FirestoreHelper", "Error adding document", e));
-    }
+
     public CollectionReference getOldQrRef(String deviceID) {
         CollectionReference qrRef;
         qrRef = firestore.collection("OrganizerdevicesDB")

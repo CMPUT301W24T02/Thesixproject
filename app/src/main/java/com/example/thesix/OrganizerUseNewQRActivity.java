@@ -35,6 +35,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrganizerUseNewQRActivity extends AppCompatActivity {
@@ -125,9 +126,11 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
 
                                 // Save invite QR Code in Firestore
-                                EventDetails eventdetail = new EventDetails(eventImageBase64, inviteQrImageBase64, promoQrImageBase64, num, description, eventname);
+                                List<String> attendeeList= new ArrayList<String>();
+                                List<Long> checkIn = new ArrayList<Long>();
+                                EventDetails eventdetail = new EventDetails(eventImageBase64, inviteQrImageBase64, promoQrImageBase64, num, description, eventname, attendeeList,checkIn);
                                 firestoreHelper.saveInviteQRCode(deviceID, eventdetail);
-                                firestoreHelper.savePromoQRCode(deviceID, eventdetail);
+
                             } catch (WriterException e) {
                                 Log.e("MainActivity", "Error generating QR code", e);
                             }
