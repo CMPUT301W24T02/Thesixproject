@@ -8,19 +8,21 @@ import android.widget.Button;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+
 /**
  * OrganizerCreateActivity class allows organizers to create new events or use existing QR codes.
- * Initializes UI components such as Button ( createNewQrCodeButton) and QrCodeDB instance (firestoreHelper) in the onCreate method.
- * Sets click listeners for each button to handle navigation to corresponding activities.
- * Clicking createNewQrCodeButton navigates to OrganizerUseNewQRActivity to create new QR codes.
- * Clicking backButton navigates back to MainActivity.
- *
  */
 
 public class OrganizerCreateActivity extends AppCompatActivity {
     private Button createNewQrCodeButton;
     private QrCodeDB firestoreHelper;
     private Button backButton;
+
+    /**
+     Initializes UI components such as Button ( createNewQrCodeButton) and QrCodeDB instance (firestoreHelper)
+     @param : Bundle savedInstance
+     @return void
+     **/
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,12 +32,21 @@ public class OrganizerCreateActivity extends AppCompatActivity {
         firestoreHelper = new QrCodeDB();
         backButton  =findViewById(R.id.backButton);
 
+        /**
+         Clicking createNewQrCodeButton navigates to OrganizerUseNewQRActivity to create new QR codes
+         @return void
+         **/
         createNewQrCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(OrganizerCreateActivity.this, OrganizerUseNewQRActivity.class));
             }
         });
+        /**
+
+         @param : Clicking backButton navigates back to MainActivity.
+         @return void
+         **/
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

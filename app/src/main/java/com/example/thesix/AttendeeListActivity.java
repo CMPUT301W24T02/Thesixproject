@@ -33,12 +33,6 @@ import java.util.Set;
 
 /**
  * AttendeeListActivity class manages the display of a list of attendees within an Android application.
- * Initializes UI components such as buttons and a list view in the onCreate method.
- * Utilizes buttons (backButton, mapButton, notificationButton) to navigate to different activities.
- * Temporarily creates an Attendee object (testAttendee) for testing purposes.
- * Creates an array of Attendee objects (attendeeArray) and initializes an ArrayList (dataList) with these objects.
- * Initializes an ArrayAdapter (attendeeAdapter) to act as a communication bridge between the front-end UI and back-end data.
- * Sets the adapter to display the list of attendees (dataList) in the attendeeList ListView.
  * Handles button clicks to navigate to other activities (EventDetailsConnector, MapActivity, NotificationActivity)
  **/
 
@@ -63,6 +57,12 @@ public class AttendeeListActivity extends AppCompatActivity {
     String imageBaseString;
     private OrganizerMainActivity oma = new OrganizerMainActivity();
 
+
+    /**
+     * Initializes UI components such as buttons and a list view in the onCreate method.
+     * @param : @Nullable Bundle savedInstanceState
+     * @return : void
+     */
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,7 +110,11 @@ public class AttendeeListActivity extends AppCompatActivity {
             }
         });
 
-
+        /**
+         * Utilizes buttons (backButton, mapButton, notificationButton) to navigate to different activities.
+         * @param :int position, @Nullable View convertView, @NonNull ViewGroup parent
+         * @return : View
+         */
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,13 +122,22 @@ public class AttendeeListActivity extends AppCompatActivity {
 
             }
         });
-
+        /**
+         * Utilizes buttons (backButton, mapButton, notificationButton) to navigate to different activities.
+         * @param : View
+         * @return :
+         */
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(AttendeeListActivity.this, MapActivity.class));
             }
         });
+        /**
+         * Utilizes buttons (backButton, mapButton, notificationButton) to navigate to different activities.
+         * @param :View
+         * @return :
+         */
 
         notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,10 +146,20 @@ public class AttendeeListActivity extends AppCompatActivity {
             }
         });
     }
+    /**
+     Callback Interface to get Attendees
+     @param : ist<Attendee> list1
+     @return
+     **/
 
     private interface AttendeeCallback {
         void onAttendeeCallback(List<Attendee> list1);
     }
+    /**
+     * Sets Attendee List
+     * @param :AttendeeCallback attendeeCallback
+     * @return : void
+     */
 
     public void setAttendeeList(AttendeeCallback attendeeCallback) {
         Log.d("hihi", "here3: " + eventNum);

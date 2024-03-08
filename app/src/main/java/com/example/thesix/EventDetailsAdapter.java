@@ -42,11 +42,6 @@ import java.util.List;
 
 /**
  *EventDetailsAdapter class manages event details display and navigation within an Android application.
- * Initializes UI components like lists, adapters, and buttons in the onCreate method.
- * Requests necessary permissions and sets up the layout for event listing.
- * Retrieves event details asynchronously from a Firebase Firestore database using the readData method.
- * Handles item clicks to navigate to another activity (EventDetailsConnector) with selected event details.
- * Provides a method (saveImageExternal) to save Bitmap images as PNG files in the app's external storage directory.
  */
 
 public class EventDetailsAdapter extends AppCompatActivity {
@@ -60,6 +55,9 @@ public class EventDetailsAdapter extends AppCompatActivity {
     private Button backButton;
     CollectionReference eventsRef;
 
+    /**
+     Initializes UI components like lists, adapters, and buttons
+     **/
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +78,12 @@ public class EventDetailsAdapter extends AppCompatActivity {
                 R.layout.event_list_textview, R.id.itemTextView, eventnameDataList);
         ListView eventdescriptionList = findViewById(R.id.event_list);
         eventdescriptionList.setAdapter(eventnameArrayAdapter);
+
+        /**
+         Callback Interface to share Event details
+         @param : String
+         @return
+         **/
         readData(new MyCallback() {
             @Override
             public void onCallback(List<String> list1, List<Long> list2, List<String> list3) {
@@ -91,6 +95,11 @@ public class EventDetailsAdapter extends AppCompatActivity {
                 eventnameArrayAdapter.notifyDataSetChanged();
             }
         });
+        /**
+         Setting Event Details
+         @param : AdapterView parent, View view, int position, long id
+         @return :void
+         **/
         eventdescriptionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -116,6 +125,11 @@ public class EventDetailsAdapter extends AppCompatActivity {
                 startActivity(i);
             }
         });
+        /**
+         Clicking backButton navigates back to MainActivity.
+         @param: View v
+         @return void
+         **/
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,10 +138,19 @@ public class EventDetailsAdapter extends AppCompatActivity {
         });
 
     }
+    /**
+     Callback Interface to share Event details
+     @param : String
+     @return
+     **/
 
     public interface MyCallback {
         void onCallback(List<String> list1, List<Long> list2, List<String> list3);
     }
+    /**
+     Reading Data from QR code
+     @param : MycCallBcak callBack
+     **/
 
     public void readData(MyCallback myCallback) {
         eventsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -150,7 +173,11 @@ public class EventDetailsAdapter extends AppCompatActivity {
             }
         });
     }
-
+    /**
+     Coverts  string to bitmap
+     @param : String base64String
+     @return :Bitmap
+     **/
     private Bitmap Base64Tobitmap(String base64String) {
         byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
@@ -162,7 +189,6 @@ public class EventDetailsAdapter extends AppCompatActivity {
 
     /**
      * Saves the image as PNG to the app's private external storage folder.
-     *
      * @param image Bitmap to save.
      * @return Uri of the saved file or null
      */

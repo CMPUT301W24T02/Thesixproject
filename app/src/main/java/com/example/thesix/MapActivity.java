@@ -10,10 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * MapActivity class facilitates the display of a map screen within the application.
- * Initializes a UI component, a Button named back2AttendeesButton, in the onCreate method.
- * Sets a click listener for the back2AttendeesButton to handle navigation back to the AttendeeListActivity.
- * Upon clicking the button, it starts an intent to navigate to the AttendeeListActivity.
- *
  */
 
 public class MapActivity extends AppCompatActivity {
@@ -27,6 +23,11 @@ public class MapActivity extends AppCompatActivity {
 
         back2AttendeesButton = findViewById(R.id.map2AttendeesButton);
 
+        /**
+         Initializes a UI component, a Button named back2AttendeesButton
+         @param :
+         @return
+         **/
         back2AttendeesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

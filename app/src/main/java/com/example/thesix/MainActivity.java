@@ -24,13 +24,17 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
- * MainActivity checks if the user trying to enter the app is organizer or and admin and redirects accordingly.
- * If user is admin redirect to AdminActivity.
- * if user is organizer redirect to OrganizerMainActivity.
+ * MainActivity checks if the user trying to enter the app is organizer or and admin and redirects accordingly..
  **/
 public class MainActivity extends AppCompatActivity {
     private String adminId = "c4a3f3f0780278c1";
 
+    /**
+     * If user is admin redirect to AdminActivity.
+     * if user is organizer redirect to OrganizerMainActivity
+     @param : Bundle savedInstanceState
+     @return
+     **/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
