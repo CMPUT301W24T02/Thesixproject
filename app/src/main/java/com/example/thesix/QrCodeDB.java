@@ -36,6 +36,7 @@ public class QrCodeDB {
 
     /**
     Saving the Invite QR code to database
+     @param : String deviceid , EventDetails eventdetails
      **/
     public void saveInviteQRCode(String deviceID, EventDetails eventdetail) {
         firestore.collection("inviteQrCodes")
@@ -70,6 +71,12 @@ public class QrCodeDB {
 
     }
 
+    /**
+     Retrieving oldQRef from firebase
+     @param : String deviceId
+     @return Collectionreference
+     **/
+
     public CollectionReference getOldQrRef(String deviceID) {
         CollectionReference qrRef;
         qrRef = firestore.collection("OrganizerdevicesDB")
@@ -78,6 +85,11 @@ public class QrCodeDB {
         return qrRef;
 
     }
+    /**
+     Retrieving oldQRef from firebase
+     @param : String deviceId
+     @return Collectionreference
+     **/
     public CollectionReference getOldQrRef2(String deviceID) {
         CollectionReference qrRef;
         qrRef = firestore.collection("OrganizerdevicesDB")
@@ -86,6 +98,11 @@ public class QrCodeDB {
         return qrRef;
 
     }
+    /**
+     Retrieving DocumentReference from firebase
+     @param : String deviceId
+     @return Documentreference
+     **/
     public DocumentReference getDocRef(String deviceID) {
         DocumentReference documentReference;
         documentReference = firestore.collection("OrganizerdevicesDB")
