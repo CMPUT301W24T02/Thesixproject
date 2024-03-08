@@ -50,7 +50,15 @@
             android:label="MapActivity"/>
         <activity android:name=".NotificationActivity"
             android:label="NotificationActivity"/>
-
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.thesix.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/paths" />
+        </provider>
     </application>
 
 </manifest>
