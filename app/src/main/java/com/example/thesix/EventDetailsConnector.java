@@ -280,27 +280,7 @@ public class EventDetailsConnector extends AppCompatActivity {
         byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
-    /**
-     saves Image
-     @param : Bitmap image
-     @return : Uri
-     **/
-    private Uri saveImageExternal(Bitmap image) {
-        //TODO - Should be processed in another thread
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder(); //https://stackoverflow.com/questions/48117511/exposed-beyond-app-through-clipdata-item-geturi
-        StrictMode.setVmPolicy(builder.build());
-        Uri uri = null;
-        try {
-            File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "to-share.png");
-            FileOutputStream stream = new FileOutputStream(file);
-            image.compress(Bitmap.CompressFormat.PNG, 90, stream);
-            stream.close();
-            uri = Uri.fromFile(file);
-        } catch (IOException e) {
-            Log.d("save_image", "IOException while trying to write file for sharing: " + e.getMessage());
-        }
-        return uri;
-    }
+
     private void shareImage(Bitmap bitmap) {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder(); //https://stackoverflow.com/questions/48117511/exposed-beyond-app-through-clipdata-item-geturi
         StrictMode.setVmPolicy(builder.build());

@@ -18,10 +18,11 @@ public class EventDetails {
     private String inviteQrImageData;
     private String promoQrImageData;
     private Long eventNum;
-    private String eventdescription;
-    private String eventname;
+    private String eventDescription;
+    private String eventName;
     private List<String> attendeeList;
-    private List<Long> checkIn;
+    private List<Long> checkInCountList;
+    private Long totalCheckIn;
 
     /**
      Constructor for event Details
@@ -29,16 +30,17 @@ public class EventDetails {
      *                         String name, List<String> attendeeList, List<Long> checkIn
      * @return : Uri
      **/
-    public EventDetails(String eventImageData, String inviteQrImageData, String promoQrImageData, long eventNum, String description,
-                        String name, List<String> attendeeList, List<Long> checkIn) {
+    public EventDetails(String eventImageData, String inviteQrImageData, String promoQrImageData, long eventNum, String eventDescription,
+                        String eventName, List<String> attendeeList, List<Long> checkIn, Long totalCheckIn) {
         this.eventImageData = eventImageData;
         this.inviteQrImageData = inviteQrImageData;
         this.promoQrImageData = promoQrImageData;
         this.eventNum = eventNum;
-        this.eventdescription = description;
-        this.eventname = name;
+        this.eventDescription = eventDescription;
+        this.eventName = eventName;
         this.attendeeList = attendeeList;
-        this.checkIn = checkIn;
+        this.checkInCountList = checkIn;
+        this.totalCheckIn = totalCheckIn;
     }
 
     /**
@@ -100,7 +102,7 @@ public class EventDetails {
      **/
 
     public String getDescription() {
-        return eventdescription;
+        return eventDescription;
     }
     /**
      * setDescription(String description) sets the event description.
@@ -109,7 +111,7 @@ public class EventDetails {
      **/
 
     public void setDescription(String description) {
-        this.eventdescription = description;
+        this.eventDescription = description;
     }
     /**
      getEventImageData() retrieves the event poster.
@@ -118,7 +120,7 @@ public class EventDetails {
      **/
 
     public String getName() {
-        return eventname;
+        return eventName;
     }
     /**
      getEventImageData() retrieves the event poster.
@@ -127,7 +129,7 @@ public class EventDetails {
      **/
 
     public void setName(String name) {
-        this.eventname = name;
+        this.eventName = name;
     }
     /**
      * getPromoQrImageData() retrieves the promo QR code image data.
@@ -153,23 +155,7 @@ public class EventDetails {
      * @return : List<Long>
      **/
 
-    public List<Long> getCheckIn() {
-        return checkIn;
-    }
-    /**
-     * setCheckIn(List<Long> checkIn) sets the checkIn number
-     * @param : List<Long> checkin
-     * @return : String
-     **/
 
-    public void setCheckIn(List<Long> checkIn) {
-        this.checkIn = checkIn;
-    }
-    /**
-     getAttendeeList() retrieves the attendee list.
-     * @param :
-     * @return : List<String>
-     **/
 
     public List<String> getAttendeeList() {
         return attendeeList;
@@ -181,5 +167,21 @@ public class EventDetails {
      **/
     public void setAttendeeList(List<String> attendeeList) {
         this.attendeeList = attendeeList;
+    }
+
+    public Long getTotalCheckIn() {
+        return totalCheckIn;
+    }
+
+    public void setTotalCheckIn(Long totalCheckIn) {
+        this.totalCheckIn = totalCheckIn;
+    }
+
+    public List<Long> getCheckInCountList() {
+        return checkInCountList;
+    }
+
+    public void setCheckInCountList(List<Long> checkInCountList) {
+        this.checkInCountList = checkInCountList;
     }
 }
