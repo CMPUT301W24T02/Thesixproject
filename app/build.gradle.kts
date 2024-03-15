@@ -33,6 +33,9 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    tasks.withType<Test>{
+        useJUnitPlatform()
+    }
 }
 
 dependencies {
