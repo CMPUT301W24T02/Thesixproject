@@ -50,15 +50,15 @@ import java.util.List;
  */
 
 public class AdminEventsActivity extends AppCompatActivity {
-    ArrayList<Long> eventNumList;
+    private ArrayList<Long> eventNumList;
 
-    ArrayList<String> eventnameDataList;
-    ArrayList<String> eventdescriptionDataList;
-    ArrayList<String> eventImageDataList;
+    private ArrayList<String> eventnameDataList;
+    private ArrayList<String> eventdescriptionDataList;
+    private ArrayList<String> eventImageDataList;
     private ArrayAdapter<String> eventnameArrayAdapter;
     private FirebaseFirestore firestore;
     private Button backButton;
-    CollectionReference eventsRef;
+    private CollectionReference eventsRef;
 
     /**
      * Initializes UI components like lists, adapters, and buttons

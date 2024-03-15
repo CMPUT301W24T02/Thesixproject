@@ -55,7 +55,8 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
     private Bitmap eventImageBitmap;
 
-    public Long count;
+    private Long count;
+    private String deviceID;
 
     @Override
 
@@ -74,7 +75,7 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
         firestoreHelper = new QrCodeDB();
         backButton = findViewById(R.id.backButton);
         eventPoster = findViewById(R.id.eventPoster);
-        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         /**
          Choose picture for event
@@ -111,10 +112,10 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
                         public void onCallback(long num) {
                             Log.d("callback", String.valueOf(num));
                             try {
-                                String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
+
                                 String description = descriptionEditText.getText().toString();
-                                String eventname = eventnameEditText.getText().toString();
-                                String inviteQrString = deviceID + description + num;
+                                String eventName = eventnameEditText.getText().toString();
+                                String inviteQrString = num+ "device id"+deviceID;
                                 String promoQrString = "promo" + inviteQrString;
                                 QRCodeWriter writer = new QRCodeWriter();
                                 BitMatrix inviteBitMatrix = writer.encode(inviteQrString, BarcodeFormat.QR_CODE, 512, 512);
@@ -144,7 +145,7 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
                                 // Save invite QR Code in Firestore
                                 List<String> attendeeList= new ArrayList<String>();
                                 List<Long> checkIn = new ArrayList<Long>();
-                                EventDetails eventdetail = new EventDetails(eventImageBase64, inviteQrImageBase64, promoQrImageBase64, num, description, eventname, attendeeList,checkIn, 0L);
+                                EventDetails eventdetail = new EventDetails(eventImageBase64, inviteQrImageBase64, promoQrImageBase64, num, description, eventName, attendeeList,checkIn, 0L);
                                 firestoreHelper.saveInviteQRCode(deviceID, eventdetail);
 
                             } catch (WriterException e) {
