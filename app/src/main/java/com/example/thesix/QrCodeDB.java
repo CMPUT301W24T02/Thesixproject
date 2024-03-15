@@ -103,12 +103,14 @@ public class QrCodeDB {
      @param : String deviceId
      @return Documentreference
      **/
-    public DocumentReference getDocRef(String deviceID) {
+    public DocumentReference getDeviceDocRef(String deviceID) {
         DocumentReference documentReference;
         documentReference = firestore.collection("OrganizerdevicesDB")
                 .document(deviceID);
         return documentReference;
     }
+
+
 
 
 }

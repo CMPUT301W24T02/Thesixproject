@@ -18,8 +18,8 @@ public class EventDetails {
     private String inviteQrImageData;
     private String promoQrImageData;
     private Long eventNum;
-    private String eventDescription;
-    private String eventName;
+    private String description;
+    private String name;
     private List<String> attendeeList;
     private List<Long> checkInCountList;
     private Long totalCheckIn;
@@ -36,8 +36,8 @@ public class EventDetails {
         this.inviteQrImageData = inviteQrImageData;
         this.promoQrImageData = promoQrImageData;
         this.eventNum = eventNum;
-        this.eventDescription = eventDescription;
-        this.eventName = eventName;
+        this.description = eventDescription;
+        this.name = eventName;
         this.attendeeList = attendeeList;
         this.checkInCountList = checkIn;
         this.totalCheckIn = totalCheckIn;
@@ -102,7 +102,7 @@ public class EventDetails {
      **/
 
     public String getDescription() {
-        return eventDescription;
+        return description;
     }
     /**
      * setDescription(String description) sets the event description.
@@ -111,7 +111,7 @@ public class EventDetails {
      **/
 
     public void setDescription(String description) {
-        this.eventDescription = description;
+        this.description = description;
     }
     /**
      getEventImageData() retrieves the event poster.
@@ -120,7 +120,7 @@ public class EventDetails {
      **/
 
     public String getName() {
-        return eventName;
+        return name;
     }
     /**
      getEventImageData() retrieves the event poster.
@@ -129,7 +129,7 @@ public class EventDetails {
      **/
 
     public void setName(String name) {
-        this.eventName = name;
+        this.name = name;
     }
     /**
      * getPromoQrImageData() retrieves the promo QR code image data.

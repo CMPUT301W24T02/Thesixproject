@@ -55,6 +55,7 @@
         <activity android:name=".NotificationActivity"
             android:label="NotificationActivity"/>
         <activity android:name=".AttendeeMainActivity"/>
+        <activity android:name=".AttendeePromoActivity"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.thesix.provider"

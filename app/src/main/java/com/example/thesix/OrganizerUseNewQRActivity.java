@@ -185,7 +185,7 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
      **/
     public void readData(MyCallback myCallback) {
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        firestoreHelper.getDocRef(deviceID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        firestoreHelper.getDeviceDocRef(deviceID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
