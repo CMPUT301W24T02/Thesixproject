@@ -1,5 +1,3 @@
-
-
 package com.example.thesix;
 
 import android.net.Uri;
