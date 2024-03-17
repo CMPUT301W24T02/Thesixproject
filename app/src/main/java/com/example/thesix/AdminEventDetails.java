@@ -37,12 +37,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
- * AdminEventDetails class manages the display of event details..
- * Initializes UI components such as TextView (eventName, eventDescription), ImageView (eventPoster), and Button (backButton) in the onCreate method.
- * Retrieves event details from the intent extras passed from the previous activity (eventName, eventPoster and eventDescription) and sets them to the respective TextViews.
- * Handles button clicks to navigate to other activities (AdminEventsActivity) using intents.
- * Upon clicking the backButton, it navigates to the AdminActivity activity.
- * Upon clicking an item (event) in listview, UI goes to AdminEventDetails to display details of that event.
+ * AdminEventDetails class manages the display of event details.
  */
 
 public class AdminEventDetails extends AppCompatActivity {
@@ -56,6 +51,12 @@ public class AdminEventDetails extends AppCompatActivity {
     private FirebaseFirestore firestore;
     String deviceID;
     String imageBaseString;
+
+    /**
+     * Initializes UI components such as TextView (eventName, eventDescription), ImageView (eventPoster), and Button (backButton)
+     * @param : Bundle Saved Instances
+     * @return : void
+     */
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,6 +77,12 @@ public class AdminEventDetails extends AppCompatActivity {
         eventNum = bundle.getLong("eventNum");
         eventName.setText(eventName1);
         eventDescription.setText(eventDescription1);
+
+        /**
+         * Does Event Poster data Callback
+         * @param : String String
+         * @return : void
+         */
         eventPosterImage(new EventPosterCallback() {
             @Override
             public void onEventPosterCallback(String string) {
@@ -85,7 +92,11 @@ public class AdminEventDetails extends AppCompatActivity {
             }
         });
 
-
+        /**
+         * sets back button
+         * @param : View v
+         * @return : void
+         */
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,10 +104,19 @@ public class AdminEventDetails extends AppCompatActivity {
             }
         });
     }
-
+    /**
+     * Does EventPoster Callback
+     * @param : String string
+     * @return : void
+     */
     private interface EventPosterCallback {
         void onEventPosterCallback(String string);
     }
+    /**
+     * Setting Event Poster Image
+     * @param : EventPosterCallback eventPosterCallback
+     * @return : void
+     */
 
     public void eventPosterImage(EventPosterCallback eventPosterCallback) {
         QrRef.whereEqualTo("eventNum", eventNum).get()
@@ -119,6 +139,12 @@ public class AdminEventDetails extends AppCompatActivity {
 
                 });
     }
+
+    /**
+     * Changing Strig Data to Bitmap
+     * @param : String image
+     * @return : void
+     */
 
     public Bitmap StringToBitMap(String image) {
         try {

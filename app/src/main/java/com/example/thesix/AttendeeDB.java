@@ -6,11 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * AttendeeDB class facilitates interaction with a Firestore database to manage attendee information.
- * Initializes a FirebaseFirestore instance (firestore) in the constructor using FirebaseFirestore.getInstance().
- * Provides a method saveAttendeeInfo to save attendee information to the Firestore database.
- * Within saveAttendeeInfo, it adds the Attendee object to the "AttendeeDB" collection in Firestore.
- * Logs successful addition of a document with its ID using addOnSuccessListener.
- * Logs any failure in adding the document using addOnFailureListener.
+ * Initializes a FirebaseFirestore instance (firestore)
  **/
 
 public class AttendeeDB {
@@ -20,6 +16,12 @@ public class AttendeeDB {
     public AttendeeDB() {
         firestore = FirebaseFirestore.getInstance();
     }
+
+    /**
+     * Saves attendee information
+     * @param : Attendee attendee
+     * @return : void
+     */
 
     public void saveAttendeeInfo(Attendee attendee) {
         firestore.collection("AttendeeDB")

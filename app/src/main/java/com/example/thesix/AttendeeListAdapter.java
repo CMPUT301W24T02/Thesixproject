@@ -12,19 +12,29 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+
+/**
+ *  Formats Attendee Object in the List to be viewed
+ */
 public class AttendeeListAdapter extends ArrayAdapter<Attendee> {
-/*
-  Formats Attendee Object in the List to be viewed
-*/
     private ArrayList<Attendee> attendees;
     private Context context;
 
+    /**
+     * AttendeeListAdapter to set attendees and context
+     * @param :Context context, ArrayList<Attendee> attendees
+     */
     public AttendeeListAdapter(Context context, ArrayList<Attendee> attendees){
         super(context,0, attendees);
         this.attendees = attendees;
         this.context = context;
     }
 
+    /**
+     * Getting ViewAdapter
+     * @param :int position, @Nullable View convertView, @NonNull ViewGroup parent
+     * @return : View
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

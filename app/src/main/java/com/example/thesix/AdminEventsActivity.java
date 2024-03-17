@@ -43,7 +43,6 @@ import java.util.List;
 
 /**
  * AdminEventsActivity class manages all event names display and navigation within an Android application.
- * Initializes UI components like lists, adapters, and buttons in the onCreate method.
  * Requests necessary permissions and sets up the layout for event listing.
  * Lists all events in the listview created in the app.
  * Retrieves event details asynchronously from a Firebase Firestore database using the readData method.
@@ -51,15 +50,21 @@ import java.util.List;
  */
 
 public class AdminEventsActivity extends AppCompatActivity {
-    ArrayList<Long> eventNumList;
+    private ArrayList<Long> eventNumList;
 
-    ArrayList<String> eventnameDataList;
-    ArrayList<String> eventdescriptionDataList;
-    ArrayList<String> eventImageDataList;
+    private ArrayList<String> eventnameDataList;
+    private ArrayList<String> eventdescriptionDataList;
+    private ArrayList<String> eventImageDataList;
     private ArrayAdapter<String> eventnameArrayAdapter;
     private FirebaseFirestore firestore;
     private Button backButton;
-    CollectionReference eventsRef;
+    private CollectionReference eventsRef;
+
+    /**
+     * Initializes UI components like lists, adapters, and buttons
+     * @param :  Bundle savedInstanceState
+     * @return : void
+     */
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,6 +83,12 @@ public class AdminEventsActivity extends AppCompatActivity {
                 R.layout.event_list_textview, R.id.itemTextView, eventnameDataList);
         ListView eventdescriptionList = findViewById(R.id.event_list);
         eventdescriptionList.setAdapter(eventnameArrayAdapter);
+
+        /**
+         * Does Read data Callback
+         * @param : List<String> list1, List<Long> list2, List<String> list3
+         * @return : void
+         */
         readData(new MyCallback() {
             @Override
             public void onCallback(List<String> list1, List<Long> list2, List<String> list3) {
@@ -89,6 +100,11 @@ public class AdminEventsActivity extends AppCompatActivity {
                 eventnameArrayAdapter.notifyDataSetChanged();
             }
         });
+        /**
+         * Sets Event Description
+         * @param : AdapterView<?> parent, View view, int position, long id
+         * @return : void
+         */
         eventdescriptionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -113,6 +129,11 @@ public class AdminEventsActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+        /**
+         * Sets back button to navigate to Admin Activity
+         * @param : View v
+         * @return :
+         */
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,10 +142,20 @@ public class AdminEventsActivity extends AppCompatActivity {
         });
 
     }
+    /**
+     * Interface Callback
+     * @param :List<String> list1, List<Long> list2, List<String> list3
+     * @return :
+     */
 
     public interface MyCallback {
         void onCallback(List<String> list1, List<Long> list2, List<String> list3);
     }
+    /**
+     * Reads data
+     * @param :MyCallback myCallback
+     * @return :
+     */
 
     public void readData(MyCallback myCallback) {
         eventsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {

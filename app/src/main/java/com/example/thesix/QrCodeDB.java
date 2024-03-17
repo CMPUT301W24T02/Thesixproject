@@ -18,17 +18,26 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+/**
+ * Contains all functions and methods required to interact with QRCode Firebase
+ *
+ */
+
 public class QrCodeDB {
-    /*
-        connect to Qr Code DB
-    */
 
     private FirebaseFirestore firestore;
 
+    /**
+    Creating instance of firebase
+     **/
     public QrCodeDB() {
         firestore = FirebaseFirestore.getInstance();
     }
 
+    /**
+    Saving the Invite QR code to database
+     @param : String deviceid , EventDetails eventdetails
+     **/
     public void saveInviteQRCode(String deviceID, EventDetails eventdetail) {
         firestore.collection("inviteQrCodes")
                 .add(eventdetail)
@@ -62,6 +71,12 @@ public class QrCodeDB {
 
     }
 
+    /**
+     Retrieving oldQRef from firebase
+     @param : String deviceId
+     @return Collectionreference
+     **/
+
     public CollectionReference getOldQrRef(String deviceID) {
         CollectionReference qrRef;
         qrRef = firestore.collection("OrganizerdevicesDB")
@@ -70,6 +85,11 @@ public class QrCodeDB {
         return qrRef;
 
     }
+    /**
+     Retrieving oldQRef from firebase
+     @param : String deviceId
+     @return Collectionreference
+     **/
     public CollectionReference getOldQrRef2(String deviceID) {
         CollectionReference qrRef;
         qrRef = firestore.collection("OrganizerdevicesDB")
@@ -78,12 +98,19 @@ public class QrCodeDB {
         return qrRef;
 
     }
-    public DocumentReference getDocRef(String deviceID) {
+    /**
+     Retrieving DocumentReference from firebase
+     @param : String deviceId
+     @return Documentreference
+     **/
+    public DocumentReference getDeviceDocRef(String deviceID) {
         DocumentReference documentReference;
         documentReference = firestore.collection("OrganizerdevicesDB")
                 .document(deviceID);
         return documentReference;
     }
+
+
 
 
 }
