@@ -8,13 +8,33 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
+    <TextView
+        android:id="@+id/events_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="96dp"
+        android:fontFamily="sans-serif-light"
+        android:text="@string/events_title"
+        android:textAlignment="viewStart"
+        android:textColor="@color/gold"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_list"
+        app:layout_constraintVertical_bias="0.61" />
+
     <ListView
         android:id="@+id/event_list"
-        android:layout_width="402dp"
-        android:layout_height="638dp"
+        android:layout_width="410dp"
+        android:layout_height="504dp"
         android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.004" />
 
     <Button
         android:id="@+id/backButton"
@@ -23,14 +43,15 @@
         android:backgroundTint="@color/black"
         android:fontFamily="sans-serif-condensed"
         android:text="@string/back"
+        android:textColor="@color/white"
+        android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.049"
+        app:layout_constraintHorizontal_bias="0.092"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/event_list"
-        app:layout_constraintVertical_bias="0.976"
+        app:layout_constraintVertical_bias="0.904"
         app:strokeColor="@color/white"
-        app:strokeWidth="3dp"
-        tools:ignore="MissingConstraints" />
+        app:strokeWidth="3dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
