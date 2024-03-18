@@ -7,7 +7,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 /**
- * AdminActivity class allows organizers to view vents, profiles and view images.
+ * AdminActivity class allows organizers to view events, profiles and view images.
  * Clicking viewProfiles is not implemented yet.
  */
 public class AdminActivity extends AppCompatActivity {
@@ -43,7 +43,7 @@ public class AdminActivity extends AppCompatActivity {
             }
         });
         /**
-         * Clicking viewEvents navigates to diaply all profile created on app.
+         * Clicking viewEvents navigates to display all profile created on app.
          * @param : View v
          * @return : void
          */
@@ -51,10 +51,11 @@ public class AdminActivity extends AppCompatActivity {
         viewProfiles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                startActivity(new Intent(AdminActivity.this, AdminProfileActivity.class));
             }
         });
         /**
-         * Clicking viewImages navigates to diaply all profile created on app.
+         * Clicking viewImages navigates to display all profile created on app.
          * @param : View v
          * @return : void
          */
@@ -62,6 +63,7 @@ public class AdminActivity extends AppCompatActivity {
         viewImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                startActivity(new Intent(AdminActivity.this, AdminImagesActivity.class));
             }
         });
     }
