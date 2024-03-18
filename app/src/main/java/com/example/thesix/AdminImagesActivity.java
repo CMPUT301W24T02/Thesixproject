@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * AdminImagesActivity class
@@ -15,10 +16,26 @@ import androidx.annotation.Nullable;
  * Continue JavaDocs
  *
  */
-public class AdminImagesActivity {
+public class AdminImagesActivity extends AppCompatActivity {
+    private Button back2AdminButton;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_images_screen);
+
+        back2AdminButton = findViewById(R.id.backButton);
+
+        /**
+         Initializes a UI component, a Button named back2AdminButton
+         @param :
+         @return
+         **/
+        back2AdminButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AdminImagesActivity.this, AdminActivity.class));
+            }
+        });
     }
 }

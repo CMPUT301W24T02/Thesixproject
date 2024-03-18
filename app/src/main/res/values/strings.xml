@@ -20,5 +20,8 @@
     <string name="notification">Send Notification</string>
     <string name="map_button">Checked In: Map</string>
     <string name="check_in">Guests Checked In: </string>
+    <string name="images_title">Images</string>
+    <string name="profiles_title">Profiles</string>
+    <string name="events_title">Events</string>
 
 </resources>

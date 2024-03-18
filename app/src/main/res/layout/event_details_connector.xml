@@ -15,15 +15,16 @@
         android:backgroundTint="@color/black"
         android:fontFamily="sans-serif-condensed"
         android:text="@string/back"
+        android:textColor="@color/white"
+        android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.021"
+        app:layout_constraintHorizontal_bias="0.065"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976"
+        app:layout_constraintVertical_bias="0.959"
         app:strokeColor="@color/white"
-        app:strokeWidth="3dp"
-        tools:ignore="MissingConstraints" />
+        app:strokeWidth="3dp" />
 
     <ImageView
         android:id="@+id/eventPoster"
@@ -84,7 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:background="@color/black"
-        android:text="Event Descritpion"
+        android:text="Event Description"
         android:textColor="@color/gold"
         android:textSize="25dp"
         app:layout_constraintEnd_toEndOf="@+id/eventName"
