@@ -60,6 +60,29 @@ public class EventDetailsAdapterTest {
     }
 
     /**
+     * Check the details of test1 that added as an event from OrganizerUseNewQRActivityTest
+     */
+    @Test
+    public void test_Event_Details(){
+        // check if an event named test1  is in the list(should be true):
+        assertTrue( solo.waitForText("test1", 1, 2000));
+
+        // click the test1 event in the list:
+        solo.clickOnText("test1",1);
+
+        solo.sleep(3000);
+
+        // Asserts that the current activity is the EventDetailsConnector.Otherwise, show "Wrong Activity"
+        solo.assertCurrentActivity("Wrong Activity", EventDetailsConnector.class);
+
+        // check if an event named test1  is in the event name field(should be true):
+        assertTrue( solo.waitForText("test1", 1, 2000));
+
+        // check if an event description 'this is a test 1' is in the event description field(should be true):
+        assertTrue( solo.waitForText("this is a test 1", 1, 2000));
+    }
+
+    /**
      * Close activity after each test
      * @throws Exception
      */
