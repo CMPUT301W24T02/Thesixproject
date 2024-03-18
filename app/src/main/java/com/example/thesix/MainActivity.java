@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, AdminActivity.class));
         } else {
             startActivity(new Intent(MainActivity.this, AttendeeMainActivity.class));
+            //startActivity(new Intent(MainActivity.this, OrganizerMainActivity.class));
         }
     }
 
