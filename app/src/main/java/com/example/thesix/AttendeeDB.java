@@ -1,7 +1,13 @@
 package com.example.thesix;
 
+import android.location.Location;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
@@ -30,5 +36,19 @@ public class AttendeeDB {
                         Log.d("FirestoreHelper", "DocumentSnapshot added with ID: " + documentReference.getId()))
                 .addOnFailureListener(e ->
                         Log.e("FirestoreHelper", "Error adding document", e));
-}
+    }
+    public void saveUserLocation(String deviceID, Location location) {
+        firestore.collection("UserLocations")
+                .document(deviceID)
+                .collection("coordinates")
+                .add(location)
+                .addOnSuccessListener(documentReference ->
+                        Log.d("FirestoreHelper", "DocumentSnapshot added with ID: " + documentReference.getId()))
+                .addOnFailureListener(e ->
+                        Log.e("FirestoreHelper", "Error adding document", e));
+
+
+
+
+    }
 }
