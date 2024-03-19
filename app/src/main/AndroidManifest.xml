@@ -9,6 +9,11 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"  />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -18,7 +23,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Thesix"
-        tools:targetApi="31">
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="31"
+        tools:ignore="UnusedAttribute">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -54,6 +61,10 @@
             android:label="MapActivity"/>
         <activity android:name=".NotificationActivity"
             android:label="NotificationActivity"/>
+        <activity android:name=".AdminImagesActivity"
+            android:label="AdminImagesActivity"/>
+        <activity android:name=".AdminProfileActivity"
+            android:label="AdminProfileActivity"/>
         <activity android:name=".AttendeeMainActivity"/>
         <activity android:name=".AttendeePromoActivity"/>
         <provider

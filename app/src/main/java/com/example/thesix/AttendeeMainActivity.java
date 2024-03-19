@@ -1,15 +1,19 @@
 package com.example.thesix;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
+import android.os.Looper;
+import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -17,21 +21,47 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.widget.Toast;
+import android.provider.Settings;
 
-public class AttendeeMainActivity extends AppCompatActivity {
+
+
+public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsListener{
+    private static final int PERMISSION_LOCATION =1000;
     private Button scanButton;
     TextView testing;
     private QrCodeDB firestoreHelper;
     String contents;
     String[] contentsArray;
     String imageData,name,description;
+    private Button getLocation;
+    private TextView coordinates;
+    private static final int REQUEST_LOCATION = 1;
+    LocationManager locationManager;
+    String latitude, longitude;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_main_activity);
         scanButton = findViewById(R.id.scanButton);
+        getLocation = findViewById(R.id.locationButton);
+        coordinates = findViewById(R.id.locationinfo);
+        //ActivityCompat.requestPermissions( this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+
         testing = findViewById(R.id.textView);
         firestoreHelper = new QrCodeDB();
+
+
+
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,7 +73,26 @@ public class AttendeeMainActivity extends AppCompatActivity {
                 intentIntegrator.initiateScan();
             }
         });
+
+        getLocation.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //https://www.youtube.com/watch?v=UJwj5ywkcks&t=29s&ab_channel=TihomirRadev
+                //checking Location permissions
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                        && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED){
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
+                }
+                else {
+                    showLocation();
+                }
+            }
+        });
     }
+
+
     //https://www.youtube.com/watch?v=bWEt-_z7BOY
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -85,8 +134,67 @@ public class AttendeeMainActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        coordinates.setText(hereLocation(location));
+
+    }
+
+    private String hereLocation(Location location) {
+        return "Lat:" + location.getLatitude() + "Long" + location.getLongitude();
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onGpsStatusChanged(int event) {
+
+    }
+
+
     private interface PromoDataCallback {
         void onPromoDataCallback(String imageData, String name, String description);
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onRequestPermissionsResult(int requestCode,@NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_LOCATION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                showLocation();
+            } else {
+                Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+    }
+
+    @SuppressLint({"MissingPermission", "SetTextI18n"})
+    private void showLocation() {
+        LocationManager locationManager =(LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        //check if gps enabled
+        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            //start locating
+            coordinates.setText("Loading location");
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
+        }
+        else{
+            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        }
     }
 
     public void promoData(PromoDataCallback promoDataCallback) {

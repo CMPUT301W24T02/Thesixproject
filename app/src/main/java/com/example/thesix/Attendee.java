@@ -68,4 +68,6 @@ public class Attendee {
     public void setCheckin(Long checkin) {
         this.checkin = checkin;
     }
+
+
 }
