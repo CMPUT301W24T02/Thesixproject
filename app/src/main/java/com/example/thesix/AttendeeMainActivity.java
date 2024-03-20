@@ -34,6 +34,7 @@ import android.provider.Settings;
 
 
 
+
 public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsListener{
     private static final int PERMISSION_LOCATION =1000;
     private Button scanButton;
@@ -44,9 +45,9 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     String imageData,name,description;
     private Button getLocation;
     private TextView coordinates;
-    private static final int REQUEST_LOCATION = 1;
-    LocationManager locationManager;
-    String latitude, longitude;
+
+    private AttendeeDB database;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,11 +56,11 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         scanButton = findViewById(R.id.scanButton);
         getLocation = findViewById(R.id.locationButton);
         coordinates = findViewById(R.id.locationinfo);
+        database = new AttendeeDB();
         //ActivityCompat.requestPermissions( this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
 
         testing = findViewById(R.id.textView);
         firestoreHelper = new QrCodeDB();
-
 
 
         scanButton.setOnClickListener(new View.OnClickListener() {
@@ -142,27 +143,24 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     }
 
     private String hereLocation(Location location) {
+        //database.saveUserLocation(deviceID,location);
         return "Lat:" + location.getLatitude() + "Long" + location.getLongitude();
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-
     }
 
     @Override
     public void onGpsStatusChanged(int event) {
-
     }
 
 
