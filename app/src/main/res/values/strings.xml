@@ -25,5 +25,9 @@
     <string name="events_title">Events</string>
     <string name="get_location">GET LOCATION</string>
     <string name="location">Location</string>
+    <string name="welcome_vip">Welcome, VIP</string>
+    <string name="check_in_attendee">CHECK IN</string>
+    <string name="all_events">ALL EVENTS</string>
+    <string name="view_attendee_profile">VIEW PROFILE</string>
 
 </resources>
