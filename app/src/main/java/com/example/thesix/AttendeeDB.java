@@ -37,6 +37,7 @@ public class AttendeeDB {
                 .addOnFailureListener(e ->
                         Log.e("FirestoreHelper", "Error adding document", e));
     }
+
     public void saveUserLocation(String deviceID, Location location) {
         firestore.collection("UserLocations")
                 .document(deviceID)
