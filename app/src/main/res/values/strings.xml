@@ -29,5 +29,6 @@
     <string name="check_in_attendee">CHECK IN</string>
     <string name="all_events">ALL EVENTS</string>
     <string name="view_attendee_profile">VIEW PROFILE</string>
+    <string name="main_menu">MAIN MENU</string>
 
 </resources>
