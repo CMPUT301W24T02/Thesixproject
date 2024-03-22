@@ -13,7 +13,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
 
     private Button generateEventButton;
     private Button generateViewEventButton;
-
+    private Button showmap;
     /**
      *Creating eventbutton
      @param :
@@ -32,6 +32,14 @@ public class OrganizerMainActivity extends AppCompatActivity {
          @param :
          @return void
          **/
+        showmap = findViewById(R.id.showMapButton);
+
+        showmap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {//       Intent intent = new Intent(MainActivity.this,MapActivity.class);
+                //        startActivity(intent);
+            }
+        });
 
         generateEventButton.setOnClickListener(new View.OnClickListener() {
             @Override

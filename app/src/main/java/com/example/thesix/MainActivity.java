@@ -2,6 +2,7 @@ package com.example.thesix;
 
 import static android.content.ContentValues.TAG;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -28,13 +29,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
  **/
 public class MainActivity extends AppCompatActivity {
     private String adminId = "713972a529878c33";//change this
-
     /**
      * If user is admin redirect to AdminActivity.
      * if user is organizer redirect to OrganizerMainActivity
      @param : Bundle savedInstanceState
      @return
      **/
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         Log.d("DeviceId", deviceID);
+
+
 
         if (deviceID.equalsIgnoreCase(adminId)) {
             startActivity(new Intent(MainActivity.this, AdminActivity.class));
@@ -54,6 +57,11 @@ public class MainActivity extends AppCompatActivity {
             //startActivity(new Intent(MainActivity.this, OrganizerMainActivity.class));
             //startActivity(new Intent(MainActivity.this, AdminActivity.class));
         }
+
+
+
     }
+
+
 
 }
