@@ -30,5 +30,6 @@
     <string name="all_events">ALL EVENTS</string>
     <string name="view_attendee_profile">VIEW PROFILE</string>
     <string name="main_menu">MAIN MENU</string>
+    <string name="title_activity_maps">MapsActivity</string>
 
 </resources>
