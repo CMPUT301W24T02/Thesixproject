@@ -47,6 +47,9 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     private TextView coordinates;
 
     private AttendeeDB database;
+    private Location lastKnownLocation; // To store the latest location
+
+
 
 
     @Override
@@ -61,6 +64,12 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
 
         testing = findViewById(R.id.textView);
         firestoreHelper = new QrCodeDB();
+
+        //getting deviceID
+        Bundle bundle = getIntent().getExtras();
+        String deviceID = bundle.getString("deviceID");
+
+
 
 
         scanButton.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +97,17 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                 }
                 else {
                     showLocation();
+                    // Handle case where last known location is not available
+                    if (lastKnownLocation != null) {
+                        // Use the last known location
+                        database.saveUserLocation(deviceID,lastKnownLocation);
+                        // Do something with latitude and longitude...
+                    } else {
+
+                    }
+
                 }
+
             }
         });
     }
@@ -138,9 +157,11 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
 
     @Override
     public void onLocationChanged(Location location) {
+        lastKnownLocation = location;
         coordinates.setText(hereLocation(location));
 
     }
+
 
     private String hereLocation(Location location) {
         //database.saveUserLocation(deviceID,location);
