@@ -38,6 +38,7 @@ import android.provider.Settings;
 public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsListener{
     private static final int PERMISSION_LOCATION =1000;
     private Button scanButton;
+    private Button viewProfile;
     TextView testing;
     private QrCodeDB firestoreHelper;
     String contents;
@@ -57,6 +58,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_main_activity);
         scanButton = findViewById(R.id.scanButton);
+        viewProfile = findViewById(R.id.viewAttendeeProfile);
         getLocation = findViewById(R.id.locationButton);
         coordinates = findViewById(R.id.locationinfo);
         database = new AttendeeDB();
@@ -66,9 +68,16 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         firestoreHelper = new QrCodeDB();
 
         //getting deviceID
-        Bundle bundle = getIntent().getExtras();
-        String deviceID = bundle.getString("deviceID");
 
+
+        // Hi, I changed this part of code due to the failure of switch activity in the view profile button
+        //Bundle bundle = getIntent().getExtras();
+        //String deviceID = bundle.getString("deviceID");
+        Bundle bundle = getIntent().getExtras();
+        String deviceID = null;
+        if (bundle != null) {
+            deviceID = bundle.getString("deviceID");
+        }
 
 
 
@@ -84,6 +93,14 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
             }
         });
 
+        viewProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AttendeeMainActivity.this, AttendeeProfileActivity.class));
+            }
+        });
+
+        String finalDeviceID = deviceID;
         getLocation.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -100,7 +117,10 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                     // Handle case where last known location is not available
                     if (lastKnownLocation != null) {
                         // Use the last known location
-                        database.saveUserLocation(deviceID,lastKnownLocation);
+
+                        // hi, I changed this part due to the failure of switch activity in view profile button
+                        //database.saveUserLocation(deviceID,lastKnownLocation);
+                        database.saveUserLocation(finalDeviceID,lastKnownLocation);
                         // Do something with latitude and longitude...
                     } else {
 
