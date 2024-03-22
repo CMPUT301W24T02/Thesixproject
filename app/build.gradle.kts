@@ -40,7 +40,6 @@ android {
 
 dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
-
     implementation ("com.google.android.gms:play-services-location:21.2.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
@@ -49,6 +48,7 @@ dependencies {
     implementation("androidx.navigation:navigation-ui:2.7.7")
     implementation("com.google.firebase:firebase-firestore:24.10.3")
     implementation("com.google.firebase:firebase-database:20.3.1")
+    implementation ("com.google.android.gms:play-services-maps:18.1.0")
     testImplementation ("org.junit.jupiter:junit-jupiter-api:5.3.2")
     testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine:5.3.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
