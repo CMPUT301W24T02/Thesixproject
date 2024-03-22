@@ -41,7 +41,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_API_KEY" />
+            android:value="AIzaSyD5iKZKjCp001FvlY55FJlB7wF7ofb4va0" />
 
         <activity
             android:name=".MapsActivity"
@@ -85,7 +85,8 @@
             android:label="AdminProfileActivity" />
         <activity android:name=".AttendeeMainActivity" />
         <activity android:name=".AttendeePromoActivity" />
-
+      <activity android:name=".AttendeeProfileActivity"
+            android:label="AttendeeProfileActivity"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.thesix.provider"
