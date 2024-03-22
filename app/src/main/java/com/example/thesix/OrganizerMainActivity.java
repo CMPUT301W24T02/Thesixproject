@@ -36,8 +36,9 @@ public class OrganizerMainActivity extends AppCompatActivity {
 
         showmap.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {//       Intent intent = new Intent(MainActivity.this,MapActivity.class);
-                //        startActivity(intent);
+            public void onClick(View v) {//
+                    Intent intent = new Intent(OrganizerMainActivity.this,MapsActivity.class);
+                        startActivity(intent);
             }
         });
 

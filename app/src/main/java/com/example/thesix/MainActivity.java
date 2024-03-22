@@ -3,6 +3,7 @@ package com.example.thesix;
 import static android.content.ContentValues.TAG;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -43,12 +44,13 @@ public class MainActivity extends AppCompatActivity {
 
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         Log.d("DeviceId", deviceID);
-
+        adminId = deviceID;
 
 
         if (deviceID.equalsIgnoreCase(adminId)) {
-            startActivity(new Intent(MainActivity.this, AdminActivity.class));
-        } else {
+            startActivity(new Intent(MainActivity.this, OrganizerMainActivity.class));
+        }
+         else {
             //sending device id to attendeeactivitypage
             Intent intent =new Intent(MainActivity.this,AttendeeMainActivity.class);
             intent.putExtra("deviceID",deviceID);
