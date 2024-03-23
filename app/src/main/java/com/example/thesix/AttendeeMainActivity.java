@@ -168,7 +168,14 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                 else {
                     contentsArray = contents.split("device id", 2);
                     Log.d("scanner", contentsArray[0] + contentsArray[1]);
-                    testing.setText(contents);
+                    Bundle inviteBundle = new Bundle();
+                    inviteBundle.putLong("num",Long.parseLong(contentsArray[0]));
+                    inviteBundle.putString("organizerDeviceID", contentsArray[1]);
+                    Intent i = new Intent(AttendeeMainActivity.this,AttendeeProfileActivity.class);
+                    i.putExtras(inviteBundle);
+                    startActivity(i);
+
+
                 }
 
             }
@@ -208,6 +215,8 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     private interface PromoDataCallback {
         void onPromoDataCallback(String imageData, String name, String description);
     }
+
+
 
     @SuppressLint("MissingSuperCall")
     @Override
