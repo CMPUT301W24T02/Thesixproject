@@ -44,8 +44,8 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     String contents;
     String[] contentsArray;
     String imageData,name,description;
-    private Button getLocation;
-    private TextView coordinates;
+    //private Button getLocation;
+    //private TextView coordinates;
 
     private AttendeeDB database;
     private Location lastKnownLocation; // To store the latest location
@@ -59,12 +59,12 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         setContentView(R.layout.attendee_main_activity);
         scanButton = findViewById(R.id.scanButton);
         viewProfile = findViewById(R.id.viewAttendeeProfile);
-        getLocation = findViewById(R.id.locationButton);
-        coordinates = findViewById(R.id.locationinfo);
+        //getLocation = findViewById(R.id.locationButton);
+        //coordinates = findViewById(R.id.locationinfo);
         database = new AttendeeDB();
         //ActivityCompat.requestPermissions( this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
 
-        testing = findViewById(R.id.textView);
+        //testing = findViewById(R.id.textView);
         firestoreHelper = new QrCodeDB();
 
         //getting deviceID
@@ -80,7 +80,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         }
 
 
-
+        String finalDeviceID = deviceID;
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,6 +90,29 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                 intentIntegrator.setPrompt("Scan a QR Code");
                 intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
                 intentIntegrator.initiateScan();
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                        && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED){
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
+                }
+                else {
+                    showLocation();
+                    // Handle case where last known location is not available
+                    if (lastKnownLocation != null) {
+                        // Use the last known location
+                        // hi, I changed this part due to the failure of switch activity in view profile button
+                        //database.saveUserLocation(deviceID,lastKnownLocation);
+                        database.saveUserLocation(finalDeviceID,lastKnownLocation);
+                        //Log.i("location1", lastKnownLocation.toString()+"yesss");
+                        // Do something with latitude and longitude...
+                    } else {
+
+                    }
+
+                }
+
+
+
             }
         });
 
@@ -100,7 +123,8 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
             }
         });
 
-        String finalDeviceID = deviceID;
+        //String finalDeviceID = deviceID;
+        /*
         getLocation.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -129,7 +153,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                 }
 
             }
-        });
+        }); */
     }
 
 
@@ -168,7 +192,14 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                 else {
                     contentsArray = contents.split("device id", 2);
                     Log.d("scanner", contentsArray[0] + contentsArray[1]);
-                    testing.setText(contents);
+                    Bundle inviteBundle = new Bundle();
+                    inviteBundle.putLong("num",Long.parseLong(contentsArray[0]));
+                    inviteBundle.putString("organizerDeviceID", contentsArray[1]);
+                    Intent i = new Intent(AttendeeMainActivity.this,AttendeeProfileActivity.class);
+                    i.putExtras(inviteBundle);
+                    startActivity(i);
+
+
                 }
 
             }
@@ -178,7 +209,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     @Override
     public void onLocationChanged(Location location) {
         lastKnownLocation = location;
-        coordinates.setText(hereLocation(location));
+        //coordinates.setText(hereLocation(location));
 
     }
 
@@ -209,6 +240,8 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         void onPromoDataCallback(String imageData, String name, String description);
     }
 
+
+
     @SuppressLint("MissingSuperCall")
     @Override
     public void onRequestPermissionsResult(int requestCode,@NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -228,7 +261,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         //check if gps enabled
         if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             //start locating
-            coordinates.setText("Loading location");
+            //coordinates.setText("Loading location");
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
         }
         else{

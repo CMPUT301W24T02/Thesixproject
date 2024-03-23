@@ -33,6 +33,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
          @return void
          **/
 
+
         generateEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
