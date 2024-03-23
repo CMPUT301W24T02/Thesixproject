@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         Log.d("DeviceId", deviceID);
-        adminId = deviceID;
+        //adminId = deviceID;
 
 
         if (deviceID.equalsIgnoreCase(adminId)) {
