@@ -55,6 +55,7 @@ public class AttendeeListActivity extends AppCompatActivity {
     private QrCodeDB firestoreHelper;
     String deviceID;
     String imageBaseString;
+    private Button showmap;
     private OrganizerMainActivity oma = new OrganizerMainActivity();
 
 
@@ -107,6 +108,16 @@ public class AttendeeListActivity extends AppCompatActivity {
                 if(totalCount == 10 ) {
                     Toast.makeText(AttendeeListActivity.this, text, Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        showmap = findViewById(R.id.mapButton);
+
+        showmap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {//
+                Intent intent = new Intent(AttendeeListActivity.this,MapsActivity.class);
+                startActivity(intent);
             }
         });
 
