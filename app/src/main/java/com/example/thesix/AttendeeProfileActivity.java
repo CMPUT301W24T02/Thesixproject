@@ -8,6 +8,8 @@ import android.widget.Button;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.common.collect.Sets;
+
 /**
  *
  *
@@ -26,14 +28,11 @@ public class AttendeeProfileActivity extends AppCompatActivity {
 
         back2AttendeeButton = findViewById(R.id.backButton);
 
-        /**
-         Initializes a UI component, a Button named back2AttendeeButton
-         @param :
-         @return
-         **/
+        //Sets up the 'back2AttendeeButton' to return to the Attendee main screen when clicked.
         back2AttendeeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Navigate back to the AttendeeMainActivity
                 startActivity(new Intent(AttendeeProfileActivity.this, AttendeeMainActivity.class));
             }
         });
