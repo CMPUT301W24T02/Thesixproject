@@ -13,18 +13,16 @@
         android:layout_width="160dp"
         android:layout_height="44dp"
         android:layout_marginTop="70dp"
-        android:text="Jennie Ruby Jane"
         android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@id/name_title"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"/>
+        app:layout_constraintTop_toBottomOf="@+id/profile_picture"/>
 
     <TextView
         android:id="@+id/contact_textView"
         android:layout_width="170dp"
         android:layout_height="35dp"
         android:layout_marginTop="70dp"
-        android:text="780-541-2203"
         android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@id/contact_title"
@@ -35,7 +33,6 @@
         android:layout_width="170dp"
         android:layout_height="38dp"
         android:layout_marginTop="75dp"
-        android:text="JENNIE6"
         android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@id/homePage_title"
@@ -53,7 +50,7 @@
         android:textSize="23sp"
         app:layout_constraintBottom_toTopOf="@+id/contact_title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_picture" />
 
     <TextView
         android:id="@+id/contact_title"
@@ -84,7 +81,7 @@
         app:layout_constraintTop_toBottomOf="@+id/contact_title" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/profile_picture"
         android:layout_width="286dp"
         android:layout_height="203dp"
         android:layout_marginStart="62dp"

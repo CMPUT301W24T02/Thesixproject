@@ -3,5 +3,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gold">#D4AF37</color>
+    <color name ="iphone1G">#DAA520</color>
     <color name="backgroundBlack">#050505</color>
 </resources>
