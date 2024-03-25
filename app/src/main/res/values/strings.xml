@@ -34,5 +34,9 @@
     <string name="attendee_name">NAME:</string>
     <string name="attendee_contact">CONTACT:</string>
     <string name="attendee_home_page">HOME PAGE:</string>
+    <string name="name">name</string>
+    <string name="contact_number">contact number</string>
+    <string name="home_page">home page</string>
+    <string name="SAVE_CHANGES">SAVE CHANGES</string>
 
 </resources>

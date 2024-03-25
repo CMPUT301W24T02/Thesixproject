@@ -85,8 +85,10 @@
             android:label="AdminProfileActivity" />
         <activity android:name=".AttendeeMainActivity" />
         <activity android:name=".AttendeePromoActivity" />
-      <activity android:name=".AttendeeProfileActivity"
+        <activity android:name=".AttendeeProfileActivity"
             android:label="AttendeeProfileActivity"/>
+        <activity android:name=".AttendeeProfileUpdate"
+            android:label="AttendeeProfileUpdate"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.thesix.provider"
