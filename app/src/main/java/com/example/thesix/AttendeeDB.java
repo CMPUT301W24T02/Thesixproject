@@ -47,9 +47,5 @@ public class AttendeeDB {
                         Log.d("FirestoreHelper", "DocumentSnapshot added with ID: " + documentReference.getId()))
                 .addOnFailureListener(e ->
                         Log.e("FirestoreHelper", "Error adding document", e));
-
-
-
-
     }
 }
