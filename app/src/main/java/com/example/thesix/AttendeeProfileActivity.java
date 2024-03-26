@@ -20,6 +20,8 @@ import com.google.common.collect.Sets;
  */
 public class AttendeeProfileActivity extends AppCompatActivity {
 
+    private static final int PROFILE_UPDATE_REQUEST_CODE = 1; // Request code for startActivityForResult
+
     private ImageView profilePicture;
     private TextView nameTextView;
     private TextView contactTextView;
@@ -39,12 +41,14 @@ public class AttendeeProfileActivity extends AppCompatActivity {
 
         Attendee attendee = new Attendee("JESSE", "780-225-2535", "@JESSEBUILDS");
 
-        updateAttendeeInfo(attendee);
+        //updateAttendeeInfo(attendee);
 
         profilePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AttendeeProfileActivity.this, AttendeeProfileUpdate.class));
+                // Start AttendeeProfileUpdate for result
+                Intent intent = new Intent(AttendeeProfileActivity.this, AttendeeProfileUpdate.class);
+                startActivityForResult(intent, PROFILE_UPDATE_REQUEST_CODE);
             }
         });
 
@@ -53,14 +57,31 @@ public class AttendeeProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Navigate back to the AttendeeMainActivity
-                startActivity(new Intent(AttendeeProfileActivity.this, AttendeeMainActivity.class));
+                finish();
             }
         });
     }
 
-    private void updateAttendeeInfo(Attendee attendee) {
-        nameTextView.setText(attendee.getName());
-        contactTextView.setText(attendee.getContact());
-        homePageTextView.setText(attendee.getHomePage());
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PROFILE_UPDATE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            // Extract the data from the intent
+            String name = data.getStringExtra("name");
+            String contact = data.getStringExtra("contact");
+            String homePage = data.getStringExtra("homePage");
+
+            // Update the TextViews with the new data
+            nameTextView.setText(name);
+            contactTextView.setText(contact);
+            homePageTextView.setText(homePage);
+        }
     }
+
+//    private void updateAttendeeInfo(Attendee attendee) {
+//        nameTextView.setText(attendee.getName());
+//        contactTextView.setText(attendee.getContact());
+//        homePageTextView.setText(attendee.getHomePage());
+//    }
 }

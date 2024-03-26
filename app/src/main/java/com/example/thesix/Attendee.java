@@ -17,6 +17,10 @@ public class Attendee {
     private String contact;
     private String homePage;
 
+    public Attendee() {
+        // Default constructor required for calls to DataSnapshot.getValue(Attendee.class)
+    }
+
     /**
      * Constructor for Attendee with contact information.
      * This constructor is used when you have the attendee's name,
