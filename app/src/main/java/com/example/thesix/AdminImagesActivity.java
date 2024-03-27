@@ -57,6 +57,18 @@ public class AdminImagesActivity extends AppCompatActivity {
         ListView imageList = findViewById(R.id.images_list_view);
         imageList.setAdapter(imagesArrayAdapter);
 
+        /**
+         * Does Read data Callback
+         * @param : List<String> list1
+         * @return : void
+         */
+        readData(new MyCallback() {
+            @Override
+            public void onCallback(List<String> list1) {
+                imageDataList = (ArrayList<String>) list1;
+                imagesArrayAdapter.notifyDataSetChanged();
+            }
+        });
     }
     /**
      * Interface Callback
