@@ -2,6 +2,7 @@ package com.example.thesix;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -116,12 +117,11 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
             }
         });
 
-        viewProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(AttendeeMainActivity.this, AttendeeProfileActivity.class));
-            }
-        });
+        if (isFirstLaunch()) {
+            clearAttendeeInfo();
+        }
+
+        viewProfile.setOnClickListener(v -> startActivity(new Intent(AttendeeMainActivity.this, AttendeeProfileActivity.class)));
 
         //String finalDeviceID = deviceID;
         /*
@@ -289,5 +289,19 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                         promoDataCallback.onPromoDataCallback(imageData,name,description);
                     }
                 });
+    }
+
+    private boolean isFirstLaunch() {
+        // Implement logic to determine if this is the first launch of the app.
+        // This could be based on a specific flag in SharedPreferences that you set on launch and clear on exit.
+        // For simplicity, this example always returns true, but you should implement this based on your app's lifecycle.
+        return true;
+    }
+
+    private void clearAttendeeInfo() {
+        SharedPreferences sharedPrefs = getSharedPreferences("AttendeePrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.clear();
+        editor.apply();
     }
 }

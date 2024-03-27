@@ -1,7 +1,9 @@
 package com.example.thesix;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -11,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.common.collect.Sets;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  *
@@ -19,13 +22,8 @@ import com.google.common.collect.Sets;
  *
  */
 public class AttendeeProfileActivity extends AppCompatActivity {
-
-    private static final int PROFILE_UPDATE_REQUEST_CODE = 1; // Request code for startActivityForResult
-
     private ImageView profilePicture;
-    private TextView nameTextView;
-    private TextView contactTextView;
-    private TextView homePageTextView;
+    private TextView nameTextView, contactTextView, homePageTextView;
     private Button back2AttendeeButton;
 
     @Override
@@ -39,49 +37,30 @@ public class AttendeeProfileActivity extends AppCompatActivity {
         homePageTextView = findViewById(R.id.homePage_textView);
         back2AttendeeButton = findViewById(R.id.backButton);
 
-        Attendee attendee = new Attendee("JESSE", "780-225-2535", "@JESSEBUILDS");
-
-        //updateAttendeeInfo(attendee);
-
-        profilePicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Start AttendeeProfileUpdate for result
-                Intent intent = new Intent(AttendeeProfileActivity.this, AttendeeProfileUpdate.class);
-                startActivityForResult(intent, PROFILE_UPDATE_REQUEST_CODE);
-            }
+        profilePicture.setOnClickListener(v -> {
+            Intent intent = new Intent(AttendeeProfileActivity.this, AttendeeProfileUpdate.class);
+            startActivityForResult(intent, 1); // Use a request code consistent with onActivityResult
         });
 
-        //Sets up the 'back2AttendeeButton' to return to the Attendee main screen when clicked.
-        back2AttendeeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate back to the AttendeeMainActivity
-                finish();
-            }
-        });
+        back2AttendeeButton.setOnClickListener(v -> finish());
+
+        // Initially display data
+        displayAttendeeInfo();
+    }
+
+    private void displayAttendeeInfo() {
+        SharedPreferences prefs = getSharedPreferences("AttendeePrefs", MODE_PRIVATE);
+        nameTextView.setText(prefs.getString("name", ""));
+        contactTextView.setText(prefs.getString("contact", ""));
+        homePageTextView.setText(prefs.getString("homePage", ""));
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PROFILE_UPDATE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            // Extract the data from the intent
-            String name = data.getStringExtra("name");
-            String contact = data.getStringExtra("contact");
-            String homePage = data.getStringExtra("homePage");
-
-            // Update the TextViews with the new data
-            nameTextView.setText(name);
-            contactTextView.setText(contact);
-            homePageTextView.setText(homePage);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            // Data might have been updated, refresh display
+            displayAttendeeInfo();
         }
     }
-
-//    private void updateAttendeeInfo(Attendee attendee) {
-//        nameTextView.setText(attendee.getName());
-//        contactTextView.setText(attendee.getContact());
-//        homePageTextView.setText(attendee.getHomePage());
-//    }
 }
