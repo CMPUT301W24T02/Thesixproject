@@ -25,7 +25,6 @@ public class AdminProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_profile_screen);
 
-
         back2AdminButton = findViewById(R.id.backButton);
 
         /**
