@@ -57,7 +57,33 @@ public class AdminImagesActivity extends AppCompatActivity {
         ListView imageList = findViewById(R.id.images_list_view);
         imageList.setAdapter(imagesArrayAdapter);
 
+    }
+    /**
+     * Interface Callback
+     * @param :List<String> list1
+     * @return :
+     */
 
+    public interface MyCallback {
+        void onCallback(List<String> list1);
+    }
+    /**
+     * Reads data
+     * @param :MyCallback myCallback
+     * @return :
+     */
+
+    public void readData(MyCallback myCallback) {
+        eventsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    String base64String = document.getString("qrImageData");
+                    imageDataList.add(base64String);
+                }
+                myCallback.onCallback(imageDataList);
+            }
+        });
 
         /**
          Initializes a UI component, a Button named back2AdminButton
