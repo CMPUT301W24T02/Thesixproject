@@ -38,32 +38,24 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
             String contact = contactEditText.getText().toString();
             String homePage = homePageEditText.getText().toString();
 
-            // Save to Firestore
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            Map<String, Object> attendee = new HashMap<>();
-            attendee.put("name", name);
-            attendee.put("contact_number", contact);
-            attendee.put("home_page", homePage);
+            // Use AttendeeDB to save attendee info
+            AttendeeDB attendeeDB = new AttendeeDB();
+            attendeeDB.saveAttendeeInfo(name, contact, homePage);
 
-            db.collection("attendee").add(attendee)
-                    .addOnSuccessListener(documentReference -> {
-                        Toast.makeText(AttendeeProfileUpdate.this, "Information Saved to Firestore", Toast.LENGTH_SHORT).show();
+            // Show a message to the user
+            Toast.makeText(AttendeeProfileUpdate.this, "Information Saved to Firestore", Toast.LENGTH_SHORT).show();
 
-                        // Also save to SharedPreferences for local access
-                        SharedPreferences prefs = getSharedPreferences("AttendeePrefs", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = prefs.edit();
-                        editor.putString("name", name);
-                        editor.putString("contact", contact);
-                        editor.putString("homePage", homePage);
-                        editor.apply();
+            // Save to SharedPreferences for local access
+            SharedPreferences prefs = getSharedPreferences("AttendeePrefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("name", name);
+            editor.putString("contact", contact);
+            editor.putString("homePage", homePage);
+            editor.apply();
 
-                        // Indicate success
-                        setResult(RESULT_OK);
-
-                        // Finish activity and return to the profile
-                        finish();
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(AttendeeProfileUpdate.this, "Error saving to Firestore", Toast.LENGTH_SHORT).show());
+            // Finish activity
+            setResult(RESULT_OK);
+            finish();
         });
 
         back2AttendeeProfileButton.setOnClickListener(v -> {

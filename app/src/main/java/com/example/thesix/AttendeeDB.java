@@ -10,6 +10,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * AttendeeDB class facilitates interaction with a Firestore database to manage attendee information.
  * Initializes a FirebaseFirestore instance (firestore)
@@ -24,18 +27,22 @@ public class AttendeeDB {
     }
 
     /**
-     * Saves attendee information
-     * @param : Attendee attendee
-     * @return : void
+     * Saves attendee information to Firestore.
+     *
+     * @param name The name of the attendee.
+     * @param contact The contact number of the attendee.
+     * @param homePage The home page of the attendee.
      */
+    public void saveAttendeeInfo(String name, String contact, String homePage) {
+        Map<String, Object> attendee = new HashMap<>();
+        attendee.put("name", name);
+        attendee.put("contact_number", contact);
+        attendee.put("home_page", homePage);
 
-    public void saveAttendeeInfo(Attendee attendee) {
-        firestore.collection("AttendeeDB")
+        firestore.collection("AttendeeProfileDB")
                 .add(attendee)
-                .addOnSuccessListener(documentReference ->
-                        Log.d("FirestoreHelper", "DocumentSnapshot added with ID: " + documentReference.getId()))
-                .addOnFailureListener(e ->
-                        Log.e("FirestoreHelper", "Error adding document", e));
+                .addOnSuccessListener(documentReference -> Log.d("AttendeeDB", "DocumentSnapshot written with ID: " + documentReference.getId()))
+                .addOnFailureListener(e -> Log.w("AttendeeDB", "Error adding document", e));
     }
 
     public void saveUserLocation(String deviceID, Location location) {
