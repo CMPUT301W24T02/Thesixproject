@@ -179,6 +179,8 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                     contents = contents.replace("promo","");
                     testing.setText(contents);
                     contentsArray = contents.split("device id", 2);
+                    organizerID = contentsArray[1];
+                    eventNum = Long.valueOf(contentsArray[0]);
                     Log.d("scanner", contentsArray[0] + contentsArray[1]);
                     promoData(new PromoDataCallback() {
                         @Override
@@ -189,6 +191,8 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                             bundle.putString("imageData", imageData);
                             bundle.putString("name", name);
                             bundle.putString("description", description);
+                            bundle.putString("organizerID",organizerID);
+                            bundle.putLong("eventNum",eventNum);
                             i.putExtras(bundle);
                             startActivity(i);
                         }
