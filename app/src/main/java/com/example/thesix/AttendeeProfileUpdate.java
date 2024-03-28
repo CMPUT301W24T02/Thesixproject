@@ -33,6 +33,12 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
         submitButton = findViewById(R.id.submit_button);
         back2AttendeeProfileButton = findViewById(R.id.backButton);
 
+        // Change: Populate EditText fields with existing data from SharedPreferences
+        SharedPreferences prefs = getSharedPreferences("AttendeePrefs", MODE_PRIVATE);
+        nameEditText.setText(prefs.getString("name", ""));
+        contactEditText.setText(prefs.getString("contact", ""));
+        homePageEditText.setText(prefs.getString("homePage", ""));
+
         submitButton.setOnClickListener(v -> {
             String name = nameEditText.getText().toString();
             String contact = contactEditText.getText().toString();
@@ -46,7 +52,6 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
             Toast.makeText(AttendeeProfileUpdate.this, "Information Saved to Firestore", Toast.LENGTH_SHORT).show();
 
             // Save to SharedPreferences for local access
-            SharedPreferences prefs = getSharedPreferences("AttendeePrefs", MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("name", name);
             editor.putString("contact", contact);
