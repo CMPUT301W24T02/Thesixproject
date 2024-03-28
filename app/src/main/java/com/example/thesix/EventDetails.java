@@ -20,7 +20,9 @@ public class EventDetails {
     private String name;
     private List<String> attendeeList;
     private List<Long> checkInCountList;
+    private List<String> attendeeIDList;
     private Long totalCheckIn;
+    private List<String> signUpIDList;
 
     /**
      Constructor for event Details
@@ -29,7 +31,7 @@ public class EventDetails {
      * @return : Uri
      **/
     public EventDetails(String eventImageData, String inviteQrImageData, String promoQrImageData, long eventNum, String eventDescription,
-                        String eventName, List<String> attendeeList, List<Long> checkIn, Long totalCheckIn) {
+                        String eventName, List<String> attendeeList, List<Long> checkIn, Long totalCheckIn, List<String> attendeeIDList, List<String> signUpIDList) {
         this.eventImageData = eventImageData;
         this.inviteQrImageData = inviteQrImageData;
         this.promoQrImageData = promoQrImageData;
@@ -39,6 +41,8 @@ public class EventDetails {
         this.attendeeList = attendeeList;
         this.checkInCountList = checkIn;
         this.totalCheckIn = totalCheckIn;
+        this.attendeeIDList = attendeeIDList;
+        this.signUpIDList = signUpIDList;
     }
 
     /**
@@ -181,5 +185,21 @@ public class EventDetails {
 
     public void setCheckInCountList(List<Long> checkInCountList) {
         this.checkInCountList = checkInCountList;
+    }
+
+    public List<String> getAttendeeIDList() {
+        return attendeeIDList;
+    }
+
+    public void setAttendeeIDList(List<String> attendeeIDList) {
+        this.attendeeIDList = attendeeIDList;
+    }
+
+    public List<String> getSignUpIDList() {
+        return signUpIDList;
+    }
+
+    public void setSignUpIDList(List<String> signUpIDList) {
+        this.signUpIDList = signUpIDList;
     }
 }
