@@ -34,7 +34,6 @@ public class EventDetailsTest {
                 123L,
                 "description",
                 "name",
-                attendeeList,
                 checkInCountList,
                 30L,
                 attendeeIDList,
@@ -108,22 +107,7 @@ public class EventDetailsTest {
         assertEquals("newPromoQrImageData", eventDetails.getPromoQrImageData());
     }
 
-    @Test
-    public void testGetAttendeeList() {
-        List<String> expectedAttendeeList = new ArrayList<>();
-        expectedAttendeeList.add("Attendee 1");
-        expectedAttendeeList.add("Attendee 2");
-        assertEquals(expectedAttendeeList, eventDetails.getAttendeeList());
-    }
 
-    @Test
-    public void testSetAttendeeList() {
-        List<String> newAttendeeList = new ArrayList<>();
-        newAttendeeList.add("New Attendee 1");
-        newAttendeeList.add("New Attendee 2");
-        eventDetails.setAttendeeList(newAttendeeList);
-        assertEquals(newAttendeeList, eventDetails.getAttendeeList());
-    }
 
     @Test
     public void testGetTotalCheckIn() {
