@@ -36,7 +36,7 @@ public class AdminProfileActivity extends AppCompatActivity {
     private ArrayList<String> imageDataList;
     private FirebaseFirestore firestore;
     private Button backButton;
-    private CollectionReference eventsRef;
+    private CollectionReference profileRef;
     private ArrayAdapter<String> imagesArrayAdapter;
 
     @Override
@@ -49,7 +49,7 @@ public class AdminProfileActivity extends AppCompatActivity {
         imageDataList = new ArrayList<>();
         backButton = findViewById(R.id.backButton);
         firestore = FirebaseFirestore.getInstance();
-        eventsRef = firestore.collection("inviteQrCodes");
+        profileRef = firestore.collection("inviteQrCodes");
         imagesArrayAdapter = new ArrayAdapter<String>( AdminProfileActivity.this,
                 R.layout.event_list_textview, R.id.itemTextView, imageDataList);
         ListView imageList = findViewById(R.id.profile_list_view);
@@ -60,7 +60,13 @@ public class AdminProfileActivity extends AppCompatActivity {
          * @param : List<String> list1
          * @return : void
          */
-
+        readData(new MyCallback() {
+            @Override
+            public void onCallback(List<String> list1) {
+                imageDataList = (ArrayList<String>) list1;
+                imagesArrayAdapter.notifyDataSetChanged();
+            }
+        });
     }
     /**
      * Interface Callback
@@ -78,7 +84,7 @@ public class AdminProfileActivity extends AppCompatActivity {
      */
 
     public void readData(MyCallback myCallback) {
-        eventsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        profileRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
