@@ -37,7 +37,7 @@ public class AdminImagesActivity extends AppCompatActivity {
     private ArrayList<String> imageDataList;
     private FirebaseFirestore firestore;
     private Button backButton;
-    private CollectionReference eventsRef;
+    private CollectionReference eventImagesRef;
     private ArrayAdapter<String> imagesArrayAdapter;
 
 
@@ -51,7 +51,7 @@ public class AdminImagesActivity extends AppCompatActivity {
         imageDataList = new ArrayList<>();
         backButton = findViewById(R.id.backButton);
         firestore = FirebaseFirestore.getInstance();
-        eventsRef = firestore.collection("inviteQrCodes");
+        eventImagesRef = firestore.collection("inviteQrCodes");
         imagesArrayAdapter = new ArrayAdapter<String>( AdminImagesActivity.this,
                 R.layout.event_list_textview, R.id.itemTextView, imageDataList);
         ListView imageList = findViewById(R.id.images_list_view);
@@ -86,7 +86,7 @@ public class AdminImagesActivity extends AppCompatActivity {
      */
 
     public void readData(MyCallback myCallback) {
-        eventsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        eventImagesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
