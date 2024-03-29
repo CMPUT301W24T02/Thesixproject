@@ -128,7 +128,10 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
             clearAttendeeInfo();
         }
 
-        viewProfile.setOnClickListener(v -> startActivity(new Intent(AttendeeMainActivity.this, AttendeeProfileActivity.class)));
+        viewProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(AttendeeMainActivity.this, AttendeeProfileActivity.class);
+            startActivity(intent);
+        });
 
         //String finalDeviceID = deviceID;
         /*
