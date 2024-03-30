@@ -18,9 +18,10 @@ public class EventDetails {
     private Long eventNum;
     private String description;
     private String name;
-    private List<String> attendeeList;
     private List<Long> checkInCountList;
+    private List<String> attendeeIDList;
     private Long totalCheckIn;
+    private List<String> signUpIDList;
 
     /**
      Constructor for event Details
@@ -29,16 +30,18 @@ public class EventDetails {
      * @return : Uri
      **/
     public EventDetails(String eventImageData, String inviteQrImageData, String promoQrImageData, long eventNum, String eventDescription,
-                        String eventName, List<String> attendeeList, List<Long> checkIn, Long totalCheckIn) {
+                        String eventName, List<Long> checkIn, Long totalCheckIn, List<String> attendeeIDList, List<String> signUpIDList) {
         this.eventImageData = eventImageData;
         this.inviteQrImageData = inviteQrImageData;
         this.promoQrImageData = promoQrImageData;
         this.eventNum = eventNum;
         this.description = eventDescription;
         this.name = eventName;
-        this.attendeeList = attendeeList;
+
         this.checkInCountList = checkIn;
         this.totalCheckIn = totalCheckIn;
+        this.attendeeIDList = attendeeIDList;
+        this.signUpIDList = signUpIDList;
     }
 
     /**
@@ -155,17 +158,6 @@ public class EventDetails {
 
 
 
-    public List<String> getAttendeeList() {
-        return attendeeList;
-    }
-    /**
-     setAttendeeList(List<String> attendeeList) sets the attendee list.
-     * @param : List<string> attendeeList
-     * @return : void
-     **/
-    public void setAttendeeList(List<String> attendeeList) {
-        this.attendeeList = attendeeList;
-    }
 
     public Long getTotalCheckIn() {
         return totalCheckIn;
@@ -181,5 +173,21 @@ public class EventDetails {
 
     public void setCheckInCountList(List<Long> checkInCountList) {
         this.checkInCountList = checkInCountList;
+    }
+
+    public List<String> getAttendeeIDList() {
+        return attendeeIDList;
+    }
+
+    public void setAttendeeIDList(List<String> attendeeIDList) {
+        this.attendeeIDList = attendeeIDList;
+    }
+
+    public List<String> getSignUpIDList() {
+        return signUpIDList;
+    }
+
+    public void setSignUpIDList(List<String> signUpIDList) {
+        this.signUpIDList = signUpIDList;
     }
 }

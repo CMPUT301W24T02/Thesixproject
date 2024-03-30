@@ -38,19 +38,21 @@ public class QrCodeDB {
     Saving the Invite QR code to database
      @param : String deviceid , EventDetails eventdetails
      **/
-    public void saveInviteQRCode(String deviceID, EventDetails eventdetail) {
+    public void saveInviteQRCode(String deviceID, EventDetails eventdetail,Long num) {
         firestore.collection("inviteQrCodes")
-                .add(eventdetail)
+                .document(String.valueOf(num))
+                .set(eventdetail)
                 .addOnSuccessListener(documentReference ->
-                        Log.d("FirestoreHelper", "DocumentSnapshot added with ID: " + documentReference.getId()))
+                        Log.d("FirestoreHelper", "DocumentSnapshot added with ID: "))
                 .addOnFailureListener(e ->
                         Log.e("FirestoreHelper", "Error adding document", e));
         firestore.collection("OrganizerdevicesDB")
                 .document(deviceID)
                 .collection("event")
-                .add(eventdetail)
+                .document(String.valueOf(num))
+                .set(eventdetail)
                 .addOnSuccessListener(documentReference ->
-                        Log.d("FirestoreHelper", "DocumentSnapshot added with ID: " + documentReference.getId()))
+                        Log.d("FirestoreHelper", "DocumentSnapshot added with ID: "))
                 .addOnFailureListener(e ->
                         Log.e("FirestoreHelper", "Error adding document", e));
 
@@ -109,6 +111,7 @@ public class QrCodeDB {
                 .document(deviceID);
         return documentReference;
     }
+
 
 
 

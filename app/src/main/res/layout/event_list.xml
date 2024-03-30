@@ -29,7 +29,7 @@
         android:id="@+id/event_list"
         android:layout_width="410dp"
         android:layout_height="504dp"
-        android:background="@color/white"
+        android:background="@color/backgroundBlack"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

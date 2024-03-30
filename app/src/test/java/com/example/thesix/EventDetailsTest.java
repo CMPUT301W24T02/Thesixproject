@@ -19,6 +19,13 @@ public class EventDetailsTest {
         List<Long> checkInCountList = new ArrayList<>();
         checkInCountList.add(10L);
         checkInCountList.add(20L);
+        List<String> attendeeIDList = new ArrayList<>();
+        attendeeList.add("Attendee 1");
+        attendeeList.add("Attendee 2");
+        List<String> sighUpIDList = new ArrayList<>();
+        attendeeList.add("Attendee 1");
+        attendeeList.add("Attendee 2");
+
 
         eventDetails = new EventDetails(
                 "eventImageData",
@@ -27,9 +34,10 @@ public class EventDetailsTest {
                 123L,
                 "description",
                 "name",
-                attendeeList,
                 checkInCountList,
-                30L
+                30L,
+                attendeeIDList,
+                sighUpIDList
         );
     }
 
@@ -99,22 +107,7 @@ public class EventDetailsTest {
         assertEquals("newPromoQrImageData", eventDetails.getPromoQrImageData());
     }
 
-    @Test
-    public void testGetAttendeeList() {
-        List<String> expectedAttendeeList = new ArrayList<>();
-        expectedAttendeeList.add("Attendee 1");
-        expectedAttendeeList.add("Attendee 2");
-        assertEquals(expectedAttendeeList, eventDetails.getAttendeeList());
-    }
 
-    @Test
-    public void testSetAttendeeList() {
-        List<String> newAttendeeList = new ArrayList<>();
-        newAttendeeList.add("New Attendee 1");
-        newAttendeeList.add("New Attendee 2");
-        eventDetails.setAttendeeList(newAttendeeList);
-        assertEquals(newAttendeeList, eventDetails.getAttendeeList());
-    }
 
     @Test
     public void testGetTotalCheckIn() {
