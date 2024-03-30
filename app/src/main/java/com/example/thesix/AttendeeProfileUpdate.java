@@ -32,7 +32,7 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
         nameEditText = findViewById(R.id.name_editText);
         contactEditText = findViewById(R.id.contact_editText);
         homePageEditText = findViewById(R.id.homePage_editText);
-        profileImageView = findViewById(R.id.profile_picture); // Ensure this ID matches your layout
+        profileImageView = findViewById(R.id.profile_picture);
         submitButton = findViewById(R.id.submit_button);
         backButton = findViewById(R.id.backButton);
 
@@ -48,6 +48,7 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
             String name = nameEditText.getText().toString();
             String contact = contactEditText.getText().toString();
             String homePage = homePageEditText.getText().toString();
+            String imagePath = prefs.getString("profileImagePath", "");
 
             // Check if the name is entered
             if(name.isEmpty()) {
@@ -56,9 +57,8 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
                 return; // Stop executing more code, giving the user a chance to enter the name
             }
 
-            // Use AttendeeDB to save attendee info
             AttendeeDB attendeeDB = new AttendeeDB();
-            attendeeDB.saveAttendeeInfo(name, contact, homePage);
+            attendeeDB.saveAttendeeInfo(name, contact, homePage, imagePath);
 
             // Save profile data and show confirmation
             saveProfileData(prefs);
@@ -75,6 +75,7 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
         editor.putString("name", nameEditText.getText().toString());
         editor.putString("contact", contactEditText.getText().toString());
         editor.putString("homePage", homePageEditText.getText().toString());
+        // Do not save the image path here, as it's already saved in onActivityResult
         editor.apply();
     }
 
@@ -95,7 +96,6 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
             Uri selectedImage = data.getData();
             String imagePath = saveImageToInternalStorage(selectedImage);
 
-            // Save the image path to SharedPreferences
             SharedPreferences prefs = getSharedPreferences("AttendeePrefs", MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("profileImagePath", imagePath);
