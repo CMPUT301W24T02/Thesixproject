@@ -49,13 +49,18 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
             String contact = contactEditText.getText().toString();
             String homePage = homePageEditText.getText().toString();
 
+            // Check if the name is entered
+            if(name.isEmpty()) {
+                // Show a Toast message and return early
+                Toast.makeText(AttendeeProfileUpdate.this, "Please enter your name", Toast.LENGTH_SHORT).show();
+                return; // Stop executing more code, giving the user a chance to enter the name
+            }
+
             // Use AttendeeDB to save attendee info
             AttendeeDB attendeeDB = new AttendeeDB();
             attendeeDB.saveAttendeeInfo(name, contact, homePage);
 
-            // Show a message to the user
-            //Toast.makeText(AttendeeProfileUpdate.this, "Information Saved to Firestore", Toast.LENGTH_SHORT).show();
-
+            // Save profile data and show confirmation
             saveProfileData(prefs);
             Toast.makeText(AttendeeProfileUpdate.this, "Profile Updated", Toast.LENGTH_SHORT).show();
             setResult(RESULT_OK);
