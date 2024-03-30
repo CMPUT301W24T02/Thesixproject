@@ -71,7 +71,8 @@ public class EventDetailsAdapter extends AppCompatActivity {
         firestoreHelper = new QrCodeDB();
 
 
-        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
+        //String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
+        String deviceID ="27150c669e8b1dc4";
         eventsRef = firestoreHelper.getOldQrRef(deviceID);
         eventnameArrayAdapter = new ArrayAdapter<String>(
                 EventDetailsAdapter.this,
@@ -90,8 +91,8 @@ public class EventDetailsAdapter extends AppCompatActivity {
                 Log.d("callback", "3");
                 eventnameDataList = (ArrayList<String>) list1;
                 eventNumList = (ArrayList<Long>) list2;
-                Log.d("callback", "1" + eventnameDataList.get(0));
-                Log.d("callback", "2");
+                //Log.d("callback", "1" + eventnameDataList.get(0));
+                //Log.d("callback", "2");
                 eventnameArrayAdapter.notifyDataSetChanged();
             }
         });
