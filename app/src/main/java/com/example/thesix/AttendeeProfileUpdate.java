@@ -45,6 +45,17 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
         });
 
         submitButton.setOnClickListener(v -> {
+            String name = nameEditText.getText().toString();
+            String contact = contactEditText.getText().toString();
+            String homePage = homePageEditText.getText().toString();
+
+            // Use AttendeeDB to save attendee info
+            AttendeeDB attendeeDB = new AttendeeDB();
+            attendeeDB.saveAttendeeInfo(name, contact, homePage);
+
+            // Show a message to the user
+            //Toast.makeText(AttendeeProfileUpdate.this, "Information Saved to Firestore", Toast.LENGTH_SHORT).show();
+
             saveProfileData(prefs);
             Toast.makeText(AttendeeProfileUpdate.this, "Profile Updated", Toast.LENGTH_SHORT).show();
             setResult(RESULT_OK);
