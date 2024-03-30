@@ -2,6 +2,7 @@ package com.example.thesix;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +17,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -32,7 +37,7 @@ import android.location.LocationManager;
 import android.widget.Toast;
 import android.provider.Settings;
 
-
+import java.util.List;
 
 
 public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsListener{
@@ -49,9 +54,11 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
 
     private AttendeeDB database;
     private Location lastKnownLocation; // To store the latest location
-
-
-
+    private String deviceID;
+    private String organizerID;
+    private Long eventNum;
+    private List<Long> checkInCountList;
+    private List<String> attendeeIDList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +66,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         setContentView(R.layout.attendee_main_activity);
         scanButton = findViewById(R.id.scanButton);
         viewProfile = findViewById(R.id.viewAttendeeProfile);
+        deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         //getLocation = findViewById(R.id.locationButton);
         //coordinates = findViewById(R.id.locationinfo);
         database = new AttendeeDB();
@@ -116,11 +124,13 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
             }
         });
 
-        viewProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(AttendeeMainActivity.this, AttendeeProfileActivity.class));
-            }
+        if (isFirstLaunch()) {
+            clearAttendeeInfo();
+        }
+
+        viewProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(AttendeeMainActivity.this, AttendeeProfileActivity.class);
+            startActivity(intent);
         });
 
         //String finalDeviceID = deviceID;
@@ -172,6 +182,8 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                     contents = contents.replace("promo","");
                     testing.setText(contents);
                     contentsArray = contents.split("device id", 2);
+                    organizerID = contentsArray[1];
+                    eventNum = Long.valueOf(contentsArray[0]);
                     Log.d("scanner", contentsArray[0] + contentsArray[1]);
                     promoData(new PromoDataCallback() {
                         @Override
@@ -182,6 +194,8 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                             bundle.putString("imageData", imageData);
                             bundle.putString("name", name);
                             bundle.putString("description", description);
+                            bundle.putString("organizerID",organizerID);
+                            bundle.putLong("eventNum",eventNum);
                             i.putExtras(bundle);
                             startActivity(i);
                         }
@@ -190,9 +204,60 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
 
                 }
                 else {
+                    //https://cloud.google.com/firestore/docs/samples/firestore-data-set-array-operations
                     contentsArray = contents.split("device id", 2);
                     Log.d("scanner", contentsArray[0] + contentsArray[1]);
-                    testing.setText(contents);
+                    Bundle inviteBundle = new Bundle();
+                    inviteBundle.putLong("num",Long.parseLong(contentsArray[0]));
+                    inviteBundle.putString("organizerDeviceID", contentsArray[1]);
+                    organizerID = contentsArray[1];
+                    eventNum = Long.valueOf(contentsArray[0]);
+                    Intent i = new Intent(AttendeeMainActivity.this,AttendeeProfileActivity.class);
+                    updateInvite(new InviteCallback() {
+                        @Override
+                        public void onInviteCallback(List<String> attendeeIDList, List<Long> inviteCountList) {
+                            if (attendeeIDList.contains(deviceID)) {
+                                int index = attendeeIDList.indexOf(deviceID);
+                                Long value = inviteCountList.get(index) + 1;
+                                inviteCountList.set(index,value);
+                            }
+                            else {
+                                attendeeIDList.add(deviceID);
+                                inviteCountList.add(0L);
+                            }
+                            firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum))
+                                    .update("attendeeIDList",attendeeIDList).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("update", "DocumentSnapshot successfully updated!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w("update", "Error updating document", e);
+                                        }
+                                    });
+                            firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum))
+                                    .update("inviteCountList",inviteCountList)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("update", "DocumentSnapshot successfully updated!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w("update", "Error updating document", e);
+                                        }
+                                    });
+                        }
+                    });
+                    i.putExtras(inviteBundle);
+                    startActivity(i);
+
+
                 }
 
             }
@@ -232,6 +297,31 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     private interface PromoDataCallback {
         void onPromoDataCallback(String imageData, String name, String description);
     }
+    private interface InviteCallback {
+        void onInviteCallback(List<String> attendeeIDList, List<Long> inviteCountList);
+    }
+    public void updateInvite(InviteCallback inviteCallback) {
+        firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum)).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("scan1", "DocumentSnapshot data: " + document.getData());
+                        attendeeIDList = (List<String>) document.get("attendeeIDList");
+                        checkInCountList = (List<Long>) document.get("checkInCountList");
+                        inviteCallback.onInviteCallback(attendeeIDList,checkInCountList);
+                    } else {
+                        Log.d("scan1", "No such document");
+                    }
+                } else {
+                    Log.d("scan1", "get failed with ", task.getException());
+                }
+            }
+        });
+    }
+
+
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -280,5 +370,19 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                         promoDataCallback.onPromoDataCallback(imageData,name,description);
                     }
                 });
+    }
+
+    private boolean isFirstLaunch() {
+        // Implement logic to determine if this is the first launch of the app.
+        // This could be based on a specific flag in SharedPreferences that you set on launch and clear on exit.
+        // For simplicity, this example always returns true, but you should implement this based on your app's lifecycle.
+        return true;
+    }
+
+    private void clearAttendeeInfo() {
+        SharedPreferences sharedPrefs = getSharedPreferences("AttendeePrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.clear();
+        editor.apply();
     }
 }

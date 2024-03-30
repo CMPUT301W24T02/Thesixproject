@@ -57,7 +57,6 @@ public class AttendeeListActivity extends AppCompatActivity {
     String imageBaseString;
     private OrganizerMainActivity oma = new OrganizerMainActivity();
 
-
     /**
      * Initializes UI components such as buttons and a list view in the onCreate method.
      * @param : @Nullable Bundle savedInstanceState
@@ -66,7 +65,6 @@ public class AttendeeListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        Log.d("hihi", "here1");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_list_screen);
         firestoreHelper = new QrCodeDB();
@@ -77,7 +75,6 @@ public class AttendeeListActivity extends AppCompatActivity {
         notificationButton = findViewById(R.id.notificationButton);
         attendeeList = findViewById(R.id.attendee_list_view);
         totalcheckinNumber = findViewById(R.id.totalCheckin);
-        Log.d("hihi", deviceID);
         QrRef = firestoreHelper.getOldQrRef(deviceID);
         Intent mIntent = getIntent();
         dataList = new ArrayList<>();
@@ -88,17 +85,14 @@ public class AttendeeListActivity extends AppCompatActivity {
         // Set your adapter to show the List of Attendees
         attendeeList.setAdapter(attendeeAdapter);
 
-
         setAttendeeList(new AttendeeCallback() {
             @Override
             public void onAttendeeCallback(List<Attendee> list1) {
                 // Create the array to hold invited guests
                 // Combine Lists
 
-
                 attendeeAdapter.notifyDataSetChanged();
 
-                Log.d("here", "here2 " + totalCount);
                 String total_count = Long.toString(totalCount);
                 totalcheckinNumber.setText(total_count);
                 String text = +totalCount + " people have checked into " + eventName;
@@ -167,32 +161,22 @@ public class AttendeeListActivity extends AppCompatActivity {
      */
 
     public void setAttendeeList(AttendeeCallback attendeeCallback) {
-        Log.d("hihi", "here3: " + eventNum);
         QrRef.whereEqualTo("eventNum", eventNum).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        Log.d("hihi", "here4");
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("hihi", "here5");
                                 attendeeString = (List<String>) document.get("attendeeList");
                                 checkinCount = (List<Long>) document.get("checkIn");
                                 totalCount = (long) document.get("totalCheckIn");
                                 eventName = (String) document.get("name");
-                                Log.d("hih", "here6 " +totalCount);
                                 for (int i = 0; i < attendeeString.size(); i++) {
                                     Attendee attendee = new Attendee(attendeeString.get(i), checkinCount.get(i));
                                     dataList.add(attendee);
                                 }
-                                Log.d("hihi", document.getId() + " => " + document.getData());
                             }
-                            Log.d("hihi", "here6");
-                        } else {
-                            Log.d("getevent", "Error getting documents: ", task.getException());
-                            Log.d("hihi", "here7");
                         }
-                        Log.d("hihi", "here8");
                         attendeeCallback.onAttendeeCallback(dataList);
                     }
 
