@@ -41,7 +41,7 @@ public class AttendeeListActivity extends AppCompatActivity {
     private Button mapButton;
     private Button notificationButton;
     private TextView totalcheckinNumber;
-    CollectionReference QrRef,checkedinRef;
+    CollectionReference QrRef;
     long eventNum;
     ListView attendeeList;
     AttendeeListAdapter attendeeAdapter;   // acts as a communication bridge between front and back end
@@ -55,7 +55,6 @@ public class AttendeeListActivity extends AppCompatActivity {
     private QrCodeDB firestoreHelper;
     String deviceID;
     String imageBaseString;
-    private Button showmap;
     private OrganizerMainActivity oma = new OrganizerMainActivity();
 
 
@@ -71,7 +70,8 @@ public class AttendeeListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_list_screen);
         firestoreHelper = new QrCodeDB();
-        deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        //deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        String deviceID ="27150c669e8b1dc4";
         backButton = findViewById(R.id.backButton);
         mapButton = findViewById(R.id.mapButton);
         notificationButton = findViewById(R.id.notificationButton);
@@ -111,15 +111,6 @@ public class AttendeeListActivity extends AppCompatActivity {
             }
         });
 
-        showmap = findViewById(R.id.mapButton);
-
-        showmap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {//
-                Intent intent = new Intent(AttendeeListActivity.this,MapsActivity.class);
-                startActivity(intent);
-            }
-        });
 
         /**
          * Utilizes buttons (backButton, mapButton, notificationButton) to navigate to different activities.
@@ -133,17 +124,20 @@ public class AttendeeListActivity extends AppCompatActivity {
 
             }
         });
+        /*
         /**
          * Utilizes buttons (backButton, mapButton, notificationButton) to navigate to different activities.
          * @param : View
          * @return :
          */
+
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AttendeeListActivity.this, MapActivity.class));
+                startActivity(new Intent(AttendeeListActivity.this, MapsActivity.class));
             }
         });
+
         /**
          * Utilizes buttons (backButton, mapButton, notificationButton) to navigate to different activities.
          * @param :View
