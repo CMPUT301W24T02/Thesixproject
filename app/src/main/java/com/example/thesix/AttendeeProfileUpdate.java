@@ -12,8 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,19 +24,21 @@ import java.io.InputStream;
 public class AttendeeProfileUpdate extends AppCompatActivity {
     private EditText nameEditText, contactEditText, homePageEditText;
     private ImageView profileImageView;
-    private Button submitButton, backButton;
+    private Button submitButton, backButton, removePictureButton; // Added removePictureButton
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_profile_update);
 
+        // Initialize views
         nameEditText = findViewById(R.id.name_editText);
         contactEditText = findViewById(R.id.contact_editText);
         homePageEditText = findViewById(R.id.homePage_editText);
         profileImageView = findViewById(R.id.profile_picture);
         submitButton = findViewById(R.id.submit_button);
         backButton = findViewById(R.id.backButton);
+        removePictureButton = findViewById(R.id.remove_picture_button); // Initialize the remove button
 
         SharedPreferences prefs = getSharedPreferences("AttendeePrefs", MODE_PRIVATE);
         loadExistingData(prefs);
@@ -51,14 +55,21 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
             String imagePath = prefs.getString("profileImagePath", "");
 
             // Check if the name is entered
-            if(name.isEmpty()) {
-                // Show a Toast message and return early
+            if (name.isEmpty()) {
                 Toast.makeText(AttendeeProfileUpdate.this, "Please enter your name", Toast.LENGTH_SHORT).show();
-                return; // Stop executing more code, giving the user a chance to enter the name
+                return;
             }
 
             AttendeeDB attendeeDB = new AttendeeDB();
-            attendeeDB.saveAttendeeInfo(name, contact, homePage, imagePath);
+            attendeeDB.saveAttendeeInfo(name, contact, homePage, imagePath, new AttendeeDB.FirestoreCallback() {
+                @Override
+                public void onCallback(String documentId) {
+                    // Store the document ID in SharedPreferences for later use
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("documentId", documentId);
+                    editor.apply();
+                }
+            });
 
             // Save profile data and show confirmation
             saveProfileData(prefs);
@@ -68,6 +79,8 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
         });
 
         backButton.setOnClickListener(v -> finish());
+
+        removePictureButton.setOnClickListener(v -> removeProfilePicture(prefs));
     }
 
     private void saveProfileData(SharedPreferences prefs) {
@@ -75,7 +88,6 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
         editor.putString("name", nameEditText.getText().toString());
         editor.putString("contact", contactEditText.getText().toString());
         editor.putString("homePage", homePageEditText.getText().toString());
-        // Do not save the image path here, as it's already saved in onActivityResult
         editor.apply();
     }
 
@@ -86,6 +98,25 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
         String imagePath = prefs.getString("profileImagePath", null);
         if (imagePath != null) {
             profileImageView.setImageURI(Uri.fromFile(new File(imagePath)));
+        }
+    }
+
+    private void removeProfilePicture(SharedPreferences prefs) {
+        String documentId = prefs.getString("documentId", "");
+        if (!documentId.isEmpty()) {
+            AttendeeDB attendeeDB = new AttendeeDB();
+            attendeeDB.removeProfileImage(documentId);
+
+            // Also, clear the profile image path from SharedPreferences
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.remove("profileImagePath");
+            editor.apply();
+
+            // Reset the ImageView to a default image
+            profileImageView.setImageResource(android.R.drawable.ic_menu_gallery); // Placeholder for default/no image
+            Toast.makeText(this, "Profile picture removed", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "No profile picture to remove", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -89,11 +89,24 @@ public class AttendeeProfileActivity extends AppCompatActivity {
         contactTextView.setText(prefs.getString("contact", ""));
         homePageTextView.setText(prefs.getString("homePage", ""));
 
-        // Retrieve the path for the profile image
-        String imagePath = prefs.getString("profileImagePath", null);
-        if (imagePath != null) {
-            // Set the profile image using its path
-            profilePicture.setImageURI(Uri.fromFile(new File(imagePath)));
+        boolean isProfilePictureRemoved = prefs.getBoolean("isProfilePictureRemoved", false);
+        if (isProfilePictureRemoved) {
+            // Generate and set the bitmap as the profile picture
+            profileBitmap = createBitmap("testing");
+            profilePicture.setImageBitmap(profileBitmap);
+            // Reset the flag
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("isProfilePictureRemoved", false);
+            editor.apply();
+        } else {
+            String imagePath = prefs.getString("profileImagePath", null);
+            if (imagePath != null) {
+                profilePicture.setImageURI(Uri.fromFile(new File(imagePath)));
+            } else {
+                // Handle case where there is no imagePath, but also isProfilePictureRemoved is false
+                profileBitmap = createBitmap("testing");
+                profilePicture.setImageBitmap(profileBitmap);
+            }
         }
     }
     private Bitmap createBitmap(String string) {
