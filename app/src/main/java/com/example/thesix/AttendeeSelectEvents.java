@@ -31,6 +31,13 @@ public class AttendeeSelectEvents extends AppCompatActivity {
             }
         });
 
+        allEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AttendeeSelectEvents.this, AttendeeAllEventsActivity.class));
+            }
+        });
+
     }
 }
 
