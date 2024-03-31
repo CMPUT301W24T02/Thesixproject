@@ -41,6 +41,7 @@ public class AdminImagesActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private Button backButton;
     private CollectionReference eventImagesRef;
+    private CollectionReference profileImagesRef;
     private CustomImageAdapter imagesArrayAdapter;
 
 
@@ -55,6 +56,8 @@ public class AdminImagesActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         firestore = FirebaseFirestore.getInstance();
         eventImagesRef = firestore.collection("inviteQrCodes");
+        profileImagesRef = firestore.collection("AttendeeProfileDB");
+        
         imagesArrayAdapter = new CustomImageAdapter(AdminImagesActivity.this, imageDataList);
         ListView imageList = findViewById(R.id.images_list_view);
         imageList.setAdapter(imagesArrayAdapter);
@@ -78,6 +81,7 @@ public class AdminImagesActivity extends AppCompatActivity {
                 imagesArrayAdapter.notifyDataSetChanged();
             }
         });
+
     }
     /**
      * Decodes base64String to a Bitmap
@@ -89,6 +93,7 @@ public class AdminImagesActivity extends AppCompatActivity {
         byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
+
 
     /**
      * Interface Callback
@@ -112,6 +117,18 @@ public class AdminImagesActivity extends AppCompatActivity {
                 List<String> base64Strings = new ArrayList<>();
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                     String base64String = document.getString("eventImageData");
+                    base64Strings.add(base64String);
+                }
+                myCallback.onCallback(base64Strings);
+            }
+        });
+
+        profileImagesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                List<String> base64Strings = new ArrayList<>();
+                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    String base64String = document.getString("profile_image");
                     base64Strings.add(base64String);
                 }
                 myCallback.onCallback(base64Strings);
