@@ -53,7 +53,7 @@ public class AdminImagesActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         eventImagesRef = firestore.collection("inviteQrCodes");
         imagesArrayAdapter = new ArrayAdapter<String>( AdminImagesActivity.this,
-                R.layout.event_list_textview, R.id.itemTextView, imageDataList);
+                R.layout.image_list_content, R.id.image_list, imageDataList);
         ListView imageList = findViewById(R.id.images_list_view);
         imageList.setAdapter(imagesArrayAdapter);
 
