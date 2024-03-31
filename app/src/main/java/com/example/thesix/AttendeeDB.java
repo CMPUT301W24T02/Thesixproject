@@ -28,19 +28,25 @@ public class AttendeeDB {
 
     private FirebaseFirestore firestore;
 
+    // Callback interface for returning document ID after a successful Firestore operation.
+    public interface FirestoreCallback {
+        void onCallback(String documentId);
+    }
+
     public AttendeeDB() {
         firestore = FirebaseFirestore.getInstance();
     }
 
     /**
-     * Saves attendee information to Firestore.
+     * Saves attendee information to Firestore and uses a callback to return the document ID.
      *
      * @param name The name of the attendee.
      * @param contact The contact number of the attendee.
      * @param homePage The home page of the attendee.
      * @param imagePath The profile image of the attendee.
+     * @param callback The callback interface for returning the document ID.
      */
-    public void saveAttendeeInfo(String name, String contact, String homePage, String imagePath) {
+    public void saveAttendeeInfo(String name, String contact, String homePage, String imagePath, FirestoreCallback callback) {
         Map<String, Object> attendee = new HashMap<>();
         attendee.put("name", name);
         attendee.put("contact_number", contact);
@@ -52,7 +58,10 @@ public class AttendeeDB {
 
         firestore.collection("AttendeeProfileDB")
                 .add(attendee)
-                .addOnSuccessListener(documentReference -> Log.d("AttendeeDB", "DocumentSnapshot written with ID: " + documentReference.getId()))
+                .addOnSuccessListener(documentReference -> {
+                    Log.d("AttendeeDB", "DocumentSnapshot written with ID: " + documentReference.getId());
+                    callback.onCallback(documentReference.getId()); // Invoke callback with document ID
+                })
                 .addOnFailureListener(e -> Log.w("AttendeeDB", "Error adding document", e));
     }
 
@@ -76,6 +85,14 @@ public class AttendeeDB {
             Log.e("AttendeeDB", "Error encoding image to Base64: " + e.getMessage());
             return null;
         }
+    }
+
+    // Added method to remove the profile image from Firestore
+    public void removeProfileImage(String documentId) {
+        firestore.collection("AttendeeProfileDB").document(documentId)
+                .update("profile_image", FieldValue.delete()) // This will remove the field
+                .addOnSuccessListener(aVoid -> Log.d("AttendeeDB", "Profile image successfully removed"))
+                .addOnFailureListener(e -> Log.e("AttendeeDB", "Error removing profile image", e));
     }
 
     public void saveUserLocation(String deviceID, Location location) {

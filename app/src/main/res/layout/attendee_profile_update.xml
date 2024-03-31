@@ -22,6 +22,18 @@
         app:srcCompat="@drawable/default_avatar"
         tools:ignore="MissingConstraints" />
 
+    <Button
+        android:id="@+id/remove_picture_button"
+        android:layout_width="45dp"
+        android:layout_height="48dp"
+        android:text="X"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/black"
+        app:layout_constraintEnd_toEndOf="@id/profile_picture"
+        app:layout_constraintTop_toTopOf="@id/profile_picture"
+        android:padding="8dp"/>
+
     <EditText
         android:id="@+id/name_editText"
         android:layout_width="250dp"
