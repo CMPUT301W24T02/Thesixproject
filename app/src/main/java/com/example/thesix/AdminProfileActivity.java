@@ -33,7 +33,7 @@ import java.util.List;
 public class AdminProfileActivity extends AppCompatActivity {
 
     private Button back2AdminButton;
-    private ArrayList<String> imageDataList;
+    private ArrayList<String> profileImageDataList;
     private FirebaseFirestore firestore;
     private Button backButton;
     private CollectionReference profileRef;
@@ -46,12 +46,12 @@ public class AdminProfileActivity extends AppCompatActivity {
 
         back2AdminButton = findViewById(R.id.backButton);
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
-        imageDataList = new ArrayList<>();
+        profileImageDataList = new ArrayList<>();
         backButton = findViewById(R.id.backButton);
         firestore = FirebaseFirestore.getInstance();
         profileRef = firestore.collection("inviteQrCodes");
         imagesArrayAdapter = new ArrayAdapter<String>( AdminProfileActivity.this,
-                R.layout.event_list_textview, R.id.itemTextView, imageDataList);
+                R.layout.profile_list_content, R.id.profile_text, profileImageDataList);
         ListView imageList = findViewById(R.id.profile_list_view);
         imageList.setAdapter(imagesArrayAdapter);
 
@@ -63,7 +63,7 @@ public class AdminProfileActivity extends AppCompatActivity {
         readData(new MyCallback() {
             @Override
             public void onCallback(List<String> list1) {
-                imageDataList = (ArrayList<String>) list1;
+                profileImageDataList = (ArrayList<String>) list1;
                 imagesArrayAdapter.notifyDataSetChanged();
             }
         });
@@ -89,9 +89,9 @@ public class AdminProfileActivity extends AppCompatActivity {
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                     String base64String = document.getString("qrImageData");
-                    imageDataList.add(base64String);
+                    profileImageDataList.add(base64String);
                 }
-                myCallback.onCallback(imageDataList);
+                myCallback.onCallback(profileImageDataList);
             }
         });
 
