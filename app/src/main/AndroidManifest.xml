@@ -59,6 +59,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".OrganizerCreateActivity" />
+        <activity android:name=".AttendeeSelectEvents" />
         <activity android:name=".OrganizerMainActivity" />
         <activity android:name=".AdminActivity" />
         <activity android:name=".AdminEventsActivity" />
