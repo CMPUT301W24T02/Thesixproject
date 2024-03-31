@@ -3,9 +3,11 @@ package com.example.thesix;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -33,11 +35,11 @@ import java.util.List;
 public class AdminProfileActivity extends AppCompatActivity {
 
     private Button back2AdminButton;
-    private ArrayList<String> profileImageDataList;
+    private ArrayList<Bitmap> profileImageDataList;
     private FirebaseFirestore firestore;
     private Button backButton;
     private CollectionReference profileRef;
-    private ArrayAdapter<String> imagesArrayAdapter;
+    private AdminProfileListAdapter imagesArrayAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,9 +51,8 @@ public class AdminProfileActivity extends AppCompatActivity {
         profileImageDataList = new ArrayList<>();
         backButton = findViewById(R.id.backButton);
         firestore = FirebaseFirestore.getInstance();
-        profileRef = firestore.collection("inviteQrCodes");
-        imagesArrayAdapter = new ArrayAdapter<String>( AdminProfileActivity.this,
-                R.layout.profile_list_content, R.id.profile_text, profileImageDataList);
+        profileRef = firestore.collection("AttendeeProfileDB");
+        imagesArrayAdapter = new AdminProfileListAdapter(AdminProfileActivity.this, profileImageDataList);
         ListView imageList = findViewById(R.id.profile_list_view);
         imageList.setAdapter(imagesArrayAdapter);
 
@@ -63,11 +64,22 @@ public class AdminProfileActivity extends AppCompatActivity {
         readData(new MyCallback() {
             @Override
             public void onCallback(List<String> list1) {
-                profileImageDataList = (ArrayList<String>) list1;
+                for (String base64String: list1){
+                    Bitmap bitmap = decodeBase64(base64String);
+                    if (bitmap != null){
+                        profileImageDataList.add(bitmap);
+                    }
+                }
                 imagesArrayAdapter.notifyDataSetChanged();
             }
         });
     }
+
+    private Bitmap decodeBase64(String base64String) {
+        byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
+
     /**
      * Interface Callback
      * @param :List<String> list1
@@ -87,11 +99,12 @@ public class AdminProfileActivity extends AppCompatActivity {
         profileRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                List<String> base64Strings = new ArrayList<>();
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                    String base64String = document.getString("qrImageData");
-                    profileImageDataList.add(base64String);
+                    String base64String = document.getString("profile_image");
+                    base64Strings.add(base64String);
                 }
-                myCallback.onCallback(profileImageDataList);
+                myCallback.onCallback(base64Strings);
             }
         });
 
