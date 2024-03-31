@@ -79,8 +79,12 @@ public class AdminImagesActivity extends AppCompatActivity {
             }
         });
     }
-
-    // Method to decode Base64 string to Bitmap
+    /**
+     * Decodes base64String to a Bitmap
+     * @param : String base64String
+     * @return : void
+     */
+    // ChatGpt: prompt, convert string to bitmap
     private Bitmap decodeBase64(String base64String) {
         byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
@@ -100,7 +104,6 @@ public class AdminImagesActivity extends AppCompatActivity {
      * @param :MyCallback myCallback
      * @return :
      */
-
     // Reads data from Firestore
     public void readData(MyCallback myCallback) {
         eventImagesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -108,7 +111,7 @@ public class AdminImagesActivity extends AppCompatActivity {
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 List<String> base64Strings = new ArrayList<>();
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                    String base64String = document.getString("qrImageData");
+                    String base64String = document.getString("eventImageData");
                     base64Strings.add(base64String);
                 }
                 myCallback.onCallback(base64Strings);
