@@ -3,7 +3,10 @@ package com.example.thesix;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -34,11 +37,11 @@ import java.util.List;
  */
 public class AdminImagesActivity extends AppCompatActivity {
     private Button back2AdminButton;
-    private ArrayList<String> imageDataList;
+    private ArrayList<Bitmap> imageDataList;
     private FirebaseFirestore firestore;
     private Button backButton;
     private CollectionReference eventImagesRef;
-    private ArrayAdapter<String> imagesArrayAdapter;
+    private CustomImageAdapter imagesArrayAdapter;
 
 
     @Override
@@ -52,8 +55,7 @@ public class AdminImagesActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         firestore = FirebaseFirestore.getInstance();
         eventImagesRef = firestore.collection("inviteQrCodes");
-        imagesArrayAdapter = new ArrayAdapter<String>( AdminImagesActivity.this,
-                R.layout.event_list_textview, R.id.itemTextView, imageDataList);
+        imagesArrayAdapter = new CustomImageAdapter(AdminImagesActivity.this, imageDataList);
         ListView imageList = findViewById(R.id.images_list_view);
         imageList.setAdapter(imagesArrayAdapter);
 
@@ -65,11 +67,25 @@ public class AdminImagesActivity extends AppCompatActivity {
         readData(new MyCallback() {
             @Override
             public void onCallback(List<String> list1) {
-                imageDataList = (ArrayList<String>) list1;
+                // Convert Base64 strings to Bitmaps
+                for (String base64String : list1) {
+                    Bitmap bitmap = decodeBase64(base64String);
+                    if (bitmap != null) {
+                        imageDataList.add(bitmap);
+                    }
+                }
+                // Notify the adapter that the data set has changed
                 imagesArrayAdapter.notifyDataSetChanged();
             }
         });
     }
+
+    // Method to decode Base64 string to Bitmap
+    private Bitmap decodeBase64(String base64String) {
+        byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
+
     /**
      * Interface Callback
      * @param :List<String> list1
@@ -85,15 +101,17 @@ public class AdminImagesActivity extends AppCompatActivity {
      * @return :
      */
 
+    // Reads data from Firestore
     public void readData(MyCallback myCallback) {
         eventImagesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                List<String> base64Strings = new ArrayList<>();
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                     String base64String = document.getString("qrImageData");
-                    imageDataList.add(base64String);
+                    base64Strings.add(base64String);
                 }
-                myCallback.onCallback(imageDataList);
+                myCallback.onCallback(base64Strings);
             }
         });
 
