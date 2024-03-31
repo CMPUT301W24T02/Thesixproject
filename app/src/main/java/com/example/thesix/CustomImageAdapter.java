@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class CustomImageAdapter extends ArrayAdapter<Bitmap> {
 
     private Context context;
-    private ArrayList<Bitmap> data;
+    private ArrayList<Bitmap> image;
 
     /**
      * CustomImageAdapter to set context and data
@@ -29,7 +29,7 @@ public class CustomImageAdapter extends ArrayAdapter<Bitmap> {
     public CustomImageAdapter(Context context, ArrayList<Bitmap> data) {
         super(context, R.layout.image_list_content, data);
         this.context = context;
-        this.data = data;
+        this.image = data;
     }
 
     /**
@@ -45,7 +45,7 @@ public class CustomImageAdapter extends ArrayAdapter<Bitmap> {
         }
 
         ImageView imageView = convertView.findViewById(R.id.image_list);
-        imageView.setImageBitmap(data.get(position));
+        imageView.setImageBitmap(image.get(position));
 
         return convertView;
     }
