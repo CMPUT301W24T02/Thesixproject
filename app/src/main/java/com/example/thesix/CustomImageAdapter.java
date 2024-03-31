@@ -13,26 +13,39 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ * CustomImageAdapter class formats bitmap images in the List to be viewed
+ */
+
 public class CustomImageAdapter extends ArrayAdapter<Bitmap> {
 
-    private Context mContext;
-    private ArrayList<Bitmap> mData;
+    private Context context;
+    private ArrayList<Bitmap> data;
 
+    /**
+     * CustomImageAdapter to set context and data
+     * @param :Context context, ArrayList<Bitmap> data
+     */
     public CustomImageAdapter(Context context, ArrayList<Bitmap> data) {
         super(context, R.layout.image_list_content, data);
-        this.mContext = context;
-        this.mData = data;
+        this.context = context;
+        this.data = data;
     }
 
+    /**
+     * Getting ViewAdapter
+     * @param
+     * @return : View
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.image_list_content, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.image_list_content, parent, false);
         }
 
         ImageView imageView = convertView.findViewById(R.id.image_list);
-        imageView.setImageBitmap(mData.get(position));
+        imageView.setImageBitmap(data.get(position));
 
         return convertView;
     }
