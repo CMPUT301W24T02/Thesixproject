@@ -111,7 +111,7 @@ public class AdminImagesActivity extends AppCompatActivity {
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 List<String> base64Strings = new ArrayList<>();
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                    String base64String = document.getString("qrImageData");
+                    String base64String = document.getString("eventImageData");
                     base64Strings.add(base64String);
                 }
                 myCallback.onCallback(base64Strings);
