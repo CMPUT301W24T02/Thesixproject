@@ -65,6 +65,22 @@ public class AttendeeDB {
                 .addOnFailureListener(e -> Log.w("AttendeeDB", "Error adding document", e));
     }
 
+    public void updateAttendeeInfo(String documentId, String name, String contact, String homePage, String imagePath) {
+        Map<String, Object> attendee = new HashMap<>();
+        attendee.put("name", name);
+        attendee.put("contact_number", contact);
+        attendee.put("home_page", homePage);
+        String imageBase64 = encodeImageToBase64(imagePath);
+        if (imageBase64 != null) {
+            attendee.put("profile_image", imageBase64);
+        }
+
+        firestore.collection("AttendeeProfileDB").document(documentId)
+                .set(attendee)
+                .addOnSuccessListener(aVoid -> Log.d("AttendeeDB", "DocumentSnapshot successfully updated"))
+                .addOnFailureListener(e -> Log.w("AttendeeDB", "Error updating document", e));
+    }
+
     private String encodeImageToBase64(String imagePath) {
         try {
             File imageFile = new File(imagePath);

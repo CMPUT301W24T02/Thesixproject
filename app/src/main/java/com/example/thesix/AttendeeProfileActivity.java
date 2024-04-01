@@ -79,8 +79,25 @@ public class AttendeeProfileActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Ensure data is refreshed when coming back to this activity
-        displayAttendeeInfo();
+        // Check if the profile was updated
+        SharedPreferences prefs = getSharedPreferences("AttendeePrefs", MODE_PRIVATE);
+        boolean profileUpdated = prefs.getBoolean("profileUpdated", false);
+        if (profileUpdated) {
+            displayAttendeeInfo(); // Refresh the profile information
+            // Reset the flag
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("profileUpdated", false);
+            editor.apply();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            // Refresh data when returning from AttendeeProfileUpdate and updates have been made
+            displayAttendeeInfo();
+        }
     }
 
     private void displayAttendeeInfo() {
@@ -91,24 +108,22 @@ public class AttendeeProfileActivity extends AppCompatActivity {
 
         boolean isProfilePictureRemoved = prefs.getBoolean("isProfilePictureRemoved", false);
         if (isProfilePictureRemoved) {
-            // Generate and set the bitmap as the profile picture
             profileBitmap = createBitmap("testing");
             profilePicture.setImageBitmap(profileBitmap);
-            // Reset the flag
             SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean("isProfilePictureRemoved", false);
             editor.apply();
         } else {
             String imagePath = prefs.getString("profileImagePath", null);
-            if (imagePath != null) {
+            if (imagePath != null && new File(imagePath).exists()) {
                 profilePicture.setImageURI(Uri.fromFile(new File(imagePath)));
             } else {
-                // Handle case where there is no imagePath, but also isProfilePictureRemoved is false
                 profileBitmap = createBitmap("testing");
                 profilePicture.setImageBitmap(profileBitmap);
             }
         }
     }
+
     private Bitmap createBitmap(String string) {
         Bitmap Invitebitmap = Bitmap.createBitmap(16, 16, Bitmap.Config.RGB_565);
         try {
