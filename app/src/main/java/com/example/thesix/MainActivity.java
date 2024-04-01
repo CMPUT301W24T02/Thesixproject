@@ -58,10 +58,10 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("deviceID",deviceID);
             startActivity(intent);
             //startActivity(new Intent(MainActivity.this, AttendeeMainActivity.class));
-            startActivity(new Intent(MainActivity.this, OrganizerMainActivity.class));
+            //startActivity(new Intent(MainActivity.this, OrganizerMainActivity.class));
             //startActivity(new Intent(MainActivity.this, AdminActivity.class));
             //startActivity(new Intent(MainActivity.this, AttendeeProfileActivity.class));
-            //startActivity(new Intent(MainActivity.this, AttendeeMainActivity.class));
+            startActivity(new Intent(MainActivity.this, AttendeeMainActivity.class));
         }
     }
 
