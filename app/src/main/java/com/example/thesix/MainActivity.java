@@ -42,22 +42,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        Log.d("DeviceId", deviceID);
-        adminId = deviceID;
+  //String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        String deviceID ="27150c669e8b1dc4";
+        //Log.d(deviceID, "this is device id ");
+        //Log.d("DeviceId", deviceID);
+        //adminId = deviceID;
+        //27150c669e8b1dc4
 
         if (deviceID.equalsIgnoreCase(adminId)) {
             startActivity(new Intent(MainActivity.this, AdminActivity.class));
         }
          else {
             //sending device id to attendeeactivitypage
-            Intent intent =new Intent(MainActivity.this,AttendeeMainActivity.class);
+            Intent intent =new Intent(MainActivity.this,OrganizerMainActivity.class);
             intent.putExtra("deviceID",deviceID);
             startActivity(intent);
             //startActivity(new Intent(MainActivity.this, AttendeeMainActivity.class));
             //startActivity(new Intent(MainActivity.this, OrganizerMainActivity.class));
             startActivity(new Intent(MainActivity.this, AdminActivity.class));
             //startActivity(new Intent(MainActivity.this, AttendeeProfileActivity.class));
+            startActivity(new Intent(MainActivity.this, AttendeeMainActivity.class));
         }
     }
 

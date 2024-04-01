@@ -37,22 +37,21 @@
         android:textSize="40sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_list_view"
-        app:layout_constraintVertical_bias="0.19" />
+        app:layout_constraintVertical_bias="0.312" />
 
     <ListView
         android:id="@+id/profile_list_view"
         android:layout_width="417dp"
-        android:layout_height="515dp"
+        android:layout_height="0dp"
         android:backgroundTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHeight_percent="0.6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.212" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

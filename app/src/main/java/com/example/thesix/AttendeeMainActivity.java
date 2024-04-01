@@ -44,6 +44,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     private static final int PERMISSION_LOCATION =1000;
     private Button scanButton;
     private Button viewProfile;
+    private Button eventsButton;
     TextView testing;
     private QrCodeDB firestoreHelper;
     String contents;
@@ -66,6 +67,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         setContentView(R.layout.attendee_main_activity);
         scanButton = findViewById(R.id.scanButton);
         viewProfile = findViewById(R.id.viewAttendeeProfile);
+        eventsButton = findViewById(R.id.allEventButton);
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         //getLocation = findViewById(R.id.locationButton);
         //coordinates = findViewById(R.id.locationinfo);
@@ -130,6 +132,11 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
 
         viewProfile.setOnClickListener(v -> {
             Intent intent = new Intent(AttendeeMainActivity.this, AttendeeProfileActivity.class);
+            startActivity(intent);
+        });
+
+        eventsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AttendeeMainActivity.this, AttendeeSelectEvents.class);
             startActivity(intent);
         });
 

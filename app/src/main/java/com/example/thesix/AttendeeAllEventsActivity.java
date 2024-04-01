@@ -29,6 +29,7 @@ import androidx.core.app.ActivityCompat;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -41,23 +42,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *EventDetailsAdapter class manages event details display and navigation within an Android application.
+ * AttendeeAllEventsActivity class displays all event names display and navigation within an Android application.
+ * Requests necessary permissions and sets up the layout for event listing.
+ * Lists all events in the listview created in the app.
+ * Retrieves event details asynchronously from a Firebase Firestore database using the readData method.
+ * Handles item clicks to navigate to another activity (AdminEventDetails) with selected event details.
  */
 
-public class EventDetailsAdapter extends AppCompatActivity {
-    ArrayList<Long> eventNumList;
+public class AttendeeAllEventsActivity extends AppCompatActivity {
+    private ArrayList<Long> eventNumList;
 
-    ArrayList<String> eventnameDataList;
-    ArrayList<String> eventdescriptionDataList;
-    ArrayList<String> eventImageDataList;
+    private ArrayList<String> eventnameDataList;
+    private ArrayList<String> eventdescriptionDataList;
+    private ArrayList<String> eventImageDataList;
     private ArrayAdapter<String> eventnameArrayAdapter;
-    private QrCodeDB firestoreHelper;
+    private FirebaseFirestore firestore;
     private Button backButton;
-    CollectionReference eventsRef;
+    private CollectionReference eventsRef;
 
     /**
-     Initializes UI components like lists, adapters, and buttons
-     **/
+     * Initializes UI components like lists, adapters, and buttons
+     * @param :  Bundle savedInstanceState
+     * @return : void
+     */
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,54 +76,49 @@ public class EventDetailsAdapter extends AppCompatActivity {
         eventNumList = new ArrayList<>();
         eventImageDataList = new ArrayList<>();
         backButton = findViewById(R.id.backButton);
-        firestoreHelper = new QrCodeDB();
-
-
-        //String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
-        String deviceID ="27150c669e8b1dc4";
-        eventsRef = firestoreHelper.getOldQrRef(deviceID);
+        firestore = FirebaseFirestore.getInstance();
+        eventsRef = firestore.collection("inviteQrCodes");
         eventnameArrayAdapter = new ArrayAdapter<String>(
-                EventDetailsAdapter.this,
+                AttendeeAllEventsActivity.this,
                 R.layout.event_list_textview, R.id.itemTextView, eventnameDataList);
         ListView eventdescriptionList = findViewById(R.id.event_list);
         eventdescriptionList.setAdapter(eventnameArrayAdapter);
 
         /**
-         Callback Interface to share Event details
-         @param : String
-         @return
-         **/
+         * Does Read data Callback
+         * @param : List<String> list1, List<Long> list2, List<String> list3
+         * @return : void
+         */
         readData(new MyCallback() {
             @Override
             public void onCallback(List<String> list1, List<Long> list2, List<String> list3) {
                 Log.d("callback", "3");
                 eventnameDataList = (ArrayList<String>) list1;
                 eventNumList = (ArrayList<Long>) list2;
-                //Log.d("callback", "1" + eventnameDataList.get(0));
-                //Log.d("callback", "2");
+                Log.d("callback", "1" + eventnameDataList.get(0));
+                Log.d("callback", "2");
                 eventnameArrayAdapter.notifyDataSetChanged();
             }
         });
         /**
-         Setting Event Details
-         @param : AdapterView parent, View view, int position, long id
-         @return :void
-         **/
+         * Sets Event Description
+         * @param : AdapterView<?> parent, View view, int position, long id
+         * @return : void
+         */
         eventdescriptionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //startActivity(new Intent(EventDetailsAdapter.this, EventDetailsConnector.class));
 
-                Intent i = new Intent(EventDetailsAdapter.this, EventDetailsConnector.class);
+                Intent i = new Intent(AttendeeAllEventsActivity.this, AdminEventDetails.class);
                 String eventName = (String) (eventdescriptionList.getItemAtPosition(position));
                 String eventDescription = "Singh";
                 long eventNum = eventNumList.get(position);
                 for (int j = 0; j < eventnameDataList.size(); j++) {
                     String eventName1 = (String) (eventnameDataList.get(j));
-                     if(eventName.equalsIgnoreCase(eventName1))
-                     {
-                         eventDescription = (String) (eventdescriptionDataList.get(j));
-                     }
+                    if(eventName.equalsIgnoreCase(eventName1))
+                    {
+                        eventDescription = (String) (eventdescriptionDataList.get(j));
+                    }
                 }
 
                 Bundle bundle = new Bundle();
@@ -127,31 +130,32 @@ public class EventDetailsAdapter extends AppCompatActivity {
             }
         });
         /**
-         Clicking backButton navigates back to MainActivity.
-         @param: View v
-         @return void
-         **/
+         * Sets back button to navigate to Admin Activity
+         * @param : View v
+         * @return :
+         */
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(EventDetailsAdapter.this, OrganizerMainActivity.class));
+                startActivity(new Intent(AttendeeAllEventsActivity.this, AttendeeSelectEvents.class));
             }
         });
 
     }
     /**
-     Callback Interface to share Event details
-     @param : String
-     @return
-     **/
+     * Interface Callback
+     * @param :List<String> list1, List<Long> list2, List<String> list3
+     * @return :
+     */
 
     public interface MyCallback {
         void onCallback(List<String> list1, List<Long> list2, List<String> list3);
     }
     /**
-     Reading Data from QR code
-     @param : MycCallBcak callBack
-     **/
+     * Reads data
+     * @param :MyCallback myCallback
+     * @return :
+     */
 
     public void readData(MyCallback myCallback) {
         eventsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -174,40 +178,4 @@ public class EventDetailsAdapter extends AppCompatActivity {
             }
         });
     }
-    /**
-     Coverts  string to bitmap
-     @param : String base64String
-     @return :Bitmap
-     **/
-    private Bitmap Base64Tobitmap(String base64String) {
-        byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-    }
-
-    public void ShareBitmap(View view) {
-
-    }
-
-    /**
-     * Saves the image as PNG to the app's private external storage folder.
-     * @param image Bitmap to save.
-     * @return Uri of the saved file or null
-     */
-    private Uri saveImageExternal(Bitmap image) {
-        //TODO - Should be processed in another thread
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder(); //https://stackoverflow.com/questions/48117511/exposed-beyond-app-through-clipdata-item-geturi
-        StrictMode.setVmPolicy(builder.build());
-        Uri uri = null;
-        try {
-            File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "to-share.png");
-            FileOutputStream stream = new FileOutputStream(file);
-            image.compress(Bitmap.CompressFormat.PNG, 90, stream);
-            stream.close();
-            uri = Uri.fromFile(file);
-        } catch (IOException e) {
-            Log.d("save_image", "IOException while trying to write file for sharing: " + e.getMessage());
-        }
-        return uri;
-    }
-
 }
