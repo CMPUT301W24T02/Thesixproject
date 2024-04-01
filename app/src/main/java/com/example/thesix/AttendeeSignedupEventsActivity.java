@@ -22,11 +22,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -49,20 +52,21 @@ import java.util.List;
  * Handles item clicks to navigate to another activity (AdminEventDetails) with selected event details.
  */
 
-public class AttendeeAllEventsActivity extends AppCompatActivity {
+public class AttendeeSignedupEventsActivity extends AppCompatActivity {
     private ArrayList<Long> eventNumList;
-
     private ArrayList<String> eventnameDataList;
-    private ArrayList<String> eventdescriptionDataList;
-    private ArrayList<String> eventImageDataList;
-    private ArrayAdapter<String> eventnameArrayAdapter;
+    private ArrayAdapter<String> signedupeventnameArrayAdapter;
+    private ArrayList<String> signedupEventDataList;
+    private List<String> DEVICEID;
     private FirebaseFirestore firestore;
     private Button backButton;
     private CollectionReference eventsRef;
 
+
     /**
      * Initializes UI components like lists, adapters, and buttons
-     * @param :  Bundle savedInstanceState
+     *
+     * @param : Bundle savedInstanceState
      * @return : void
      */
 
@@ -72,17 +76,16 @@ public class AttendeeAllEventsActivity extends AppCompatActivity {
         setContentView(R.layout.event_list);
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
         eventnameDataList = new ArrayList<>();
-        eventdescriptionDataList = new ArrayList<>();
         eventNumList = new ArrayList<>();
-        eventImageDataList = new ArrayList<>();
+        signedupEventDataList = new ArrayList<>();
         backButton = findViewById(R.id.backButton);
         firestore = FirebaseFirestore.getInstance();
         eventsRef = firestore.collection("inviteQrCodes");
-        eventnameArrayAdapter = new ArrayAdapter<String>(
-                AttendeeAllEventsActivity.this,
-                R.layout.event_list_textview, R.id.itemTextView, eventnameDataList);
-        ListView eventdescriptionList = findViewById(R.id.event_list);
-        eventdescriptionList.setAdapter(eventnameArrayAdapter);
+        signedupeventnameArrayAdapter = new ArrayAdapter<String>(
+                AttendeeSignedupEventsActivity.this,
+                R.layout.event_list_textview, R.id.itemTextView, signedupEventDataList);
+        ListView eventList = findViewById(R.id.event_list);
+        eventList.setAdapter(signedupeventnameArrayAdapter);
 
         /**
          * Does Read data Callback
@@ -91,42 +94,12 @@ public class AttendeeAllEventsActivity extends AppCompatActivity {
          */
         readData(new MyCallback() {
             @Override
-            public void onCallback(List<String> list1, List<Long> list2, List<String> list3) {
+            public void onCallback(List<String> list1) {
                 Log.d("callback", "3");
-                eventnameDataList = (ArrayList<String>) list1;
-                eventNumList = (ArrayList<Long>) list2;
-                Log.d("callback", "1" + eventnameDataList.get(0));
+                signedupEventDataList = (ArrayList<String>) list1;
+                Log.d("callback", "1" + signedupEventDataList.get(0));
                 Log.d("callback", "2");
-                eventnameArrayAdapter.notifyDataSetChanged();
-            }
-        });
-        /**
-         * Sets Event Description
-         * @param : AdapterView<?> parent, View view, int position, long id
-         * @return : void
-         */
-        eventdescriptionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Intent i = new Intent(AttendeeAllEventsActivity.this, AttendeeAllEventDetails.class);
-                String eventName = (String) (eventdescriptionList.getItemAtPosition(position));
-                String eventDescription = "Singh";
-                long eventNum = eventNumList.get(position);
-                for (int j = 0; j < eventnameDataList.size(); j++) {
-                    String eventName1 = (String) (eventnameDataList.get(j));
-                    if(eventName.equalsIgnoreCase(eventName1))
-                    {
-                        eventDescription = (String) (eventdescriptionDataList.get(j));
-                    }
-                }
-
-                Bundle bundle = new Bundle();
-                bundle.putString("eventName", eventName);
-                bundle.putString("eventDescription", eventDescription);
-                bundle.putLong("eventNum", eventNum);
-                i.putExtras(bundle);
-                startActivity(i);
+                signedupeventnameArrayAdapter.notifyDataSetChanged();
             }
         });
         /**
@@ -137,45 +110,75 @@ public class AttendeeAllEventsActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AttendeeAllEventsActivity.this, AttendeeSelectEvents.class));
+                startActivity(new Intent(AttendeeSignedupEventsActivity.this, AttendeeSelectEvents.class));
             }
         });
 
     }
+
     /**
      * Interface Callback
+     *
      * @param :List<String> list1, List<Long> list2, List<String> list3
      * @return :
      */
 
     public interface MyCallback {
-        void onCallback(List<String> list1, List<Long> list2, List<String> list3);
+        void onCallback(List<String> list1);
     }
+
     /**
      * Reads data
+     *
      * @param :MyCallback myCallback
      * @return :
      */
 
-    public void readData(MyCallback myCallback) {
+    public void readData1(MyCallback myCallback) {
         eventsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                    String description = document.getString("description");
+                    DEVICEID = (List<String>) document.get("signUpIDList");
                     String eventname = document.getString("name");
                     Long eventNum = document.getLong("eventNum");
-                    String base64String = document.getString("qrImageData");
-                    eventImageDataList.add(base64String);
-                    eventNumList.add(eventNum);
-                    eventnameDataList.add(eventname);
-                    eventdescriptionDataList.add(description);
-                    Log.d("list", document.getId() + "=>" + document.getData());
-                    Log.d("list", eventnameDataList.get(0));
+                    String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                    for (int i = 0; i < DEVICEID.size(); i++) {
+                        if (DEVICEID.get(i).equalsIgnoreCase(deviceID)) {
+                            eventNumList.add(eventNum);
+                            signedupEventDataList.add(eventname);
+                        }
+                    }
                 }
-                myCallback.onCallback(eventnameDataList, eventNumList, eventImageDataList);
+                myCallback.onCallback(signedupEventDataList);
 
             }
         });
+    }
+
+    public void readData(MyCallback myCallback) {
+        eventsRef.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                DEVICEID = (List<String>) document.get("signUpIDList");
+                                Log.d("Arjun", "20");
+                                String eventname = document.getString("name");
+                                Long eventNum = document.getLong("eventNum");
+                                String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                                for (int i = 0; i < DEVICEID.size(); i++) {
+                                    if (DEVICEID.get(i).equalsIgnoreCase(deviceID)) {
+                                        eventNumList.add(eventNum);
+                                        signedupEventDataList.add(eventname);
+                                    }
+                                }
+                            }
+                        }
+                        myCallback.onCallback(signedupEventDataList);
+                    }
+
+                });
     }
 }

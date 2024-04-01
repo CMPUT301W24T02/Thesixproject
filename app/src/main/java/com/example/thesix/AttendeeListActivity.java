@@ -68,8 +68,8 @@ public class AttendeeListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_list_screen);
         firestoreHelper = new QrCodeDB();
-        //deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        String deviceID ="27150c669e8b1dc4";
+        deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        //String deviceID ="27150c669e8b1dc4";
         backButton = findViewById(R.id.backButton);
         mapButton = findViewById(R.id.mapButton);
         notificationButton = findViewById(R.id.notificationButton);
