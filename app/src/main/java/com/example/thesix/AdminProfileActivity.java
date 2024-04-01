@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -69,6 +71,16 @@ public class AdminProfileActivity extends AppCompatActivity {
                 imagesArrayAdapter.notifyDataSetChanged();
             }
         });
+
+        // Set long click listener for the ListView
+        imageList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Attendee selectedAttendee = profileDataList.get(position);
+                Toast.makeText(AdminProfileActivity.this, "Long clicked on- Delete Me " + selectedAttendee.getName(), Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
     /**
      * Interface Callback
@@ -112,5 +124,9 @@ public class AdminProfileActivity extends AppCompatActivity {
                 startActivity(new Intent(AdminProfileActivity.this, AdminActivity.class));
             }
         });
+
+
+
+
     }
 }
