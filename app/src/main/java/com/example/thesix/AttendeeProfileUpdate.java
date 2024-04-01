@@ -24,7 +24,8 @@ import java.io.InputStream;
 public class AttendeeProfileUpdate extends AppCompatActivity {
     private EditText nameEditText, contactEditText, homePageEditText;
     private ImageView profileImageView;
-    private Button submitButton, backButton, removePictureButton; // Added removePictureButton
+    private Button submitButton, backButton, removePictureButton;
+    private String temporaryImagePath = null; // Temporary storage for the selected image path
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,49 +39,73 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
         profileImageView = findViewById(R.id.profile_picture);
         submitButton = findViewById(R.id.submit_button);
         backButton = findViewById(R.id.backButton);
-        removePictureButton = findViewById(R.id.remove_picture_button); // Initialize the remove button
+        removePictureButton = findViewById(R.id.remove_picture_button);
 
         SharedPreferences prefs = getSharedPreferences("AttendeePrefs", MODE_PRIVATE);
         loadExistingData(prefs);
 
         profileImageView.setOnClickListener(v -> {
+            // Intent to pick a photo from the gallery
             Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(pickPhoto, 2); // requestCode 2 for image selection
         });
 
         submitButton.setOnClickListener(v -> {
+            // Gather the information entered by the user
             String name = nameEditText.getText().toString();
             String contact = contactEditText.getText().toString();
             String homePage = homePageEditText.getText().toString();
-            String imagePath = prefs.getString("profileImagePath", "");
-
-            // Check if the name is entered
-            if (name.isEmpty()) {
-                Toast.makeText(AttendeeProfileUpdate.this, "Please enter your name", Toast.LENGTH_SHORT).show();
-                return;
-            }
+            String imagePath = temporaryImagePath != null ? temporaryImagePath : prefs.getString("profileImagePath", "");
 
             AttendeeDB attendeeDB = new AttendeeDB();
-            attendeeDB.saveAttendeeInfo(name, contact, homePage, imagePath, new AttendeeDB.FirestoreCallback() {
-                @Override
-                public void onCallback(String documentId) {
-                    // Store the document ID in SharedPreferences for later use
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putString("documentId", documentId);
-                    editor.apply();
-                }
-            });
+            String documentId = prefs.getString("documentId", "");
 
-            // Save profile data and show confirmation
+            SharedPreferences.Editor editor = prefs.edit();
+            if (temporaryImagePath != null) {
+                editor.putString("profileImagePath", temporaryImagePath);
+            }
+            // Always save profile data
             saveProfileData(prefs);
-            Toast.makeText(AttendeeProfileUpdate.this, "Profile Updated", Toast.LENGTH_SHORT).show();
-            setResult(RESULT_OK);
-            finish();
+
+            if (documentId.isEmpty()) {
+                // Logic to save new attendee information
+                attendeeDB.saveAttendeeInfo(name, contact, homePage, imagePath, newDocumentId -> {
+                    editor.putString("documentId", newDocumentId);
+                    // Set flag to indicate that the profile has been updated
+                    editor.putBoolean("profileUpdated", true);
+                    editor.apply();
+
+                    // Indicate that the update was successful
+                    setResult(RESULT_OK);
+                    finish();
+                });
+            } else {
+                // Logic to update existing attendee information
+                attendeeDB.updateAttendeeInfo(documentId, name, contact, homePage, imagePath);
+                // Set flag to indicate that the profile has been updated here as well
+                editor.putBoolean("profileUpdated", true);
+                editor.apply();
+
+                // Indicate that the update was successful
+                setResult(RESULT_OK);
+                finish();
+            }
         });
 
         backButton.setOnClickListener(v -> finish());
 
         removePictureButton.setOnClickListener(v -> removeProfilePicture(prefs));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 2 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri selectedImage = data.getData();
+            String imagePath = saveImageToInternalStorage(selectedImage);
+            temporaryImagePath = imagePath; // Update the temporaryImagePath
+            profileImageView.setImageURI(Uri.fromFile(new File(imagePath))); // Set the ImageView to the new image
+        }
     }
 
     private void saveProfileData(SharedPreferences prefs) {
@@ -106,33 +131,13 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
         if (!documentId.isEmpty()) {
             AttendeeDB attendeeDB = new AttendeeDB();
             attendeeDB.removeProfileImage(documentId);
-
-            // Also, clear the profile image path from SharedPreferences
             SharedPreferences.Editor editor = prefs.edit();
             editor.remove("profileImagePath");
             editor.apply();
-
-            // Reset the ImageView to a default image
-            profileImageView.setImageResource(android.R.drawable.ic_menu_gallery); // Placeholder for default/no image
+            profileImageView.setImageResource(android.R.drawable.ic_menu_gallery); // Reset to a default image
             Toast.makeText(this, "Profile picture removed", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "No profile picture to remove", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 2 && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri selectedImage = data.getData();
-            String imagePath = saveImageToInternalStorage(selectedImage);
-
-            SharedPreferences prefs = getSharedPreferences("AttendeePrefs", MODE_PRIVATE);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("profileImagePath", imagePath);
-            editor.apply();
-
-            profileImageView.setImageURI(Uri.fromFile(new File(imagePath)));
         }
     }
 
@@ -142,12 +147,11 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             File imageFile = File.createTempFile("profile_", ".jpg", storageDir);
-            try (FileOutputStream out = new FileOutputStream(imageFile)) {
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            }
+            FileOutputStream out = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.close();
             return imageFile.getAbsolutePath();
         } catch (IOException e) {
-            e.printStackTrace();
             Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
             return null;
         }
