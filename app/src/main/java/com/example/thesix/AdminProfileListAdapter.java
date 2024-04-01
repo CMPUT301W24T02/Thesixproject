@@ -20,8 +20,8 @@ public class AdminProfileListAdapter extends ArrayAdapter<Attendee> {
     private Context context;
     private ArrayList<Attendee> attendees;
 
-    public AdminProfileListAdapter(Context context, ArrayList<Attendee> data) {
-        super(context, R.layout.profile_list_content, data);
+    public AdminProfileListAdapter(Context context, ArrayList<Attendee> attendees) {
+        super(context, 0, attendees);
         this.context = context;
         this.attendees = attendees;
     }
@@ -33,7 +33,7 @@ public class AdminProfileListAdapter extends ArrayAdapter<Attendee> {
 
         if (view == null) {
             Log.d("DD", "inflate the image list content");
-            convertView = LayoutInflater.from(context).inflate(R.layout.profile_list_content, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.profile_list_content, parent, false);
         }
         Log.d("DD", "attendees.get(position) is next");
         Attendee attendee = attendees.get(position);
@@ -44,6 +44,6 @@ public class AdminProfileListAdapter extends ArrayAdapter<Attendee> {
         //ImageView imageView = convertView.findViewById(R.id.image_list);
         //imageView.setImageBitmap(image.get(position));
 
-        return convertView;
+        return view;
     }
 }
