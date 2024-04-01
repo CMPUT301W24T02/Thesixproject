@@ -76,12 +76,37 @@ public class AdminProfileActivity extends AppCompatActivity {
         imageList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Attendee selectedAttendee = profileDataList.get(position);
-                Toast.makeText(AdminProfileActivity.this, "Long clicked on- Delete Me " + selectedAttendee.getName(), Toast.LENGTH_SHORT).show();
+                firestore.collection("AttendeeProfileDB")
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                if (!queryDocumentSnapshots.isEmpty()) {
+                                    String documentId = queryDocumentSnapshots.getDocuments().get(position).getId();
+
+                                    // Update doc in Firestore
+                                    firestore.collection("AttendeeProfileDB").document(documentId)
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("AdminProfileActivity", "DocumentSnapshot successfully written!");
+                                                    profileDataList.remove(position);
+                                                    imagesArrayAdapter.notifyDataSetChanged();
+                                                }
+                                            });
+                                } else {
+                                    Log.d("AdminProfileActivity", "No matching documents found");
+                                }
+                            }
+                        });
+
+                Toast.makeText(AdminProfileActivity.this, "Profile Successfully Deleted", Toast.LENGTH_LONG).show();
                 return true;
             }
         });
     }
+
     /**
      * Interface Callback
      * @param :List<String> list1
@@ -113,6 +138,7 @@ public class AdminProfileActivity extends AppCompatActivity {
             }
         });
 
+
         /**
          Initializes a UI component, a Button named back2AdminButton
          @param :
@@ -124,9 +150,5 @@ public class AdminProfileActivity extends AppCompatActivity {
                 startActivity(new Intent(AdminProfileActivity.this, AdminActivity.class));
             }
         });
-
-
-
-
     }
 }
