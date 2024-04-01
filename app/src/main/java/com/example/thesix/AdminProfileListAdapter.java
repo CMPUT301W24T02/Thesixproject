@@ -35,17 +35,21 @@ public class AdminProfileListAdapter extends ArrayAdapter<Attendee> {
         View view = convertView;
 
         if (view == null) {
-            Log.d("DD", "inflate the image list content");
             view = LayoutInflater.from(context).inflate(R.layout.profile_list_content, parent, false);
         }
-        Log.d("DD", "attendees.get(position) is next");
+        // Get Profile Name
         Attendee attendee = attendees.get(position);
         TextView attendeeName = view.findViewById(R.id.profile_text);
-
         attendeeName.setText(attendee.getName());
 
-        //ImageView imageView = convertView.findViewById(R.id.image_list);
-        //imageView.setImageBitmap(image.get(position));
+        // Get Profile Image
+        ImageView image = view.findViewById(R.id.profile_image);
+        String imageString = attendee.getImageData();
+
+        // Decode the image string to Bitmap
+        Bitmap bitmap = decodeBase64(imageString);
+
+        image.setImageBitmap(bitmap);
 
         return view;
     }
