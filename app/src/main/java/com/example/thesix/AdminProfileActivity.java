@@ -90,17 +90,12 @@ public class AdminProfileActivity extends AppCompatActivity {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                    Log.d("DD", "in OnSuccess");
                     attendeeName = document.getString("name");
                     contact = document.getString("contact_number");
-                    Log.d("DD", attendeeName);
                     homePage = document.getString("home_page");
                     profile_image = document.getString("profile_image");
-
                     Attendee attendee = new Attendee(attendeeName, contact, homePage, profile_image);
-                    Log.d("DD", "Add Attendee " + attendeeName + contact + homePage);
                     profileDataList.add(attendee);
-                    Log.d("DD", "Added to profileDataList "+ profileDataList.get(0).getName());
                 }
                 myCallback.onCallback(profileDataList);
             }
@@ -117,10 +112,5 @@ public class AdminProfileActivity extends AppCompatActivity {
                 startActivity(new Intent(AdminProfileActivity.this, AdminActivity.class));
             }
         });
-    }
-
-    private Bitmap decodeBase64(String base64String) {
-        byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 }

@@ -2,6 +2,8 @@ package com.example.thesix;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ public class AdminProfileListAdapter extends ArrayAdapter<Attendee> {
 
     private Context context;
     private ArrayList<Attendee> attendees;
+
 
     public AdminProfileListAdapter(Context context, ArrayList<Attendee> attendees) {
         super(context, 0, attendees);
@@ -45,5 +48,10 @@ public class AdminProfileListAdapter extends ArrayAdapter<Attendee> {
         //imageView.setImageBitmap(image.get(position));
 
         return view;
+    }
+
+    private Bitmap decodeBase64(String base64String) {
+        byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 }
