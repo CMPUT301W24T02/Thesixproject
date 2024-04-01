@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -35,51 +36,40 @@ import java.util.List;
 public class AdminProfileActivity extends AppCompatActivity {
 
     private Button back2AdminButton;
-    private ArrayList<Bitmap> profileImageDataList;
+    private ArrayList<Attendee> profileDataList;
     private FirebaseFirestore firestore;
     private Button backButton;
     private CollectionReference profileRef;
     private AdminProfileListAdapter imagesArrayAdapter;
+    private String attendeeName;
+    private String contact;
+    private String homePage;
+    private String profile_image;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_profile_screen);
-
         back2AdminButton = findViewById(R.id.backButton);
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
-        profileImageDataList = new ArrayList<>();
+        profileDataList = new ArrayList<>();
         backButton = findViewById(R.id.backButton);
         firestore = FirebaseFirestore.getInstance();
         profileRef = firestore.collection("AttendeeProfileDB");
-        imagesArrayAdapter = new AdminProfileListAdapter(AdminProfileActivity.this, profileImageDataList);
+        imagesArrayAdapter = new AdminProfileListAdapter(AdminProfileActivity.this, profileDataList);
         ListView imageList = findViewById(R.id.profile_list_view);
         imageList.setAdapter(imagesArrayAdapter);
+        Log.d("DD", "OnCreateAdminProfileActivity, set adapter");
 
-        /**
-         * Does Read data Callback
-         * @param : List<String> list1
-         * @return : void
-         */
+        // Call readData method to populate profileDataList
         readData(new MyCallback() {
             @Override
-            public void onCallback(List<String> list1) {
-                for (String base64String: list1){
-                    Bitmap bitmap = decodeBase64(base64String);
-                    if (bitmap != null){
-                        profileImageDataList.add(bitmap);
-                    }
-                }
+            public void onCallback(List<Attendee> list1) {
+                // Update UI with populated data
                 imagesArrayAdapter.notifyDataSetChanged();
             }
         });
     }
-
-    private Bitmap decodeBase64(String base64String) {
-        byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-    }
-
     /**
      * Interface Callback
      * @param :List<String> list1
@@ -87,7 +77,7 @@ public class AdminProfileActivity extends AppCompatActivity {
      */
 
     public interface MyCallback {
-        void onCallback(List<String> list1);
+        void onCallback(List<Attendee> list1);
     }
     /**
      * Reads data
@@ -99,12 +89,20 @@ public class AdminProfileActivity extends AppCompatActivity {
         profileRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<String> base64Strings = new ArrayList<>();
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                    String base64String = document.getString("profile_image");
-                    base64Strings.add(base64String);
+                    Log.d("DD", "in OnSuccess");
+                    attendeeName = document.getString("name");
+                    contact = document.getString("contact_number");
+                    Log.d("DD", attendeeName);
+                    homePage = document.getString("home_page");
+                    profile_image = document.getString("profile_image");
+
+                    Attendee attendee = new Attendee(attendeeName, contact, homePage, profile_image);
+                    Log.d("DD", "Add Attendee " + attendeeName + contact + homePage);
+                    profileDataList.add(attendee);
+                    Log.d("DD", "Added to profileDataList "+ profileDataList.get(0).getName());
                 }
-                myCallback.onCallback(base64Strings);
+                myCallback.onCallback(profileDataList);
             }
         });
 
@@ -119,5 +117,10 @@ public class AdminProfileActivity extends AppCompatActivity {
                 startActivity(new Intent(AdminProfileActivity.this, AdminActivity.class));
             }
         });
+    }
+
+    private Bitmap decodeBase64(String base64String) {
+        byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 }
