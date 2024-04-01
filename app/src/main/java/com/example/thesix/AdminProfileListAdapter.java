@@ -21,7 +21,7 @@ public class AdminProfileListAdapter extends ArrayAdapter<Attendee> {
     private ArrayList<Attendee> attendees;
 
     public AdminProfileListAdapter(Context context, ArrayList<Attendee> data) {
-        super(context, R.layout.image_list_content, data);
+        super(context, R.layout.profile_list_content, data);
         this.context = context;
         this.attendees = attendees;
     }
