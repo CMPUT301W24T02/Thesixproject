@@ -71,8 +71,8 @@ public class EventDetailsAdapter extends AppCompatActivity {
         firestoreHelper = new QrCodeDB();
 
 
-        //String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
-        String deviceID ="27150c669e8b1dc4";
+        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
+        //String deviceID ="27150c669e8b1dc4";
         eventsRef = firestoreHelper.getOldQrRef(deviceID);
         eventnameArrayAdapter = new ArrayAdapter<String>(
                 EventDetailsAdapter.this,
