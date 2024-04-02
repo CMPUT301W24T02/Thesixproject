@@ -70,6 +70,29 @@ public class AttendeeProfileActivityTest {
     }
 
     /**
+     * Test if can switch AttendeeProfileUpdate to AttendeeProfileActivity by click the backButton on the screen
+     */
+    @Test
+    public void test_ProfileUpdateBackButton(){
+        // Asserts that the current activity is the AttendeeProfileActivity.Otherwise, show "Wrong Activity"
+        solo.assertCurrentActivity("Wrong Activity", AttendeeProfileActivity.class);
+
+        // click imageView HERE
+        solo.clickOnView(solo.getView(R.id.profile_picture));
+
+        // Asserts that the current activity is the AttendeeProfileUpdate.Otherwise, show "Wrong Activity"
+        solo.assertCurrentActivity("Wrong Activity", AttendeeProfileUpdate.class);
+
+        // click backButton HERE
+        solo.clickOnView(solo.getView(R.id.backButton));
+
+        // Asserts that the current activity is the AttendeeProfileActivity.Otherwise, show "Wrong Activity"
+        solo.assertCurrentActivity("Wrong Activity", AttendeeProfileActivity.class);
+
+        solo.sleep(4000);
+    }
+
+    /**
      * Close activity after each test
      * @throws Exception
      */
