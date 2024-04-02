@@ -55,6 +55,14 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
             String name = nameEditText.getText().toString();
             String contact = contactEditText.getText().toString();
             String homePage = homePageEditText.getText().toString();
+
+            // Check if any of the EditText fields are empty
+            if(name.isEmpty() || contact.isEmpty() || homePage.isEmpty()) {
+                // Show a toast message if any field is empty
+                Toast.makeText(AttendeeProfileUpdate.this, "Please fill in all the fields", Toast.LENGTH_SHORT).show();
+                return; // Exit the onClick method early
+            }
+
             String imagePath = temporaryImagePath != null ? temporaryImagePath : prefs.getString("profileImagePath", "");
 
             AttendeeDB attendeeDB = new AttendeeDB();
