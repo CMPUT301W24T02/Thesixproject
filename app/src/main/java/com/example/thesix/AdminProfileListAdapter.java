@@ -2,6 +2,8 @@ package com.example.thesix;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ public class AdminProfileListAdapter extends ArrayAdapter<Attendee> {
     private Context context;
     private ArrayList<Attendee> attendees;
 
+
     public AdminProfileListAdapter(Context context, ArrayList<Attendee> attendees) {
         super(context, 0, attendees);
         this.context = context;
@@ -32,18 +35,27 @@ public class AdminProfileListAdapter extends ArrayAdapter<Attendee> {
         View view = convertView;
 
         if (view == null) {
-            Log.d("DD", "inflate the image list content");
             view = LayoutInflater.from(context).inflate(R.layout.profile_list_content, parent, false);
         }
-        Log.d("DD", "attendees.get(position) is next");
+        // Get Profile Name
         Attendee attendee = attendees.get(position);
         TextView attendeeName = view.findViewById(R.id.profile_text);
-
         attendeeName.setText(attendee.getName());
 
-        //ImageView imageView = convertView.findViewById(R.id.image_list);
-        //imageView.setImageBitmap(image.get(position));
+        // Get Profile Image
+        ImageView image = view.findViewById(R.id.profile_image);
+        String imageString = attendee.getImageData();
+
+        // Decode the image string to Bitmap
+        Bitmap bitmap = decodeBase64(imageString);
+
+        image.setImageBitmap(bitmap);
 
         return view;
+    }
+
+    private Bitmap decodeBase64(String base64String) {
+        byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 }

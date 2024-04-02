@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -69,7 +71,42 @@ public class AdminProfileActivity extends AppCompatActivity {
                 imagesArrayAdapter.notifyDataSetChanged();
             }
         });
+
+        // Set long click listener for the ListView
+        imageList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                firestore.collection("AttendeeProfileDB")
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                if (!queryDocumentSnapshots.isEmpty()) {
+                                    String documentId = queryDocumentSnapshots.getDocuments().get(position).getId();
+
+                                    // Update doc in Firestore
+                                    firestore.collection("AttendeeProfileDB").document(documentId)
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("AdminProfileActivity", "DocumentSnapshot successfully written!");
+                                                    profileDataList.remove(position);
+                                                    imagesArrayAdapter.notifyDataSetChanged();
+                                                }
+                                            });
+                                } else {
+                                    Log.d("AdminProfileActivity", "No matching documents found");
+                                }
+                            }
+                        });
+
+                Toast.makeText(AdminProfileActivity.this, "Profile Successfully Deleted", Toast.LENGTH_LONG).show();
+                return true;
+            }
+        });
     }
+
     /**
      * Interface Callback
      * @param :List<String> list1
@@ -90,21 +127,17 @@ public class AdminProfileActivity extends AppCompatActivity {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                    Log.d("DD", "in OnSuccess");
                     attendeeName = document.getString("name");
                     contact = document.getString("contact_number");
-                    Log.d("DD", attendeeName);
                     homePage = document.getString("home_page");
                     profile_image = document.getString("profile_image");
-
                     Attendee attendee = new Attendee(attendeeName, contact, homePage, profile_image);
-                    Log.d("DD", "Add Attendee " + attendeeName + contact + homePage);
                     profileDataList.add(attendee);
-                    Log.d("DD", "Added to profileDataList "+ profileDataList.get(0).getName());
                 }
                 myCallback.onCallback(profileDataList);
             }
         });
+
 
         /**
          Initializes a UI component, a Button named back2AdminButton
@@ -117,10 +150,5 @@ public class AdminProfileActivity extends AppCompatActivity {
                 startActivity(new Intent(AdminProfileActivity.this, AdminActivity.class));
             }
         });
-    }
-
-    private Bitmap decodeBase64(String base64String) {
-        byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 }

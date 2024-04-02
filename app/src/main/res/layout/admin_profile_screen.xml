@@ -43,7 +43,7 @@
 
     <ListView
         android:id="@+id/profile_list_view"
-        android:layout_width="417dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:backgroundTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
