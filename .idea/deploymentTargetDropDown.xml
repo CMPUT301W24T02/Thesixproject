@@ -8,6 +8,9 @@
       <entry key="AttendeeProfileActivityTest">
         <State />
       </entry>
+      <entry key="AttendeeProfileUpdateTest">
+        <State />
+      </entry>
       <entry key="app">
         <State>
           <targetSelectedWithDropDown>
