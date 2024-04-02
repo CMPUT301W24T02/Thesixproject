@@ -48,6 +48,28 @@ public class AttendeeMainActivityTest {
     }
 
     /**
+     * Test if can switch AttendeeMainActivity to AttendeeProfileActivity by ViewProfile Button
+     */
+    @Test
+    public void test_switch_to_viewProfile(){
+        // Asserts that the current activity is the AttendeeMainActivity.Otherwise, show "Wrong Activity"
+        solo.assertCurrentActivity("Wrong Activity", AttendeeMainActivity.class);
+
+        // click VIEW PROFILE HERE
+        solo.clickOnView(solo.getView(R.id.viewAttendeeProfile));
+
+        // Asserts that the current activity is the AttendeeProfileActivity.Otherwise, show "Wrong Activity"
+        solo.assertCurrentActivity("Wrong Activity",AttendeeProfileActivity.class);
+
+        solo.sleep(3000);
+
+        // go back to AttendeeMainActivity
+        solo.goBack();
+
+        solo.sleep(3000);
+    }
+
+    /**
      * Close activity after each test
      * @throws Exception
      */
