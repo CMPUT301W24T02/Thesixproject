@@ -3,6 +3,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +16,7 @@ public class NotificationActivity extends AppCompatActivity {
     private Button back2AttendeesButton;
 
     private Button sendNotificationButton;
+    private EditText message;
 
     /**
      Initializes UI components, Button (back2AttendeesButton, sendNotificationButton), in the onCreate method.
@@ -28,6 +31,7 @@ public class NotificationActivity extends AppCompatActivity {
 
         back2AttendeesButton = findViewById(R.id.noti2AttendeesButton);
         sendNotificationButton = findViewById(R.id.sendNotificationButton);
+        message = findViewById(R.id.sendNotification);
 
 
         /**
@@ -48,6 +52,9 @@ public class NotificationActivity extends AppCompatActivity {
         sendNotificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String notification  = message.getText().toString();
+
+
 
             }
         });
