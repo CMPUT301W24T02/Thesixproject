@@ -1,5 +1,6 @@
 package com.example.thesix;
 
+import android.location.Location;
 import android.net.Uri;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class EventDetails {
     private List<String> attendeeIDList;
     private Long totalCheckIn;
     private List<String> signUpIDList;
+    private List<Location> location;
 
     /**
      Constructor for event Details
@@ -30,7 +32,7 @@ public class EventDetails {
      * @return : Uri
      **/
     public EventDetails(String eventImageData, String inviteQrImageData, String promoQrImageData, long eventNum, String eventDescription,
-                        String eventName, List<Long> checkIn, Long totalCheckIn, List<String> attendeeIDList, List<String> signUpIDList) {
+                        String eventName, List<Long> checkIn, Long totalCheckIn, List<String> attendeeIDList, List<String> signUpIDList,List <Location> locations) {
         this.eventImageData = eventImageData;
         this.inviteQrImageData = inviteQrImageData;
         this.promoQrImageData = promoQrImageData;
@@ -42,6 +44,7 @@ public class EventDetails {
         this.totalCheckIn = totalCheckIn;
         this.attendeeIDList = attendeeIDList;
         this.signUpIDList = signUpIDList;
+        this.location = location;
     }
 
     /**
@@ -189,5 +192,13 @@ public class EventDetails {
 
     public void setSignUpIDList(List<String> signUpIDList) {
         this.signUpIDList = signUpIDList;
+    }
+
+    public List<Location> getLocation() {
+        return location;
+    }
+
+    public void setLocation(List<Location> location) {
+        this.location = location;
     }
 }

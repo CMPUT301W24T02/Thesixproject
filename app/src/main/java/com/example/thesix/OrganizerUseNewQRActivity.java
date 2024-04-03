@@ -3,6 +3,7 @@ package com.example.thesix;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -147,7 +148,8 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
                                 List<Long> checkIn = new ArrayList<Long>();
                                 List<String> attendeeIDList = new ArrayList<>();
                                 List<String> signUpIDList = new ArrayList<>();
-                                EventDetails eventdetail = new EventDetails(eventImageBase64, inviteQrImageBase64, promoQrImageBase64, num, description, eventName,checkIn, 0L,attendeeIDList,signUpIDList);
+                                List<Location> locations = new ArrayList<>();
+                                EventDetails eventdetail = new EventDetails(eventImageBase64, inviteQrImageBase64, promoQrImageBase64, num, description, eventName,checkIn, 0L,attendeeIDList,signUpIDList,locations);
                                 firestoreHelper.saveInviteQRCode(deviceID, eventdetail,num);
 
                             } catch (WriterException e) {

@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -40,11 +41,11 @@ public class AttendeeDB {
     /**
      * Saves attendee information to Firestore and uses a callback to return the document ID.
      *
-     * @param name The name of the attendee.
-     * @param contact The contact number of the attendee.
-     * @param homePage The home page of the attendee.
+     * @param name      The name of the attendee.
+     * @param contact   The contact number of the attendee.
+     * @param homePage  The home page of the attendee.
      * @param imagePath The profile image of the attendee.
-     * @param callback The callback interface for returning the document ID.
+     * @param callback  The callback interface for returning the document ID.
      */
     public void saveAttendeeInfo(String name, String contact, String homePage, String imagePath, FirestoreCallback callback) {
         Map<String, Object> attendee = new HashMap<>();
@@ -111,14 +112,9 @@ public class AttendeeDB {
                 .addOnFailureListener(e -> Log.e("AttendeeDB", "Error removing profile image", e));
     }
 
-    public void saveUserLocation(String deviceID, Location location) {
-        firestore.collection("UserLocations")
+    public CollectionReference saveUserLocation(String deviceID) {
+        return firestore.collection("OrganizerdevicesDB")
                 .document(deviceID)
-                .collection("coordinates")
-                .add(location)
-                .addOnSuccessListener(documentReference ->
-                        Log.d("FirestoreHelper", "DocumentSnapshot added with ID: " + documentReference.getId()))
-                .addOnFailureListener(e ->
-                        Log.e("FirestoreHelper", "Error adding document", e));
+                .collection("event");
     }
 }
