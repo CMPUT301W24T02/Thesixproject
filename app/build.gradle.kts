@@ -50,6 +50,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore:24.10.3")
     implementation("com.google.firebase:firebase-database:20.3.1")
     implementation("com.google.firebase:firebase-messaging:23.4.1")
+    implementation ("com.google.firebase:firebase-admin:9.0.0")
     implementation ("com.google.android.gms:play-services-maps:18.1.0")
     testImplementation ("org.junit.jupiter:junit-jupiter-api:5.3.2")
     testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine:5.3.2")
