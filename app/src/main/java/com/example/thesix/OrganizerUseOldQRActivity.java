@@ -1,4 +1,3 @@
-
 package com.example.thesix;
 
 import android.content.Intent;
@@ -20,33 +19,23 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
-
-import java.io.IOException;
-
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- Makaing a newQr code for organizer specific to device id
- **/
-
-public class OrganizerUseNewQRActivity extends AppCompatActivity {
+public class OrganizerUseOldQRActivity extends AppCompatActivity {
     private EditText descriptionEditText;
     private EditText eventnameEditText;
     private Button createEventButton;
-    private Button useOldQRButton;
+
     private QrCodeDB firestoreHelper;
     private Button backButton;
 
@@ -55,9 +44,12 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
     private boolean imageChanged = false;
 
     private Bitmap eventImageBitmap;
+    String promoQrImageData;
+    String inviteQrImageData;
 
     private Long count;
     private String deviceID;
+    Long eventNum;
 
     @Override
 
@@ -69,14 +61,15 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.organizer_use_new_qr_screen);
+        setContentView(R.layout.organizer_use_old_qr_screen);
         descriptionEditText = findViewById(R.id.eventDescription);
         eventnameEditText = findViewById(R.id.eventName);
         createEventButton = findViewById(R.id.createEventButton);
         firestoreHelper = new QrCodeDB();
         backButton = findViewById(R.id.backButton);
         eventPoster = findViewById(R.id.eventPoster);
-        useOldQRButton = findViewById(R.id.oldQRButton);
+        Bundle bundle = getIntent().getExtras();
+        eventNum = bundle.getLong("eventNum");
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         /**
@@ -88,82 +81,44 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
                 choosePicture(); //Function to select images
             }
         });
-        useOldQRButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(OrganizerUseNewQRActivity.this,OrganizerChooseOldQRActivity.class));
-            }
-        });
+
         /**
          Creating event button , with required event details
          **/
         createEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String description = descriptionEditText.getText().toString();
+                String eventName = eventnameEditText.getText().toString();
                 String even = eventnameEditText.getText().toString();
                 String desc = descriptionEditText.getText().toString();
                 if (even.matches("")) {
-                    Toast.makeText(OrganizerUseNewQRActivity.this, "Please enter event name.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrganizerUseOldQRActivity.this, "Please enter event name.", Toast.LENGTH_SHORT).show();
                 }
                 else if((desc.matches("")))
                 {
-                    Toast.makeText(OrganizerUseNewQRActivity.this, "Please enter event description.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrganizerUseOldQRActivity.this, "Please enter event description.", Toast.LENGTH_SHORT).show();
                 }
                 else if (imageChanged == false)
                 {
-                    Toast.makeText(OrganizerUseNewQRActivity.this, "Please select an event poster.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrganizerUseOldQRActivity.this, "Please select an event poster.", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     readData(new MyCallback() {
                         @Override
-                        public void onCallback(long num) {
+                        public void onCallback(long num , String inviteImageData, String promoImageData) {
+
                             Log.d("callback", String.valueOf(num));
-                            try {
-
-                                String description = descriptionEditText.getText().toString();
-                                String eventName = eventnameEditText.getText().toString();
-                                String inviteQrString = num+ "device id"+deviceID;
-                                String promoQrString = "promo" + inviteQrString;
-                                QRCodeWriter writer = new QRCodeWriter();
-                                BitMatrix inviteBitMatrix = writer.encode(inviteQrString, BarcodeFormat.QR_CODE, 512, 512);
-                                BitMatrix promoBitMatrix = writer.encode(promoQrString, BarcodeFormat.QR_CODE, 512, 512);
-                                Bitmap Invitebitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
-                                Bitmap Promobitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
-
-
-                                for (int x = 0; x < 512; x++) {
-                                    for (int y = 0; y < 512; y++) {
-                                        Invitebitmap.setPixel(x, y, inviteBitMatrix.get(x, y) ? getResources().getColor(R.color.black) : getResources().getColor(R.color.white));
-                                    }
-                                }
-                                for (int x = 0; x < 512; x++) {
-                                    for (int y = 0; y < 512; y++) {
-                                        Promobitmap.setPixel(x, y, promoBitMatrix.get(x, y) ? getResources().getColor(R.color.black) : getResources().getColor(R.color.white));
-                                    }
-                                }
-
-
-                                // Convert Bitmap to Base64 String
-                                String inviteQrImageBase64 = bitmapToBase64(Invitebitmap);
-                                String promoQrImageBase64 = bitmapToBase64(Promobitmap);
-                                String eventImageBase64 = BitMapToString(eventImageBitmap);
-
-
-                                // Save invite QR Code in Firestore
-                                List<String> attendeeList= new ArrayList<String>();
-                                List<Long> checkIn = new ArrayList<Long>();
-                                List<String> attendeeIDList = new ArrayList<>();
-                                List<String> signUpIDList = new ArrayList<>();
-                                EventDetails eventdetail = new EventDetails(eventImageBase64, inviteQrImageBase64, promoQrImageBase64, num, description, eventName,checkIn, 0L,attendeeIDList,signUpIDList);
-                                firestoreHelper.saveInviteQRCode(deviceID, eventdetail,num);
-
-                            } catch (WriterException e) {
-                                Log.e("MainActivity", "Error generating QR code", e);
-                            }
+                            List<Long> checkIn = new ArrayList<Long>();
+                            List<String> attendeeIDList = new ArrayList<>();
+                            List<String> signUpIDList = new ArrayList<>();
+                            String eventImageBase64 = BitMapToString(eventImageBitmap);
+                            EventDetails eventdetail = new EventDetails(eventImageBase64, inviteQrImageData, promoQrImageData, num, description, eventName,checkIn, 0L,attendeeIDList,signUpIDList);
+                            firestoreHelper.saveInviteQRCode(deviceID, eventdetail,num);
 
                         }
                     });
-                    Toast.makeText(OrganizerUseNewQRActivity.this, "Your Event has been created.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrganizerUseOldQRActivity.this, "Your Event has been created.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -174,7 +129,7 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(OrganizerUseNewQRActivity.this, OrganizerMainActivity.class));
+                startActivity(new Intent(OrganizerUseOldQRActivity.this, OrganizerMainActivity.class));
             }
         });
 
@@ -186,7 +141,7 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
      @param : Long num
      **/
     public interface MyCallback {
-        void onCallback(long num);
+        void onCallback(long num, String inviteQrImageData, String promoQrImageData);
     }
     /**
      Reading Data from QR code
@@ -194,15 +149,17 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
      **/
     public void readData(MyCallback myCallback) {
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        firestoreHelper.getDeviceDocRef(deviceID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        firestoreHelper.getDeviceDocRef(deviceID).collection("event").document(String.valueOf(eventNum)).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d("count", "DocumentSnapshot data: " + document.getData());
-                        count = (Long) document.get("inviteCount");
-                        myCallback.onCallback(count);
+
+                        promoQrImageData = (String) document.get("promoQrImageData");
+                        inviteQrImageData = (String) document.get("inviteQrImageData");
+                        myCallback.onCallback(eventNum,inviteQrImageData,promoQrImageData);
                     } else {
                         Log.d("count", "No such document");
                     }
@@ -228,18 +185,9 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
         return result;
 
     }
-    /**
-     Encoding QRcode Data
-     @param : Bitmap bitmap
-     @return String
-     **/
 
-    private String bitmapToBase64(Bitmap bitmap) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        byte[] byteArray = byteArrayOutputStream.toByteArray();
-        return Base64.encodeToString(byteArray, Base64.DEFAULT);
-    }
+
+
 
     // Function to select image from the storage
     /**
@@ -276,3 +224,4 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
         }
     }
 }
+
