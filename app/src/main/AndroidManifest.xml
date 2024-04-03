@@ -58,6 +58,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".OrganizerUseOldQRActivity"/>
+        <activity android:name=".OrganizerChooseOldQRActivity"/>
         <activity android:name=".OrganizerCreateActivity" />
         <activity android:name=".AttendeeSelectEvents" />
         <activity android:name=".AttendeeAllEventsActivity" />
