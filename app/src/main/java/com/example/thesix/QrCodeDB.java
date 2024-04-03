@@ -18,6 +18,9 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Contains all functions and methods required to interact with QRCode Firebase
  *
@@ -111,6 +114,19 @@ public class QrCodeDB {
                 .document(deviceID);
         return documentReference;
     }
+    public void saveDeviceIDToToken(String d_id, String token){
+        Map<String, Object> device = new HashMap<>();
+        device.put("token",token);
+        firestore.collection("deviceIdToToken")
+                .document(d_id)
+                .set(device)
+                .addOnSuccessListener(documentReference ->
+                        Log.d("FirestoreHelper", "DocumentSnapshot added with ID: "))
+                .addOnFailureListener(e ->
+                        Log.e("FirestoreHelper", "Error adding document", e));
+
+    }
+
 
 
 
