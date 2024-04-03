@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,7 @@ public class AttendeeListActivity extends AppCompatActivity {
     List<String> attendeeString;
     List<Long> checkinCount;
     private long totalCount;
+    private ProgressBar progressBar;
 
     private String eventName;
 
@@ -75,7 +77,9 @@ public class AttendeeListActivity extends AppCompatActivity {
         notificationButton = findViewById(R.id.notificationButton);
         attendeeList = findViewById(R.id.attendee_list_view);
         totalcheckinNumber = findViewById(R.id.totalCheckin);
+        progressBar = findViewById(R.id.progress_Bar);
         QrRef = firestoreHelper.getOldQrRef(deviceID);
+
         Intent mIntent = getIntent();
         dataList = new ArrayList<>();
         eventNum = mIntent.getLongExtra("eventNum", 0);
@@ -92,7 +96,10 @@ public class AttendeeListActivity extends AppCompatActivity {
                 // Combine Lists
 
                 attendeeAdapter.notifyDataSetChanged();
-
+                progressBar.setProgress((int) totalCount);
+                String total_count = Long.toString(totalCount) + "/100";
+                totalcheckinNumber.setText(total_count);
+                /*
                 String total_count = Long.toString(totalCount);
                 totalcheckinNumber.setText(total_count);
                 String text = +totalCount + " people have checked into " + eventName;
@@ -101,7 +108,7 @@ public class AttendeeListActivity extends AppCompatActivity {
                 }
                 if(totalCount == 10 ) {
                     Toast.makeText(AttendeeListActivity.this, text, Toast.LENGTH_SHORT).show();
-                }
+                }*/
             }
         });
 
