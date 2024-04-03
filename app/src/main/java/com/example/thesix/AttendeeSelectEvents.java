@@ -38,6 +38,13 @@ public class AttendeeSelectEvents extends AppCompatActivity {
             }
         });
 
+        checkedinEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AttendeeSelectEvents.this, AttendeeCheckedinEventsActivity.class));
+            }
+        });
+
         signedupEvents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

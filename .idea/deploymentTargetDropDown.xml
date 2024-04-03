@@ -2,23 +2,11 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AdminActivityTest">
-        <State />
-      </entry>
-      <entry key="AttendeeMainActivityTest">
-        <State />
-      </entry>
-      <entry key="AttendeeProfileActivityTest">
-        <State />
-      </entry>
-      <entry key="AttendeeProfileUpdateTest">
-        <State />
-      </entry>
       <entry key="app">
         <State>
-          <targetSelectedWithDropDown>
+          <runningDeviceTargetSelectedWithDropDown>
             <Target>
-              <type value="QUICK_BOOT_TARGET" />
+              <type value="RUNNING_DEVICE_TARGET" />
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
@@ -26,8 +14,8 @@
                 </Key>
               </deviceKey>
             </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-01T21:11:50.115723Z" />
+          </runningDeviceTargetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-04-03T18:33:29.515111Z" />
         </State>
       </entry>
     </value>
