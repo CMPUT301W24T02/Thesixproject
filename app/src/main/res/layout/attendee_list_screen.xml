@@ -62,30 +62,44 @@
         app:strokeColor="@color/white"
         app:strokeWidth="3dp" />
 
+    <ProgressBar
+        android:id="@+id/progress_Bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:max="100"
+        android:progressTint="#D4AF37"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/attendee_list_view"
+        tools:ignore="MissingConstraints" />
+
     <TextView
         android:id="@+id/checked_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="sans-serif-light"
         android:text="@string/check_in"
         android:textAlignment="viewStart"
         android:textColor="@color/gold"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/notificationButton"
         app:layout_constraintEnd_toEndOf="@+id/notificationButton"
-        app:layout_constraintHorizontal_bias="0.546"
-        app:layout_constraintStart_toStartOf="@+id/notificationButton" />
+        app:layout_constraintHorizontal_bias="0.053"
+        app:layout_constraintStart_toStartOf="@+id/notificationButton"
+        app:layout_constraintTop_toBottomOf="@+id/progress_Bar" />
 
     <TextView
         android:id="@+id/totalCheckin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
-        android:text="89"
+        android:text="0"
         android:textAlignment="viewStart"
         android:textColor="@color/gold"
         android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/notificationButton"
         app:layout_constraintStart_toEndOf="@+id/checked_in"
         app:layout_constraintTop_toTopOf="@+id/checked_in"
         tools:ignore="DuplicateIds,MissingConstraints" />
