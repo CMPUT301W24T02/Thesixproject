@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -138,6 +139,34 @@ public class AdminEventsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(AdminEventsActivity.this, AdminActivity.class));
+            }
+        });
+
+        eventdescriptionList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                // Get the event name, description, and number at the clicked position
+                String eventName = eventnameDataList.get(position);
+                String eventDescription = eventdescriptionDataList.get(position);
+                Long eventNum = eventNumList.get(position);
+                String base64ImageData = eventImageDataList.get(position);
+
+                eventnameDataList.remove(position);
+                eventdescriptionDataList.remove(position);
+                eventNumList.remove(position);
+                eventImageDataList.remove(position);
+
+                eventnameArrayAdapter.notifyDataSetChanged();
+
+                // Firestore deletion
+                eventsRef.document(String.valueOf(eventNum)).delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(AdminEventsActivity.this, "Event Deleted!", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                return true;
             }
         });
 
