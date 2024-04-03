@@ -1,7 +1,5 @@
 package com.example.thesix;
 
-import static android.app.PendingIntent.getActivity;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,8 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
-import android.os.storage.StorageManager;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
@@ -21,7 +17,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,44 +24,30 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * AdminEventsActivity class manages all event names display and navigation within an Android application.
- * Requests necessary permissions and sets up the layout for event listing.
- * Lists all events in the listview created in the app.
- * Retrieves event details asynchronously from a Firebase Firestore database using the readData method.
- * Handles item clicks to navigate to another activity (AdminEventDetails) with selected event details.
- */
+public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
+    ArrayList<Long> eventNumList;
 
-public class AdminEventsActivity extends AppCompatActivity {
-    private ArrayList<Long> eventNumList;
-
-    private ArrayList<String> eventnameDataList;
-    private ArrayList<String> eventdescriptionDataList;
-    private ArrayList<String> eventImageDataList;
+    ArrayList<String> eventnameDataList;
+    ArrayList<String> eventdescriptionDataList;
+    ArrayList<String> eventImageDataList;
     private ArrayAdapter<String> eventnameArrayAdapter;
-    private FirebaseFirestore firestore;
+    private QrCodeDB firestoreHelper;
     private Button backButton;
-    private CollectionReference eventsRef;
+    CollectionReference eventsRef;
 
     /**
-     * Initializes UI components like lists, adapters, and buttons
-     * @param :  Bundle savedInstanceState
-     * @return : void
-     */
-
+     Initializes UI components like lists, adapters, and buttons
+     **/
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,40 +58,45 @@ public class AdminEventsActivity extends AppCompatActivity {
         eventNumList = new ArrayList<>();
         eventImageDataList = new ArrayList<>();
         backButton = findViewById(R.id.backButton);
-        firestore = FirebaseFirestore.getInstance();
-        eventsRef = firestore.collection("inviteQrCodes");
+        firestoreHelper = new QrCodeDB();
+
+
+        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
+        //String deviceID ="27150c669e8b1dc4";
+        eventsRef = firestoreHelper.getOldQrRef(deviceID);
         eventnameArrayAdapter = new ArrayAdapter<String>(
-                AdminEventsActivity.this,
+                OrganizerChooseOldQRActivity.this,
                 R.layout.event_list_textview, R.id.itemTextView, eventnameDataList);
         ListView eventdescriptionList = findViewById(R.id.event_list);
         eventdescriptionList.setAdapter(eventnameArrayAdapter);
 
         /**
-         * Does Read data Callback
-         * @param : List<String> list1, List<Long> list2, List<String> list3
-         * @return : void
-         */
-        readData(new MyCallback() {
+         Callback Interface to share Event details
+         @param : String
+         @return
+         **/
+        readData(new EventDetailsAdapter.MyCallback() {
             @Override
             public void onCallback(List<String> list1, List<Long> list2, List<String> list3) {
                 Log.d("callback", "3");
                 eventnameDataList = (ArrayList<String>) list1;
                 eventNumList = (ArrayList<Long>) list2;
-                Log.d("callback", "1" + eventnameDataList.get(0));
-                Log.d("callback", "2");
+                //Log.d("callback", "1" + eventnameDataList.get(0));
+                //Log.d("callback", "2");
                 eventnameArrayAdapter.notifyDataSetChanged();
             }
         });
         /**
-         * Sets Event Description
-         * @param : AdapterView<?> parent, View view, int position, long id
-         * @return : void
-         */
+         Setting Event Details
+         @param : AdapterView parent, View view, int position, long id
+         @return :void
+         **/
         eventdescriptionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //startActivity(new Intent(EventDetailsAdapter.this, EventDetailsConnector.class));
 
-                Intent i = new Intent(AdminEventsActivity.this, AdminEventDetails.class);
+                Intent i = new Intent(OrganizerChooseOldQRActivity.this, OrganizerUseOldQRActivity.class);
                 String eventName = (String) (eventdescriptionList.getItemAtPosition(position));
                 String eventDescription = "Singh";
                 long eventNum = eventNumList.get(position);
@@ -131,62 +117,33 @@ public class AdminEventsActivity extends AppCompatActivity {
             }
         });
         /**
-         * Sets back button to navigate to Admin Activity
-         * @param : View v
-         * @return :
-         */
+         Clicking backButton navigates back to MainActivity.
+         @param: View v
+         @return void
+         **/
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AdminEventsActivity.this, AdminActivity.class));
-            }
-        });
-
-        eventdescriptionList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                // Get the event name, description, and number at the clicked position
-                String eventName = eventnameDataList.get(position);
-                String eventDescription = eventdescriptionDataList.get(position);
-                Long eventNum = eventNumList.get(position);
-                String base64ImageData = eventImageDataList.get(position);
-
-                eventnameDataList.remove(position);
-                eventdescriptionDataList.remove(position);
-                eventNumList.remove(position);
-                eventImageDataList.remove(position);
-
-                eventnameArrayAdapter.notifyDataSetChanged();
-
-                // Firestore deletion
-                eventsRef.document(String.valueOf(eventNum)).delete()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(AdminEventsActivity.this, "Event Deleted!", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                return true;
+                startActivity(new Intent(OrganizerChooseOldQRActivity.this, OrganizerUseNewQRActivity.class));
             }
         });
 
     }
     /**
-     * Interface Callback
-     * @param :List<String> list1, List<Long> list2, List<String> list3
-     * @return :
-     */
+     Callback Interface to share Event details
+     @param : String
+     @return
+     **/
 
     public interface MyCallback {
         void onCallback(List<String> list1, List<Long> list2, List<String> list3);
     }
     /**
-     * Reads data
-     * @param :MyCallback myCallback
-     * @return :
-     */
+     Reading Data from QR code
+     @param : MycCallBcak callBack
+     **/
 
-    public void readData(MyCallback myCallback) {
+    public void readData(EventDetailsAdapter.MyCallback myCallback) {
         eventsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -207,4 +164,40 @@ public class AdminEventsActivity extends AppCompatActivity {
             }
         });
     }
+    /**
+     Coverts  string to bitmap
+     @param : String base64String
+     @return :Bitmap
+     **/
+    private Bitmap Base64Tobitmap(String base64String) {
+        byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+    }
+
+    public void ShareBitmap(View view) {
+
+    }
+
+    /**
+     * Saves the image as PNG to the app's private external storage folder.
+     * @param image Bitmap to save.
+     * @return Uri of the saved file or null
+     */
+    private Uri saveImageExternal(Bitmap image) {
+        //TODO - Should be processed in another thread
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder(); //https://stackoverflow.com/questions/48117511/exposed-beyond-app-through-clipdata-item-geturi
+        StrictMode.setVmPolicy(builder.build());
+        Uri uri = null;
+        try {
+            File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "to-share.png");
+            FileOutputStream stream = new FileOutputStream(file);
+            image.compress(Bitmap.CompressFormat.PNG, 90, stream);
+            stream.close();
+            uri = Uri.fromFile(file);
+        } catch (IOException e) {
+            Log.d("save_image", "IOException while trying to write file for sharing: " + e.getMessage());
+        }
+        return uri;
+    }
+
 }
