@@ -2,6 +2,7 @@ package com.example.thesix;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -50,6 +51,7 @@ public class OrganizerUseOldQRActivity extends AppCompatActivity {
     private Long count;
     private String deviceID;
     Long eventNum;
+    private Location location;
 
     @Override
 
@@ -113,7 +115,7 @@ public class OrganizerUseOldQRActivity extends AppCompatActivity {
                             List<String> attendeeIDList = new ArrayList<>();
                             List<String> signUpIDList = new ArrayList<>();
                             String eventImageBase64 = BitMapToString(eventImageBitmap);
-                            EventDetails eventdetail = new EventDetails(eventImageBase64, inviteQrImageData, promoQrImageData, num, description, eventName,checkIn, 0L,attendeeIDList,signUpIDList);
+                            EventDetails eventdetail = new EventDetails(eventImageBase64, inviteQrImageData, promoQrImageData, num, description, eventName,checkIn, 0L,attendeeIDList,signUpIDList, (List<Location>) location);
                             firestoreHelper.saveInviteQRCode(deviceID, eventdetail,num);
 
                         }
