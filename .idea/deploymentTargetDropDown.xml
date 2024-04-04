@@ -5,13 +5,16 @@
       <entry key="AdminActivityTest">
         <State />
       </entry>
+      <entry key="AdminEventsActivityTest">
+        <State />
+      </entry>
+      <entry key="AdminImagesActivityTest">
+        <State />
+      </entry>
+      <entry key="AdminProfileActivityTest">
+        <State />
+      </entry>
       <entry key="AttendeeMainActivityTest">
-        <State />
-      </entry>
-      <entry key="AttendeeProfileActivityTest">
-        <State />
-      </entry>
-      <entry key="AttendeeProfileUpdateTest">
         <State />
       </entry>
       <entry key="app">
