@@ -58,9 +58,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".OrganizerUseOldQRActivity"/>
+        <activity android:name=".OrganizerChooseOldQRActivity"/>
         <activity android:name=".OrganizerCreateActivity" />
         <activity android:name=".AttendeeSelectEvents" />
         <activity android:name=".AttendeeAllEventsActivity" />
+        <activity android:name=".AttendeeCheckedinEventsActivity" />
         <activity android:name=".AttendeeSignedupEventsActivity" />
         <activity android:name=".AttendeeAllEventDetails" />
         <activity android:name=".OrganizerMainActivity" />
@@ -94,6 +97,7 @@
         <activity android:name=".AttendeeProfileUpdate"
             android:label="AttendeeProfileUpdate"/>
         <service android:name=".PushNotificationService"
+            android:stopWithTask="false"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

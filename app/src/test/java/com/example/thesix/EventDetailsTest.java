@@ -6,6 +6,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import android.location.Location;
+
 public class EventDetailsTest {
 
     private EventDetails eventDetails;
@@ -25,6 +27,16 @@ public class EventDetailsTest {
         List<String> sighUpIDList = new ArrayList<>();
         attendeeList.add("Attendee 1");
         attendeeList.add("Attendee 2");
+        List<Location> locationList = new ArrayList<>();
+        Location location1 = null;
+        location1.setLatitude(10);
+        location1.setLongitude(10);
+        Location location2 = null;
+        location1.setLatitude(20.1871);
+        location1.setLongitude(20.7663);
+        locationList.add(location1);
+        locationList.add(location2);
+
 
 
         eventDetails = new EventDetails(
@@ -37,7 +49,8 @@ public class EventDetailsTest {
                 checkInCountList,
                 30L,
                 attendeeIDList,
-                sighUpIDList
+                sighUpIDList,
+                locationList
         );
     }
 
