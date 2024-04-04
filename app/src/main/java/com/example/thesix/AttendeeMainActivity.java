@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -163,121 +164,121 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     //https://www.youtube.com/watch?v=bWEt-_z7BOY
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (intentResult != null) {
-            contents = intentResult.getContents();
-            Log.d("scanner", contents);
-            if (contents != null) {
-                //String inviteQrString = num+ "device id"+deviceID;
+        if (resultCode != RESULT_CANCELED) {
+            super.onActivityResult(requestCode, resultCode, data);
+            IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (intentResult != null) {
+                contents = intentResult.getContents();
+                Log.d("scanner", contents);
+                if (contents != null) {
+                    //String inviteQrString = num+ "device id"+deviceID;
 
-                if (contents.startsWith("promo")) {
-                    contents = contents.replace("promo", "");
-                    testing.setText(contents);
-                    contentsArray = contents.split("device id", 2);
-                    organizerID = contentsArray[1];
-                    eventNum = Long.valueOf(contentsArray[0]);
-                    Log.d("scanner", contentsArray[0] + contentsArray[1]);
-                    promoData(new PromoDataCallback() {
-                        @Override
-                        public void onPromoDataCallback(String imageData, String name, String description) {
-                            Log.d("qwert", name + description);
-                            Intent i = new Intent(AttendeeMainActivity.this, AttendeePromoActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putString("imageData", imageData);
-                            bundle.putString("name", name);
-                            bundle.putString("description", description);
-                            bundle.putString("organizerID", organizerID);
-                            bundle.putLong("eventNum", eventNum);
-                            i.putExtras(bundle);
-                            startActivity(i);
-                        }
-                    });
-
-
-                } else {
-                    contentsArray = contents.split("device id", 2);
-                     if( 1==1 ) {
-                        showLocation();
-                        // Handle case where last known location is not available
-                        if (lastKnownLocation != null) {
-                            // Use the last known location
-                            // hi, I changed this part due to the failure of switch activity in view profile button
-                            //database.saveUserLocation(deviceID,lastKnownLocation);
-                            Log.i("location1", lastKnownLocation.toString()+"yesss");
-                            //database.saveUserLocation(organizerID);
-                            // Do something with latitude and longitude...
-                        } else {
-                            lastKnownLocation = null;
-                        }
-                        //https://cloud.google.com/firestore/docs/samples/firestore-data-set-array-operations
-
-                        Log.d("scanner", contentsArray[0] + contentsArray[1]);
-                        Bundle inviteBundle = new Bundle();
-                        inviteBundle.putLong("num", Long.parseLong(contentsArray[0]));
-                        inviteBundle.putString("organizerDeviceID", contentsArray[1]);
+                    if (contents.startsWith("promo")) {
+                        contents = contents.replace("promo", "");
+                        testing.setText(contents);
+                        contentsArray = contents.split("device id", 2);
                         organizerID = contentsArray[1];
                         eventNum = Long.valueOf(contentsArray[0]);
-                        Intent i = new Intent(AttendeeMainActivity.this, AttendeeProfileActivity.class);
-                        updateInvite(new InviteCallback() {
+                        Log.d("scanner", contentsArray[0] + contentsArray[1]);
+                        promoData(new PromoDataCallback() {
                             @Override
-                            public void onInviteCallback(List<String> attendeeIDList, List<Long> inviteCountList) {
-                                if (attendeeIDList.contains(deviceID)) {
-                                    int index = attendeeIDList.indexOf(deviceID);
-                                    Long value = inviteCountList.get(index) + 1;
-                                    inviteCountList.set(index, value);
-                                } else {
-                                    attendeeIDList.add(deviceID);
-                                    inviteCountList.add(0L);
-                                }
-                                firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum))
-                                        .update("attendeeIDList", attendeeIDList).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d("update", "DocumentSnapshot successfully updated!");
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w("update", "Error updating document", e);
-                                            }
-                                        });
-                                firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum))
-                                        .update("inviteCountList", inviteCountList)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d("update", "DocumentSnapshot successfully updated!");
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w("update", "Error updating document", e);
-                                            }
-                                        });
+                            public void onPromoDataCallback(String imageData, String name, String description) {
+                                Log.d("qwert", name + description);
+                                Intent i = new Intent(AttendeeMainActivity.this, AttendeePromoActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("imageData", imageData);
+                                bundle.putString("name", name);
+                                bundle.putString("description", description);
+                                bundle.putString("organizerID", organizerID);
+                                bundle.putLong("eventNum", eventNum);
+                                i.putExtras(bundle);
+                                startActivity(i);
                             }
                         });
 
-                        updateLocation(new LocationCallback() {
-                            @Override
-                            public void onLocationCallback(List<Location> locationList) {
-                                locationList.add(lastKnownLocation);
-                                database.saveUserLocation(organizerID).document(String.valueOf(eventNum)).update("location",locationList).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        Log.d("location","success");
+
+                    } else {
+                        contentsArray = contents.split("device id", 2);
+                        if (1 == 1) {
+                            showLocation();
+                            // Handle case where last known location is not available
+                            if (lastKnownLocation != null) {
+                                // Use the last known location
+                                // hi, I changed this part due to the failure of switch activity in view profile button
+                                //database.saveUserLocation(deviceID,lastKnownLocation);
+                                Log.i("location1", lastKnownLocation.toString() + "yesss");
+                                //database.saveUserLocation(organizerID);
+                                // Do something with latitude and longitude...
+                            } else {
+                                lastKnownLocation = null;
+                            }
+                            //https://cloud.google.com/firestore/docs/samples/firestore-data-set-array-operations
+
+                            Log.d("scanner", contentsArray[0] + contentsArray[1]);
+                            Bundle inviteBundle = new Bundle();
+                            inviteBundle.putLong("num", Long.parseLong(contentsArray[0]));
+                            inviteBundle.putString("organizerDeviceID", contentsArray[1]);
+                            organizerID = contentsArray[1];
+                            eventNum = Long.valueOf(contentsArray[0]);
+                            Intent i = new Intent(AttendeeMainActivity.this, AttendeeProfileActivity.class);
+                            updateInvite(new InviteCallback() {
+                                @Override
+                                public void onInviteCallback(List<String> attendeeIDList, List<Long> inviteCountList) {
+                                    if (attendeeIDList.contains(deviceID)) {
+                                        int index = attendeeIDList.indexOf(deviceID);
+                                        Long value = inviteCountList.get(index) + 1;
+                                        inviteCountList.set(index, value);
+                                    } else {
+                                        attendeeIDList.add(deviceID);
+                                        inviteCountList.add(0L);
                                     }
-                                });
-                            }
-                        });
-                        i.putExtras(inviteBundle);
-                        startActivity(i);
+                                    firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum))
+                                            .update("attendeeIDList", attendeeIDList).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("update", "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("update", "Error updating document", e);
+                                                }
+                                            });
+                                    firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum))
+                                            .update("inviteCountList", inviteCountList)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("update", "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("update", "Error updating document", e);
+                                                }
+                                            });
+                                }
+                            });
+                            //                        updateLocation(new LocationCallback() {
+//                            @Override
+//                            public void onLocationCallback(List<Location> locationList) {
+//                                locationList.add(lastKnownLocation);
+//                                database.saveUserLocation(organizerID).document(String.valueOf(eventNum)).update("location",locationList).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                    @Override
+//                                    public void onSuccess(Void unused) {
+//                                        Log.d("location","success");
+//                                    }
+//                                });
+//                            }
+//                        });
 
+
+
+                        }
 
                     }
-
                 }
             }
         }
@@ -350,6 +351,19 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     private interface InviteCallback {
         void onInviteCallback(List<String> attendeeIDList, List<Long> inviteCountList);
     }
+    //                        updateLocation(new LocationCallback() {
+//                            @Override
+//                            public void onLocationCallback(List<Location> locationList) {
+//                                locationList.add(lastKnownLocation);
+//                                database.saveUserLocation(organizerID).document(String.valueOf(eventNum)).update("location",locationList).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                    @Override
+//                                    public void onSuccess(Void unused) {
+//                                        Log.d("location","success");
+//                                    }
+//                                });
+//                            }
+//                        });
+
     public void updateInvite(InviteCallback inviteCallback) {
         firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum)).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
