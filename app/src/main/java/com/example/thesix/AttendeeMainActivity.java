@@ -73,6 +73,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     private List<String> attendeeIDList;
     private List<Location> locationList;
     private Button getLocation;
+    private Button editButton;
     private LocationManager locationManager;
     private TextView welcomeVIP;
     private FusedLocationProviderClient fusedLocationClient;
@@ -83,7 +84,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_main_activity);
-
+        editButton = findViewById(R.id.editAttendeeProfile);
         scanButton = findViewById(R.id.scanButton);
         viewProfile = findViewById(R.id.viewAttendeeProfile);
         eventsButton = findViewById(R.id.allEventButton);
@@ -110,7 +111,12 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         }
         finalDeviceID = deviceID;
         askNotificationPermission();
-
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AttendeeMainActivity.this,AttendeeProfileUpdate.class));
+            }
+        });
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

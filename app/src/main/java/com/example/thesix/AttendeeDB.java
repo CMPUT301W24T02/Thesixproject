@@ -65,6 +65,11 @@ public class AttendeeDB {
                 })
                 .addOnFailureListener(e -> Log.w("AttendeeDB", "Error adding document", e));
     }
+    public void saveAttendeeInfoNoPhoto(String name, String contact, String homePage, String imageData, String deviceID) {
+        Attendee attendee = new Attendee(name,contact,homePage,imageData);
+        firestore.collection("AttendeeProfileDB").document(deviceID).set(attendee);
+    }
+
 
     public void updateAttendeeInfo(String documentId, String name, String contact, String homePage, String imagePath) {
         Map<String, Object> attendee = new HashMap<>();
