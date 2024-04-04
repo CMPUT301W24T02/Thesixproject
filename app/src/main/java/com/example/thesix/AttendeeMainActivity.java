@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.os.Looper;
 import android.provider.Settings;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -17,7 +16,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -27,22 +25,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.widget.Toast;
-import android.provider.Settings;
 
 import java.util.List;
 
@@ -113,11 +105,11 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
             @Override
             public void onClick(View v) {
                 //https://www.youtube.com/watch?v=bWEt-_z7BOY
-                IntentIntegrator intentIntegrator = new IntentIntegrator(AttendeeMainActivity.this);
-                intentIntegrator.setOrientationLocked(true);
-                intentIntegrator.setPrompt("Scan a QR Code");
-                intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
-                intentIntegrator.initiateScan();
+                //IntentIntegrator intentIntegrator = new IntentIntegrator(AttendeeMainActivity.this);
+                //intentIntegrator.setOrientationLocked(true);
+                //intentIntegrator.setPrompt("Scan a QR Code");
+                //intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+                //intentIntegrator.initiateScan();
                 //TODO : remove the code here later
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                         && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -128,20 +120,24 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                     showLocation();
                     // Handle case where last known location is not available
                     //lastKnownLocation
-                    if (lastKnownLocation != null) {
+                    IntentIntegrator intentIntegrator = new IntentIntegrator(AttendeeMainActivity.this);
+                    intentIntegrator.setOrientationLocked(true);
+                    intentIntegrator.setPrompt("Scan a QR Code");
+                    intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+                    intentIntegrator.initiateScan();
+                    //if (lastKnownLocation != null) {
                         // Use the last known location
                         // hi, I changed this part due to the failure of switch activity in view profile button
                         //database.saveUserLocation(deviceID,lastKnownLocation);
-                        database.saveUserLocation(organizerID);
+                    //    Log.i("location2", lastKnownLocation.toString()+"yesss");
+                    //    database.saveUserLocation(organizerID);
                         //Log.i("location1", lastKnownLocation.toString()+"yesss");
                         // Do something with latitude and longitude...
-                    } else {
+                    //} else {
 
-                    }
+                    //}
 
                 }
-
-
 
             }
         });
@@ -163,7 +159,6 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         //String finalDeviceID = deviceID;
         ;
     }
-
 
     //https://www.youtube.com/watch?v=bWEt-_z7BOY
     @Override
@@ -202,25 +197,18 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
 
                 } else {
                     contentsArray = contents.split("device id", 2);
-
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                            && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
-                    } else {
+                     if( 1==1 ) {
                         showLocation();
                         // Handle case where last known location is not available
                         if (lastKnownLocation != null) {
                             // Use the last known location
                             // hi, I changed this part due to the failure of switch activity in view profile button
                             //database.saveUserLocation(deviceID,lastKnownLocation);
-                            database.saveUserLocation(organizerID);
                             Log.i("location1", lastKnownLocation.toString()+"yesss");
-                            database.saveUserLocation(organizerID);
+                            //database.saveUserLocation(organizerID);
                             // Do something with latitude and longitude...
                         } else {
-
+                            lastKnownLocation = null;
                         }
                         //https://cloud.google.com/firestore/docs/samples/firestore-data-set-array-operations
 
@@ -298,9 +286,14 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     @Override
     public void onLocationChanged(Location location) {
         lastKnownLocation=location;
+        lastKnownLocation = getLastKnownLocation(location);
         //welcomeVIP.setText(hereLocation(location));;
         //welcomeVIP.setText(String.valueOf(lastKnownLocation.getLatitude()+lastKnownLocation.getLongitude()));
 
+    }
+    public Location getLastKnownLocation(Location location){
+        //database.saveUserLocation(organizerID);
+        return location;
     }
 
 
