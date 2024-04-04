@@ -261,19 +261,18 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                                             });
                                 }
                             });
-                            //                        updateLocation(new LocationCallback() {
-//                            @Override
-//                            public void onLocationCallback(List<Location> locationList) {
-//                                locationList.add(lastKnownLocation);
-//                                database.saveUserLocation(organizerID).document(String.valueOf(eventNum)).update("location",locationList).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                    @Override
-//                                    public void onSuccess(Void unused) {
-//                                        Log.d("location","success");
-//                                    }
-//                                });
-//                            }
-//                        });
-
+                            updateLocation(new CustomLocationCallback() {
+                            @Override
+                            public void onLocationCallback(List<Location> locationList) {
+                               locationList.add(lastKnownLocation);
+                                database.saveUserLocation(organizerID).document(String.valueOf(eventNum)).update("location",locationList).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                   @Override
+                                    public void onSuccess(Void unused) {
+                                        Log.d("location","success");
+                                   }
+                               });
+                            }
+                       });
 
 
                         }
@@ -320,10 +319,10 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     @Override
     public void onGpsStatusChanged(int event) {
     }
-    private interface LocationCallback {
+    private interface CustomLocationCallback {
         void onLocationCallback(List<Location> locationList);
     }
-    public void updateLocation(LocationCallback locationCallback) {
+    public void updateLocation(CustomLocationCallback locationCallback) {
         database.saveUserLocation(organizerID).document(String.valueOf(eventNum))
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -351,18 +350,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     private interface InviteCallback {
         void onInviteCallback(List<String> attendeeIDList, List<Long> inviteCountList);
     }
-    //                        updateLocation(new LocationCallback() {
-//                            @Override
-//                            public void onLocationCallback(List<Location> locationList) {
-//                                locationList.add(lastKnownLocation);
-//                                database.saveUserLocation(organizerID).document(String.valueOf(eventNum)).update("location",locationList).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                    @Override
-//                                    public void onSuccess(Void unused) {
-//                                        Log.d("location","success");
-//                                    }
-//                                });
-//                            }
-//                        });
+
 
     public void updateInvite(InviteCallback inviteCallback) {
         firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum)).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
