@@ -12,6 +12,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/signUpButton"
         android:text="Sign Up"
+        app:layout_constraintEnd_toEndOf="@+id/eventDescription"
+        app:layout_constraintHorizontal_bias="0.486"
+        app:layout_constraintStart_toStartOf="@+id/eventDescription"
+        app:layout_constraintTop_toBottomOf="@+id/eventDescription"
         tools:ignore="MissingConstraints" />
     <Button
         android:id="@+id/backButton"

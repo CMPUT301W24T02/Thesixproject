@@ -3,6 +3,7 @@ package com.example.thesix;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -168,128 +170,200 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     //https://www.youtube.com/watch?v=bWEt-_z7BOY
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (intentResult != null) {
-            contents = intentResult.getContents();
-            Log.d("scanner", contents);
-            if (contents != null) {
-                //String inviteQrString = num+ "device id"+deviceID;
-
-                if (contents.startsWith("promo")) {
-                    contents = contents.replace("promo", "");
-                    testing.setText(contents);
-                    contentsArray = contents.split("device id", 2);
-                    organizerID = contentsArray[1];
-                    eventNum = Long.valueOf(contentsArray[0]);
-                    Log.d("scanner", contentsArray[0] + contentsArray[1]);
-                    promoData(new PromoDataCallback() {
-                        @Override
-                        public void onPromoDataCallback(String imageData, String name, String description) {
-                            Log.d("qwert", name + description);
-                            Intent i = new Intent(AttendeeMainActivity.this, AttendeePromoActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putString("imageData", imageData);
-                            bundle.putString("name", name);
-                            bundle.putString("description", description);
-                            bundle.putString("organizerID", organizerID);
-                            bundle.putLong("eventNum", eventNum);
-                            i.putExtras(bundle);
-                            startActivity(i);
-                        }
-                    });
+        if(resultCode != RESULT_CANCELED) {
 
 
-                } else {
-                    contentsArray = contents.split("device id", 2);
+            super.onActivityResult(requestCode, resultCode, data);
+            IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (intentResult != null) {
+                contents = intentResult.getContents();
+                Log.d("scanner", contents);
+                if (contents != null) {
+                    //String inviteQrString = num+ "device id"+deviceID;
 
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                            && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
-                    } else {
-                        showLocation();
-                        // Handle case where last known location is not available
-                        if (lastKnownLocation != null) {
-                            // Use the last known location
-                            // hi, I changed this part due to the failure of switch activity in view profile button
-                            //database.saveUserLocation(deviceID,lastKnownLocation);
-                            database.saveUserLocation(organizerID);
-                            Log.i("location1", lastKnownLocation.toString()+"yesss");
-                            database.saveUserLocation(organizerID);
-                            // Do something with latitude and longitude...
-                        } else {
-
-                        }
-                        //https://cloud.google.com/firestore/docs/samples/firestore-data-set-array-operations
-
-                        Log.d("scanner", contentsArray[0] + contentsArray[1]);
-                        Bundle inviteBundle = new Bundle();
-                        inviteBundle.putLong("num", Long.parseLong(contentsArray[0]));
-                        inviteBundle.putString("organizerDeviceID", contentsArray[1]);
+                    if (contents.startsWith("promo")) {
+                        contents = contents.replace("promo", "");
+                        contentsArray = contents.split("device id", 2);
                         organizerID = contentsArray[1];
                         eventNum = Long.valueOf(contentsArray[0]);
-                        Intent i = new Intent(AttendeeMainActivity.this, AttendeeProfileActivity.class);
-                        updateInvite(new InviteCallback() {
+                        Log.d("scanner", contentsArray[0] + contentsArray[1]);
+                        promoData(new PromoDataCallback() {
                             @Override
-                            public void onInviteCallback(List<String> attendeeIDList, List<Long> inviteCountList) {
-                                if (attendeeIDList.contains(deviceID)) {
-                                    int index = attendeeIDList.indexOf(deviceID);
-                                    Long value = inviteCountList.get(index) + 1;
-                                    inviteCountList.set(index, value);
-                                } else {
-                                    attendeeIDList.add(deviceID);
-                                    inviteCountList.add(0L);
-                                }
-                                firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum))
-                                        .update("attendeeIDList", attendeeIDList).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d("update", "DocumentSnapshot successfully updated!");
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w("update", "Error updating document", e);
-                                            }
-                                        });
-                                firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum))
-                                        .update("inviteCountList", inviteCountList)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d("update", "DocumentSnapshot successfully updated!");
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w("update", "Error updating document", e);
-                                            }
-                                        });
+                            public void onPromoDataCallback(String imageData, String name, String description) {
+                                Log.d("qwert", name + description);
+                                Intent i = new Intent(AttendeeMainActivity.this, AttendeePromoActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("imageData", imageData);
+                                bundle.putString("name", name);
+                                bundle.putString("description", description);
+                                bundle.putString("organizerID", organizerID);
+                                bundle.putLong("eventNum", eventNum);
+                                i.putExtras(bundle);
+                                startActivity(i);
                             }
                         });
 
-                        updateLocation(new LocationCallback() {
-                            @Override
-                            public void onLocationCallback(List<Location> locationList) {
-                                locationList.add(lastKnownLocation);
-                                database.saveUserLocation(organizerID).document(String.valueOf(eventNum)).update("location",locationList).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        Log.d("location","success");
+
+                    } else {
+                        contentsArray = contents.split("device id", 2);
+
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                                && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                                != PackageManager.PERMISSION_GRANTED) {
+                            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
+                        } else {
+//                            showLocation();
+                            // Handle case where last known location is not available
+                            if (lastKnownLocation != null) {
+                                // Use the last known location
+                                // hi, I changed this part due to the failure of switch activity in view profile button
+                                //database.saveUserLocation(deviceID,lastKnownLocation);
+//                                database.saveUserLocation(organizerID);
+//                                Log.i("location1", lastKnownLocation.toString() + "yesss");
+//                                database.saveUserLocation(organizerID);
+                                // Do something with latitude and longitude...
+                            } else {
+
+                            }
+                            //https://cloud.google.com/firestore/docs/samples/firestore-data-set-array-operations
+
+                            Log.d("scanner", contentsArray[0] + contentsArray[1]);
+                            Bundle inviteBundle = new Bundle();
+                            inviteBundle.putLong("num", Long.parseLong(contentsArray[0]));
+                            inviteBundle.putString("organizerDeviceID", contentsArray[1]);
+                            organizerID = contentsArray[1];
+                            eventNum = Long.valueOf(contentsArray[0]);
+                            Intent i = new Intent(AttendeeMainActivity.this, AttendeeProfileActivity.class);
+                            updateInvite(new InviteCallback() {
+                                @Override
+                                public void onInviteCallback(List<String> attendeeIDList, List<Long> inviteCountList) {
+                                    Log.d("123123",attendeeIDList.toString());
+                                    Log.d("123123",inviteCountList.toString());
+
+                                    if (attendeeIDList.contains(deviceID)) {
+                                        int index = attendeeIDList.indexOf(deviceID);
+                                        Long value = inviteCountList.get(index) + 1;
+                                        Log.d("123123", String.valueOf(index));
+                                        Log.d("123123", String.valueOf(value));
+                                        inviteCountList.set(index, value);
+                                        Log.d("123123","final"+inviteCountList.toString());
+
+                                    } else {
+                                        attendeeIDList.add(deviceID);
+                                        inviteCountList.add(0L);
+                                        Log.d("123123","add"+attendeeIDList.toString());
+                                        Log.d("123123","add" +inviteCountList.toString());
                                     }
-                                });
-                            }
-                        });
-                        i.putExtras(inviteBundle);
-                        startActivity(i);
+                                    firestoreHelper.getDeviceDocRef(organizerID).collection("event")
+                                            .document(String.valueOf(eventNum))
+                                            .update("attendeeIDList", attendeeIDList).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("update", "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("update", "Error updating document", e);
+                                                }
+                                            });
+                                    Log.d("123123","1"+inviteCountList.toString());
+                                    firestoreHelper.getDeviceDocRef(organizerID).collection("event")
+                                            .document(String.valueOf(eventNum))
+                                            .update("checkInCountList", inviteCountList)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("123123","3"+inviteCountList.toString());
+                                                    Log.d("123123", "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("123123", "Error updating document", e);
+                                                }
+                                            });
+                                    Log.d("123123","2"+inviteCountList.toString());
+                                    firestoreHelper.getDeviceDocRef(organizerID).collection("event")
+                                            .document(String.valueOf(eventNum))
+                                            .update("totalCheckIn", FieldValue.increment(1))
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("update", "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("update", "Error updating document", e);
+                                                }
+                                            });
+                                    firestoreHelper.getAllEvent().document(String.valueOf(eventNum)).update("attendeeIDList", attendeeIDList)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("update", "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("update", "Error updating document", e);
+                                                }
+                                            });
+                                    firestoreHelper.getAllEvent().document(String.valueOf(eventNum)).update("checkInCountList", inviteCountList)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("update", "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("update", "Error updating document", e);
+                                                }
+                                            });
+                                    firestoreHelper.getAllEvent().document(String.valueOf(eventNum))
+                                            .update("totalCheckIn", FieldValue.increment(1))
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("update", "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("update", "Error updating document", e);
+                                                }
+                                            });
 
+                                }
+                            });
+
+//                        updateLocation(new LocationCallback() {
+//                            @Override
+//                            public void onLocationCallback(List<Location> locationList) {
+//                                locationList.add(lastKnownLocation);
+//                                database.saveUserLocation(organizerID).document(String.valueOf(eventNum)).update("location",locationList).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                    @Override
+//                                    public void onSuccess(Void unused) {
+//                                        Log.d("location","success");
+//                                    }
+//                                });
+//                            }
+//                        });
+
+
+
+                        }
 
                     }
-
                 }
             }
         }
