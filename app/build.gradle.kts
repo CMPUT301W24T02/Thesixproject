@@ -59,4 +59,6 @@ dependencies {
     androidTestImplementation ("androidx.test:rules:1.5.0")
     implementation ("com.google.zxing:core:3.4.1")
     implementation ("com.journeyapps:zxing-android-embedded:4.2.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
 }

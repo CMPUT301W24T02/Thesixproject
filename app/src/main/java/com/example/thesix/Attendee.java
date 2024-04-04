@@ -16,7 +16,7 @@ public class Attendee {
     private Long checkin;
     private String contact;
     private String homePage;
-    private String imageData;
+    private String profile_image;
 
     public Attendee() {
         // Default constructor required for calls to DataSnapshot.getValue(Attendee.class)
@@ -32,12 +32,12 @@ public class Attendee {
      * @param contact   the contact number of the attendee
      * @param homePage  the home page URL or handle of the attendee
      */
-    public Attendee(String name,String contact, String homePage, String imageData){
+    public Attendee(String name,String contact, String homePage, String profileImage){
 
         this.name = name;
         this.contact = contact;
         this.homePage = homePage;
-        this.imageData = imageData;
+        this.profile_image = profileImage;
     }
 
     /**
@@ -128,11 +128,12 @@ public class Attendee {
         this.homePage = homePage;
     }
 
-    public String getImageData() {
-        return imageData;
+
+    public String getProfile_image() {
+        return profile_image;
     }
 
-    public void setImageData(String imageData) {
-        this.imageData = imageData;
+    public void setProfile_image(String profile_image) {
+        this.profile_image = profile_image;
     }
 }

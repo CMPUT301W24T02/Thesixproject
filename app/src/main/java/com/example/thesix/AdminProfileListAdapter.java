@@ -44,7 +44,7 @@ public class AdminProfileListAdapter extends ArrayAdapter<Attendee> {
 
         // Get Profile Image
         ImageView image = view.findViewById(R.id.profile_image);
-        String imageString = attendee.getImageData();
+        String imageString = attendee.getProfile_image();
 
         // Decode the image string to Bitmap
         Bitmap bitmap = decodeBase64(imageString);

@@ -126,6 +126,9 @@ public class QrCodeDB {
                         Log.e("FirestoreHelper", "Error adding document", e));
 
     }
+    public CollectionReference getAllEvent() {
+        return firestore.collection("inviteQrCodes");
+    }
 
 
 

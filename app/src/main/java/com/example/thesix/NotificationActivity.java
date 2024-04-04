@@ -8,6 +8,14 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.json.JSONObject;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+
 /**
 NotificationActivity class manages notifications within the application.
 **/
@@ -59,4 +67,21 @@ public class NotificationActivity extends AppCompatActivity {
             }
         });
 }
+//    void sendNotification(String message){
+//        FirebaseUtil
+//    }
+    void callApi(JSONObject jsonObject){
+        MediaType JSON = MediaType.get("application/json");
+        OkHttpClient client = new OkHttpClient();
+        String url = "https://fcm.googleapis.com/fcm/send";
+        RequestBody body = RequestBody.create(jsonObject.toString(),JSON);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .header("Authorization", "Bearer AAAArB3cQ50:APA91bG_togOY7bXrsTTB4-odg_57yUVbu3kRJXeRKDOR_yo7D9YJ_u13JxNRDxcpTg_Ryo4Zy7aJUoVKWEOiXUng7z_Hu4YG-388eOWVdAVwICh2JDC78uknlcbbl-HyvGukJ__kINK")
+                .build();
+        client.newCall(request);
+
+
+    }
 }
