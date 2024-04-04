@@ -20,6 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -54,6 +56,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     private QrCodeDB firestoreHelper;
     String contents;
     String[] contentsArray;
+    private LocationRequest locationRequest;
     String imageData,name,description;
     //private Button getLocation;
     //private TextView coordinates;
@@ -67,16 +70,24 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     private List<Long> checkInCountList;
     private List<String> attendeeIDList;
     private List<Location> locationList;
+    private Button getLocation;
+    private LocationManager locationManager;
+    private TextView welcomeVIP;
+    private FusedLocationProviderClient fusedLocationClient;
+    private LocationCallback locationCallback;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_main_activity);
+
         scanButton = findViewById(R.id.scanButton);
         viewProfile = findViewById(R.id.viewAttendeeProfile);
         eventsButton = findViewById(R.id.allEventButton);
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        //getLocation = findViewById(R.id.locationButton);
+        //getLocation = findViewById(R.id.getLocationButton);
+        //welcomeVIP=findViewById(R.id.welcome_vip);
         //coordinates = findViewById(R.id.locationinfo);
         database = new AttendeeDB();
         //ActivityCompat.requestPermissions( this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
@@ -116,11 +127,12 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                 else {
                     showLocation();
                     // Handle case where last known location is not available
+                    //lastKnownLocation
                     if (lastKnownLocation != null) {
                         // Use the last known location
                         // hi, I changed this part due to the failure of switch activity in view profile button
                         //database.saveUserLocation(deviceID,lastKnownLocation);
-                        database.saveUserLocation(finalDeviceID);
+                        database.saveUserLocation(organizerID);
                         //Log.i("location1", lastKnownLocation.toString()+"yesss");
                         // Do something with latitude and longitude...
                     } else {
@@ -149,36 +161,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         });
 
         //String finalDeviceID = deviceID;
-        /*
-        getLocation.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                //https://www.youtube.com/watch?v=UJwj5ywkcks&t=29s&ab_channel=TihomirRadev
-                //checking Location permissions
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                        && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED){
-                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
-                }
-                else {
-                    showLocation();
-                    // Handle case where last known location is not available
-                    if (lastKnownLocation != null) {
-                        // Use the last known location
-
-                        // hi, I changed this part due to the failure of switch activity in view profile button
-                        //database.saveUserLocation(deviceID,lastKnownLocation);
-                        database.saveUserLocation(finalDeviceID,lastKnownLocation);
-                        // Do something with latitude and longitude...
-                    } else {
-
-                    }
-
-                }
-
-            }
-        }); */
+        ;
     }
 
 
@@ -219,6 +202,8 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
 
                 } else {
                     contentsArray = contents.split("device id", 2);
+
+
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                             && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                             != PackageManager.PERMISSION_GRANTED) {
@@ -231,7 +216,8 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                             // hi, I changed this part due to the failure of switch activity in view profile button
                             //database.saveUserLocation(deviceID,lastKnownLocation);
                             database.saveUserLocation(organizerID);
-                            //Log.i("location1", lastKnownLocation.toString()+"yesss");
+                            Log.i("location1", lastKnownLocation.toString()+"yesss");
+                            database.saveUserLocation(organizerID);
                             // Do something with latitude and longitude...
                         } else {
 
@@ -285,6 +271,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                                         });
                             }
                         });
+
                         updateLocation(new LocationCallback() {
                             @Override
                             public void onLocationCallback(List<Location> locationList) {
@@ -310,16 +297,19 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
 
     @Override
     public void onLocationChanged(Location location) {
-        lastKnownLocation = location;
-        //coordinates.setText(hereLocation(location));
+        lastKnownLocation=location;
+        //welcomeVIP.setText(hereLocation(location));;
+        //welcomeVIP.setText(String.valueOf(lastKnownLocation.getLatitude()+lastKnownLocation.getLongitude()));
 
     }
 
 
     private String hereLocation(Location location) {
-        //database.saveUserLocation(deviceID,location);
+        //database.saveUserLocation(deviceID,location);;
         return "Lat:" + location.getLatitude() + "Long" + location.getLongitude();
     }
+    private void turnOnGps(){}
+
 
     @Override
     public void onProviderDisabled(String provider) {
@@ -396,6 +386,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         if (requestCode == PERMISSION_LOCATION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showLocation();
+
             } else {
                 Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
                 finish();
@@ -405,12 +396,13 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
 
     @SuppressLint({"MissingPermission", "SetTextI18n"})
     private void showLocation() {
-        LocationManager locationManager =(LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         //check if gps enabled
-        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+        if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
             //start locating
-            //coordinates.setText("Loading location");
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
+            //welcomeVIP.setText("Loading location");
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,this);
+
         }
         else{
             startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
