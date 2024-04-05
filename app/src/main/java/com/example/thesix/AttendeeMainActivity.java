@@ -202,16 +202,6 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                         if (1 == 1) {
                             showLocation();
                             // Handle case where last known location is not available
-                            if (lastKnownLocation != null) {
-                                // Use the last known location
-                                // hi, I changed this part due to the failure of switch activity in view profile button
-                                //database.saveUserLocation(deviceID,lastKnownLocation);
-                                Log.i("location1", lastKnownLocation.toString() + "yesss");
-                                //database.saveUserLocation(organizerID);
-                                // Do something with latitude and longitude...
-                            } else {
-                                lastKnownLocation = null;
-                            }
                             //https://cloud.google.com/firestore/docs/samples/firestore-data-set-array-operations
 
                             Log.d("scanner", contentsArray[0] + contentsArray[1]);
@@ -261,16 +251,34 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                                             });
                                 }
                             });
+
+                            if (lastKnownLocation != null) {
+                                // Use the last known location
+                                // hi, I changed this part due to the failure of switch activity in view profile button
+                                //database.saveUserLocation(deviceID,lastKnownLocation);
+                                Log.i("location1", lastKnownLocation.toString() + "yesss");
+                                if(organizerID!=null) {
+                                    Log.i("location1.2", lastKnownLocation.toString() + "yesss");
+                                    database.saveUserLocation(organizerID);
+                                    Log.i("location1.3", lastKnownLocation.toString() + "yesss");
+                                }
+                                // Do something with latitude and longitude...
+                            } else {
+                                lastKnownLocation = null;
+                            }
                             updateLocation(new CustomLocationCallback() {
                             @Override
                             public void onLocationCallback(List<Location> locationList) {
-                               locationList.add(lastKnownLocation);
-                                database.saveUserLocation(organizerID).document(String.valueOf(eventNum)).update("location",locationList).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                   @Override
+                                if(lastKnownLocation!=null){
+                                locationList.add(lastKnownLocation);
+                                database.saveUserLocation(organizerID).document(String.valueOf(eventNum)).update("location", locationList).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
                                     public void onSuccess(Void unused) {
-                                        Log.d("location","success");
-                                   }
-                               });
+                                        Log.d("location", "success");
+
+                                    }
+                                });
+                                }
                             }
                        });
 
@@ -323,24 +331,28 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         void onLocationCallback(List<Location> locationList);
     }
     public void updateLocation(CustomLocationCallback locationCallback) {
-        database.saveUserLocation(organizerID).document(String.valueOf(eventNum))
-                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Log.d("location", "DocumentSnapshot data: " + document.getData());
-                                locationList = (List<Location>) document.get("location");
-                                locationCallback.onLocationCallback(locationList);
+        if (lastKnownLocation!=null && eventNum!=null) {
+            Log.i("updatee", "updateLocation: ");
+            database.saveUserLocation(organizerID).document(String.valueOf(eventNum))
+                    .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    Log.d("location", "DocumentSnapshot data: " + document.getData());
+                                    locationList = (List<Location>) document.get("location");
+                                    locationCallback.onLocationCallback(locationList);
+                                } else {
+                                    Log.d("location", "No such document");
+                                }
                             } else {
-                                Log.d("location", "No such document");
+                                Log.d("location", "get failed with ", task.getException());
                             }
-                        } else {
-                            Log.d("location", "get failed with ", task.getException());
                         }
-                    }
-                });;
+                    });
+            ;
+        }
 
     }
 

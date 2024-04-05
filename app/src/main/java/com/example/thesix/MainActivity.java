@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         //String deviceID ="27150c669e8b1dc4";
         Log.d(deviceID, "this is device id ");
         Log.d("DeviceId", deviceID);
+        Log.i("DeviceID", deviceID);
         //adminId = deviceID;
         //27150c669e8b1dc4
 
@@ -54,10 +55,12 @@ public class MainActivity extends AppCompatActivity {
         }
          else {
             //sending device id to attendeeactivitypage
-            //Intent intent =new Intent(MainActivity.this,AttendeeMainActivity.class);
-           // intent.putExtra("deviceID",deviceID);
-            //startActivity(intent);
-            startActivity(new Intent(MainActivity.this, AttendeeMainActivity.class));
+            //startActivity(new Intent(MainActivity.this, OrganizerMainActivity.class));
+            Intent intent =new Intent(MainActivity.this,OrganizerMainActivity.class);
+            intent.putExtra("deviceID",deviceID);
+            startActivity(intent);
+            //startActivity(new Intent(MainActivity.this, AttendeeMainActivity.class));
+
             //startActivity(new Intent(MainActivity.this, OrganizerMainActivity.class));
             //startActivity(new Intent(MainActivity.this, AdminActivity.class));
             //startActivity(new Intent(MainActivity.this, AttendeeProfileActivity.class));
