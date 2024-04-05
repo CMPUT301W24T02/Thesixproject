@@ -54,6 +54,7 @@ public class EventDetailsAdapter extends AppCompatActivity {
     private QrCodeDB firestoreHelper;
     private Button backButton;
     CollectionReference eventsRef;
+    private String Organizerdeviceid;
 
     /**
      Initializes UI components like lists, adapters, and buttons
@@ -72,7 +73,8 @@ public class EventDetailsAdapter extends AppCompatActivity {
 
 
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
-        //String deviceID ="27150c669e8b1dc4";
+        String Organizerdeviceid = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        deviceID ="27150c669e8b1dc4";
         eventsRef = firestoreHelper.getOldQrRef(deviceID);
         eventnameArrayAdapter = new ArrayAdapter<String>(
                 EventDetailsAdapter.this,
@@ -117,11 +119,12 @@ public class EventDetailsAdapter extends AppCompatActivity {
                          eventDescription = (String) (eventdescriptionDataList.get(j));
                      }
                 }
-
+                String Organizerdeviceid="27150c669e8b1dc4";
                 Bundle bundle = new Bundle();
                 bundle.putString("eventName", eventName);
                 bundle.putString("eventDescription", eventDescription);
                 bundle.putLong("eventNum", eventNum);
+                bundle.putString("OrganizerdeviceID",Organizerdeviceid);
                 i.putExtras(bundle);
                 startActivity(i);
             }

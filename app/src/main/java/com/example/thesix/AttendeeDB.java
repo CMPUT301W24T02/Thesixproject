@@ -8,8 +8,10 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
@@ -20,9 +22,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * AttendeeDB class facilitates interaction with a Firestore database to manage attendee information.
@@ -32,6 +36,9 @@ import java.util.Map;
 public class AttendeeDB {
 
     private FirebaseFirestore firestore;
+
+    private List<GeoPoint> geoPoints=new ArrayList<>();;
+    List<GeoPoint> locationList = new ArrayList<>();
 
     // Callback interface for returning document ID after a successful Firestore operation.
     public interface FirestoreCallback {
@@ -127,34 +134,38 @@ public class AttendeeDB {
                 .document(deviceID)
                 .collection("event");
     }
+    public interface LocationCallback {
+        void onLocationReceived(List<GeoPoint> locationList);
+        void onLocationError(String errorMessage);
+    }
 
-    public List<GeoPoint> getLocationDocRef(String organizerID, Long eventNum) {
-        DocumentReference documentReference;
-        List<GeoPoint> locationList = new ArrayList<>();
-        documentReference = firestore.collection("OrganizerdevicesDB")
+
+    public void getLocationDocRef(String organizerID, Long eventNum, LocationCallback callback) {
+        DocumentReference documentReference = firestore.collection("OrganizerdevicesDB")
                 .document(organizerID)
-                .collection("eventnum")
+                .collection("event")
                 .document(String.valueOf(eventNum));
+
         documentReference.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                // Retrieve the GeoPoint field
-                List<Map<String, Object>> locationArray = (List<Map<String, Object>>) documentSnapshot.get("location");
-                for (Map<String, Object> locationMap : locationArray) {
-                    double latitude = (double) locationMap.get("latitude");
-                    double longitude = (double) locationMap.get("longitude");
-                    GeoPoint geoPoint = new GeoPoint(latitude, longitude);
-                    locationList.add(geoPoint);
+                List<GeoPoint> locationList = new ArrayList<>();
+                List<GeoPoint> geoPoints = (List<GeoPoint>) documentSnapshot.get("location");
+                if (geoPoints != null) {
+                    locationList.addAll(geoPoints);
+                    Log.i("locationList1", locationList.toString());
+                    callback.onLocationReceived(locationList);
                 }
             } else {
                 // Document does not exist
                 // Handle this case accordingly
                 Log.d("locationDocdontexist", "getLocationDocRef: ");
+                callback.onLocationError("Document does not exist");
             }
         }).addOnFailureListener(e -> {
             // Error fetching document
             // Handle this case accordingly
-            Log.d("locationDoc", "getLocationDocRef: ");
+            Log.e("locationDoc", "getLocationDocRef: ", e);
+            callback.onLocationError(e.getMessage());
         });
-        return locationList;
     }
 }

@@ -57,6 +57,7 @@ public class AttendeeListActivity extends AppCompatActivity {
     private QrCodeDB firestoreHelper;
     String deviceID;
     String imageBaseString;
+    String OrganizerdeviceID;
     private OrganizerMainActivity oma = new OrganizerMainActivity();
 
     /**
@@ -74,16 +75,22 @@ public class AttendeeListActivity extends AppCompatActivity {
         //String deviceID ="27150c669e8b1dc4";
         backButton = findViewById(R.id.backButton);
         mapButton = findViewById(R.id.mapButton);
+
         notificationButton = findViewById(R.id.notificationButton);
         attendeeList = findViewById(R.id.attendee_list_view);
         totalcheckinNumber = findViewById(R.id.totalCheckin);
         progressBar = findViewById(R.id.progress_Bar);
         QrRef = firestoreHelper.getOldQrRef(deviceID);
 
-        Intent mIntent = getIntent();
-        dataList = new ArrayList<>();
-        eventNum = mIntent.getLongExtra("eventNum", 0);
+        Bundle bundle = getIntent().getExtras();
+        OrganizerdeviceID = bundle.getString("OrganizerdeviceID");
+        eventNum = bundle.getLong("eventNum");
+
+        //Intent mIntent = getIntent();
+        //dataList = new ArrayList<>();
+        //eventNum = mIntent.getLongExtra("eventNum", 0);
         // Find the ListView item from front-end to communicate with
+        dataList = new ArrayList<>();
         attendeeAdapter = new AttendeeListAdapter(AttendeeListActivity.this, dataList);
 
         // Set your adapter to show the List of Attendees
@@ -135,7 +142,13 @@ public class AttendeeListActivity extends AppCompatActivity {
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AttendeeListActivity.this, MapsActivity.class));
+                Bundle bundle = new Bundle();
+                bundle.putLong("eventNum", eventNum);
+                bundle.putString("OrganizerdeviceID",OrganizerdeviceID);
+                Intent myIntent = new Intent(AttendeeListActivity.this, MapsActivity.class);
+                Log.d("hihi","Before ID: "+ eventNum);
+                myIntent.putExtras(bundle);
+                startActivity(myIntent);
             }
         });
 
