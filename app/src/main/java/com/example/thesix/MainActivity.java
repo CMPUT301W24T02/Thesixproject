@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
          else {
             //sending device id to attendeeactivitypage
             //startActivity(new Intent(MainActivity.this, OrganizerMainActivity.class));
-            Intent intent =new Intent(MainActivity.this,OrganizerMainActivity.class);
+            Intent intent =new Intent(MainActivity.this,AttendeeMainActivity.class);
             intent.putExtra("deviceID",deviceID);
             startActivity(intent);
             //startActivity(new Intent(MainActivity.this, AttendeeMainActivity.class));

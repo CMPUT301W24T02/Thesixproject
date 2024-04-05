@@ -295,6 +295,41 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     public void onLocationChanged(Location location) {
         lastKnownLocation=location;
         lastKnownLocation = getLastKnownLocation(location);
+        Log.i("LastLocation", "Last Location is not empty.");
+        if (lastKnownLocation.hasAltitude()) {
+            double altitude = location.getAltitude();
+            Log.i("LocationAltitude", "Location has altitude.");
+            lastKnownLocation.setAltitude(altitude);
+            // Altitude information is available, you can use it if needed
+            Log.d("LastLocationAltitude", "Altitude: " + altitude + " meters");
+        } else {
+            // Altitude information is not available for this location
+            Log.w("LocationAltitudeWarning", "Altitude information is not available for this location");
+        }
+        // Check if altitude accuracy is available (Note: Altitude accuracy may not be available for the network provider)
+        if (lastKnownLocation.hasAccuracy()) {
+            // Check if altitude accuracy is set
+            Log.i("LastLocationhasAccuracy", "Last known Location has Accuracy");
+            if (lastKnownLocation.getVerticalAccuracyMeters()<0) {
+                // Altitude accuracy is not set, handle this case gracefully
+                Log.i("LastLocationNOVerticalAccuracy", "Last known Location has no Accuracy");
+                float altitudeAccuracy = location.getVerticalAccuracyMeters();
+                lastKnownLocation.setVerticalAccuracyMeters(altitudeAccuracy);
+                Log.d("AltitudeAccuracy", "Altitude accuracy: " + altitudeAccuracy + " meters");
+            } else {
+                // Altitude accuracy is available, you can use it if needed
+                float Accuracy =location.getAccuracy();
+                lastKnownLocation.setAccuracy(Accuracy);
+                Log.i("LastKnownLocationAcurracy ", "Last known Location has no Accuracy ");
+                float altitudeAccuracy = location.getVerticalAccuracyMeters();
+                Log.i("LastKnownLocationVerticalAccuracy!", "Last known Location Vertical has no Accuracy ");
+                lastKnownLocation.setVerticalAccuracyMeters(altitudeAccuracy);
+                Log.d("AltitudeAccuracy", "Altitude accuracy: " + altitudeAccuracy + " meters");
+            }
+        } else {
+            // Altitude information is not available for this location
+            Log.w("AltitudeWarning", "Altitude information is not available for this location");
+        }
         //welcomeVIP.setText(hereLocation(location));;
         //welcomeVIP.setText(String.valueOf(lastKnownLocation.getLatitude()+lastKnownLocation.getLongitude()));
 
@@ -344,10 +379,10 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                                     locationList = (List<Location>) document.get("location");
                                     locationCallback.onLocationCallback(locationList);
                                 } else {
-                                    Log.d("location", "No such document");
+                                    Log.d("location55", "No such document");
                                 }
                             } else {
-                                Log.d("location", "get failed with ", task.getException());
+                                Log.d("location6", "get failed with ", task.getException());
                             }
                         }
                     });
