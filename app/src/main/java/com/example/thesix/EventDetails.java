@@ -44,7 +44,7 @@ public class EventDetails {
         this.totalCheckIn = totalCheckIn;
         this.attendeeIDList = attendeeIDList;
         this.signUpIDList = signUpIDList;
-        this.location = location;
+        this.location = locations;
     }
 
     /**
