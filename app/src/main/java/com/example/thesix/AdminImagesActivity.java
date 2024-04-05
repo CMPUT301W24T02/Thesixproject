@@ -7,10 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -27,49 +24,54 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * AdminImagesActivity class
- * Requests necessary permissions and sets up the layout for Image listings.
- * Lists all Images in the listview created in the app.
- *
- * Continue JavaDocs
- *
- */
 public class AdminImagesActivity extends AppCompatActivity {
     private Button back2AdminButton;
-    private ArrayList<Bitmap> imageDataList;
     private FirebaseFirestore firestore;
-    private Button backButton;
     private CollectionReference eventImagesRef;
     private CollectionReference profileImagesRef;
-    private CustomImageAdapter imagesArrayAdapter;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_images_screen);
-        back2AdminButton = findViewById(R.id.backButton);
 
+        back2AdminButton = findViewById(R.id.backButton);
+        ListView eventImageListView = findViewById(R.id.images_event_view);
+        ListView profileImageListView = findViewById(R.id.images_profile_view);
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
-        imageDataList = new ArrayList<>();
-        backButton = findViewById(R.id.backButton);
+
         firestore = FirebaseFirestore.getInstance();
         eventImagesRef = firestore.collection("inviteQrCodes");
         profileImagesRef = firestore.collection("AttendeeProfileDB");
-        
-        imagesArrayAdapter = new CustomImageAdapter(AdminImagesActivity.this, imageDataList);
-        ListView imageList = findViewById(R.id.images_list_view);
-        imageList.setAdapter(imagesArrayAdapter);
 
-        /**
-         * Does Read data Callback
-         * @param : List<String> list1
-         * @return : void
-         */
-        readData(new MyCallback() {
+        ArrayList<Bitmap> eventImageDataList = new ArrayList<>();
+        ArrayList<Bitmap> profileImageDataList = new ArrayList<>();
+        CustomImageAdapter eventImageAdapter = new CustomImageAdapter(AdminImagesActivity.this, eventImageDataList);
+        CustomImageAdapter profileImageAdapter = new CustomImageAdapter(AdminImagesActivity.this, profileImageDataList);
+
+        // Set Adapters
+        eventImageListView.setAdapter(eventImageAdapter);
+        profileImageListView.setAdapter(profileImageAdapter);
+
+        // Firestore Event images
+        readEventData(new MyCallback() {
             @Override
-            public void onCallback(List<String> list1) {
+            public void onCallback(List<String> list1, ArrayList<Bitmap> imageDataList, CustomImageAdapter imageAdapter) {
+                // Convert Base64 strings to Bitmaps and add to eventImageDataList
+                for (String base64String : list1) {
+                    Bitmap bitmap = decodeBase64(base64String);
+                    if (bitmap != null) {
+                        imageDataList.add(bitmap);
+                    }
+                }
+                imageAdapter.notifyDataSetChanged();
+            }
+        }, eventImageDataList, eventImageAdapter);
+
+        // Firestore Profile images
+        readProfileData(new MyCallback() {
+            @Override
+            public void onCallback(List<String> list1, ArrayList<Bitmap> imageDataList, CustomImageAdapter imageAdapter) {
                 // Convert Base64 strings to Bitmaps
                 for (String base64String : list1) {
                     Bitmap bitmap = decodeBase64(base64String);
@@ -77,40 +79,20 @@ public class AdminImagesActivity extends AppCompatActivity {
                         imageDataList.add(bitmap);
                     }
                 }
-                // Notify the adapter that the data set has changed
-                imagesArrayAdapter.notifyDataSetChanged();
+                imageAdapter.notifyDataSetChanged();
+            }
+        }, profileImageDataList, profileImageAdapter);
+
+        back2AdminButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AdminImagesActivity.this, AdminActivity.class));
             }
         });
-
-    }
-    /**
-     * Decodes base64String to a Bitmap
-     * @param : String base64String
-     * @return : void
-     */
-    // ChatGpt: prompt, convert string to bitmap
-    private Bitmap decodeBase64(String base64String) {
-        byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
-
-    /**
-     * Interface Callback
-     * @param :List<String> list1
-     * @return :
-     */
-
-    public interface MyCallback {
-        void onCallback(List<String> list1);
-    }
-    /**
-     * Reads data
-     * @param :MyCallback myCallback
-     * @return :
-     */
-    // Reads data from Firestore
-    public void readData(MyCallback myCallback) {
+    // Firestore Read- Event Images
+    public void readEventData(MyCallback myCallback, ArrayList<Bitmap> imageDataList, CustomImageAdapter imageAdapter) {
         eventImagesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -119,10 +101,13 @@ public class AdminImagesActivity extends AppCompatActivity {
                     String base64String = document.getString("eventImageData");
                     base64Strings.add(base64String);
                 }
-                myCallback.onCallback(base64Strings);
+                myCallback.onCallback(base64Strings, imageDataList, imageAdapter);
             }
         });
+    }
 
+    // Firestore Read- Profile Images
+    public void readProfileData(MyCallback myCallback, ArrayList<Bitmap> imageDataList, CustomImageAdapter imageAdapter) {
         profileImagesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -131,20 +116,17 @@ public class AdminImagesActivity extends AppCompatActivity {
                     String base64String = document.getString("profile_image");
                     base64Strings.add(base64String);
                 }
-                myCallback.onCallback(base64Strings);
+                myCallback.onCallback(base64Strings, imageDataList, imageAdapter);
             }
         });
+    }
 
-        /**
-         Initializes a UI component, a Button named back2AdminButton
-         @param :
-         @return
-         **/
-        back2AdminButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(AdminImagesActivity.this, AdminActivity.class));
-            }
-        });
+    public interface MyCallback {
+        void onCallback(List<String> list1, ArrayList<Bitmap> imageDataList, CustomImageAdapter imageAdapter);
+    }
+
+    private Bitmap decodeBase64(String base64String) {
+        byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 }
