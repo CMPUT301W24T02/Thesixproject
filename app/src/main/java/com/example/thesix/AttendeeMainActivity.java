@@ -223,24 +223,18 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                                 @Override
                                 public void onInviteCallback(List<String> attendeeIDList, List<Long> inviteCountList) {
                                     if (attendeeIDList.contains(deviceID)) {
-                                        int index=0;
-                                        if(attendeeIDList.size()!=0) {
-                                            index = attendeeIDList.indexOf(deviceID);
-                                        }
-                                        else{
-                                            index = 0;
-                                        }
-                                        if(index==0){
-                                            long value= 1;
-                                            inviteCountList.add(value);
-                                        }
-                                        else{
-                                            Long value = inviteCountList.get(index) + 1;
-                                            inviteCountList.set(index, value);
-                                        }
+
+
+                                        int index = attendeeIDList.indexOf(deviceID);
+                                        Long value = inviteCountList.get(index) + 1;
+                                        inviteCountList.set(index, value);
+                                        Log.d("asd","test"+inviteCountList.toString());
+
                                     } else {
+                                        Log.d("asd",inviteCountList.toString());
                                         attendeeIDList.add(deviceID);
-                                        inviteCountList.add(0L);
+                                        inviteCountList.add(1L);
+                                        Log.d("asd","test1"+inviteCountList.toString());
                                     }
                                     firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum))
                                             .update("attendeeIDList", attendeeIDList).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -256,7 +250,34 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                                                 }
                                             });
                                     firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum))
-                                            .update("inviteCountList", inviteCountList)
+                                            .update("checkInCountList", inviteCountList)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("update", "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("update", "Error updating document", e);
+                                                }
+                                            });
+                                    firestoreHelper.getAllEvent().document(String.valueOf(eventNum))
+                                            .update("attendeeIDList", attendeeIDList).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("update", "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("update", "Error updating document", e);
+                                                }
+                                            });
+                                    firestoreHelper.getAllEvent().document(String.valueOf(eventNum))
+                                            .update("checkInCountList", inviteCountList)
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
