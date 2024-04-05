@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -62,7 +63,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     private Long eventNum;
     private List<Long> checkInCountList;
     private List<String> attendeeIDList;
-    private List<Location> locationList;
+    private List<GeoPoint> locationList;
     private Button getLocation;
     private LocationManager locationManager;
     private TextView welcomeVIP;
@@ -215,9 +216,21 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                                 @Override
                                 public void onInviteCallback(List<String> attendeeIDList, List<Long> inviteCountList) {
                                     if (attendeeIDList.contains(deviceID)) {
-                                        int index = attendeeIDList.indexOf(deviceID);
-                                        Long value = inviteCountList.get(index) + 1;
-                                        inviteCountList.set(index, value);
+                                        int index=0;
+                                        if(attendeeIDList.size()!=0) {
+                                            index = attendeeIDList.indexOf(deviceID);
+                                        }
+                                        else{
+                                            index = 0;
+                                        }
+                                        if(index==0){
+                                            long value= 1;
+                                            inviteCountList.add(value);
+                                        }
+                                        else{
+                                            Long value = inviteCountList.get(index) + 1;
+                                            inviteCountList.set(index, value);
+                                        }
                                     } else {
                                         attendeeIDList.add(deviceID);
                                         inviteCountList.add(0L);
@@ -268,9 +281,18 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                             }
                             updateLocation(new CustomLocationCallback() {
                             @Override
-                            public void onLocationCallback(List<Location> locationList) {
+                            public void onLocationCallback(List<GeoPoint> locationList) {
                                 if(lastKnownLocation!=null){
-                                locationList.add(lastKnownLocation);
+                                    //https://stackoverflow.com/questions/13781514/correctly-draw-on-google-maps-a-point-which-exceeds-90-degrees-of-latitude
+                                    int lat = (int) (lastKnownLocation.getLatitude() );
+                                    int lng = (int) (lastKnownLocation.getLongitude());
+                                    double[] offsetCoordinates = offsetCoordinates(lat, lng);
+
+                                    GeoPoint point = new GeoPoint(offsetCoordinates[0], offsetCoordinates[1]);
+                                    locationList.add(point);
+
+                                    //GeoPoint point = new GeoPoint(lat, lng);
+                                    //locationList.add(point);
                                 database.saveUserLocation(organizerID).document(String.valueOf(eventNum)).update("location", locationList).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
@@ -289,6 +311,23 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                 }
             }
         }
+    }
+    public static double[] offsetCoordinates(double latitude, double longitude) {
+        // Offset latitude if necessary
+        if (latitude > 90) {
+            latitude = 180 - latitude;
+        } else if (latitude < -90) {
+            latitude = -180 - latitude;
+        }
+
+        // Offset longitude if necessary
+        if (longitude > 180) {
+            longitude = longitude - 360;
+        } else if (longitude < -180) {
+            longitude = longitude + 360;
+        }
+
+        return new double[]{latitude, longitude};
     }
 
     @Override
@@ -363,7 +402,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     public void onGpsStatusChanged(int event) {
     }
     private interface CustomLocationCallback {
-        void onLocationCallback(List<Location> locationList);
+        void onLocationCallback(List<GeoPoint> locationList);
     }
     public void updateLocation(CustomLocationCallback locationCallback) {
         if (lastKnownLocation!=null && eventNum!=null) {
@@ -376,7 +415,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
                                     Log.d("location", "DocumentSnapshot data: " + document.getData());
-                                    locationList = (List<Location>) document.get("location");
+                                    locationList = (List<GeoPoint>) document.get("location");
                                     locationCallback.onLocationCallback(locationList);
                                 } else {
                                     Log.d("location55", "No such document");
