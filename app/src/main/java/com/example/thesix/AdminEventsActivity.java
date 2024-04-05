@@ -93,11 +93,8 @@ public class AdminEventsActivity extends AppCompatActivity {
         readData(new MyCallback() {
             @Override
             public void onCallback(List<String> list1, List<Long> list2, List<String> list3) {
-                Log.d("callback", "3");
                 eventnameDataList = (ArrayList<String>) list1;
                 eventNumList = (ArrayList<Long>) list2;
-                Log.d("callback", "1" + eventnameDataList.get(0));
-                Log.d("callback", "2");
                 eventnameArrayAdapter.notifyDataSetChanged();
             }
         });
@@ -155,15 +152,22 @@ public class AdminEventsActivity extends AppCompatActivity {
                 eventdescriptionDataList.remove(position);
                 eventNumList.remove(position);
                 eventImageDataList.remove(position);
-
                 eventnameArrayAdapter.notifyDataSetChanged();
 
                 // Firestore deletion
-                eventsRef.document(String.valueOf(eventNum)).delete()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                eventsRef.whereEqualTo("eventNum", eventNum).get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                             @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(AdminEventsActivity.this, "Event Deleted!", Toast.LENGTH_LONG).show();
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                    document.getReference().delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Toast.makeText(AdminEventsActivity.this, "Event Deleted!", Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                }
                             }
                         });
                 return true;
