@@ -55,6 +55,7 @@ public class EventDetailsConnector extends AppCompatActivity {
     CollectionReference QrRef;
     private QrCodeDB firestoreHelper;
     String deviceID;
+    String OrganizerdeviceID;
     String imageBaseString;
     String inviteBase64;
     String promoBase64;
@@ -83,6 +84,7 @@ public class EventDetailsConnector extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         String eventName1 = bundle.getString("eventName");
         String eventDescription1 = bundle.getString("eventDescription");
+        OrganizerdeviceID = bundle.getString("OrganizerdeviceID");
         eventNum = bundle.getLong("eventNum");
         eventName.setText(eventName1);
         eventDescription.setText(eventDescription1);
@@ -119,13 +121,20 @@ public class EventDetailsConnector extends AppCompatActivity {
          @param : View view
          @return : void
          **/
+
         generateGuestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putLong("eventNum", eventNum);
+                bundle.putString("OrganizerdeviceID",OrganizerdeviceID);
                 Intent myIntent = new Intent(EventDetailsConnector.this, AttendeeListActivity.class);
                 Log.d("hihi","Before ID: "+ eventNum);
-                myIntent.putExtra("eventNum", eventNum);
+                //myIntent.putExtra("eventNum", eventNum);
+                //startActivity(myIntent);
+                myIntent.putExtras(bundle);
                 startActivity(myIntent);
+
             }
         });
 
