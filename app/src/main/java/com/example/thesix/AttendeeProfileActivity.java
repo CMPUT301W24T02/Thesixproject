@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -64,13 +65,9 @@ public class AttendeeProfileActivity extends AppCompatActivity {
 
         // Setup button to go back to AttendeeMainActivity
         back2AttendeeButton.setOnClickListener(v -> finish());
-        profileBitmap = createBitmap("testing");
-        profilePicture.setImageBitmap(profileBitmap);
+
         // Setup ImageView click to navigate to AttendeeProfileUpdate for editing
-        profilePicture.setOnClickListener(v -> {
-            Intent intent = new Intent(AttendeeProfileActivity.this, AttendeeProfileUpdate.class);
-            startActivityForResult(intent, 1);
-        });
+
 
         // Load profile information including image
         displayAttendeeInfo();
@@ -108,6 +105,7 @@ public class AttendeeProfileActivity extends AppCompatActivity {
 
         boolean isProfilePictureRemoved = prefs.getBoolean("isProfilePictureRemoved", false);
         if (isProfilePictureRemoved) {
+            Log.d("qwer","2");
             profileBitmap = createBitmap("testing");
             profilePicture.setImageBitmap(profileBitmap);
             SharedPreferences.Editor editor = prefs.edit();
@@ -116,8 +114,10 @@ public class AttendeeProfileActivity extends AppCompatActivity {
         } else {
             String imagePath = prefs.getString("profileImagePath", null);
             if (imagePath != null && new File(imagePath).exists()) {
+                Log.d("qwer","1");
                 profilePicture.setImageURI(Uri.fromFile(new File(imagePath)));
             } else {
+                Log.d("qwer","3");
                 profileBitmap = createBitmap("testing");
                 profilePicture.setImageBitmap(profileBitmap);
             }
