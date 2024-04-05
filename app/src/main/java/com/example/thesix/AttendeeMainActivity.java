@@ -69,6 +69,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     private TextView welcomeVIP;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
+    private Button editButton;
 
 
     @Override
@@ -80,6 +81,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         viewProfile = findViewById(R.id.viewAttendeeProfile);
         eventsButton = findViewById(R.id.allEventButton);
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        editButton = findViewById(R.id.editAttendeeProfile);
         //getLocation = findViewById(R.id.getLocationButton);
         //welcomeVIP=findViewById(R.id.welcome_vip);
         //coordinates = findViewById(R.id.locationinfo);
@@ -90,7 +92,12 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         firestoreHelper = new QrCodeDB();
 
         //getting deviceID
-
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AttendeeMainActivity.this, AttendeeProfileUpdate.class));
+            }
+        });
 
         // Hi, I changed this part of code due to the failure of switch activity in the view profile button
         //Bundle bundle = getIntent().getExtras();
