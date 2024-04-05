@@ -284,9 +284,11 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                             public void onLocationCallback(List<GeoPoint> locationList) {
                                 if(lastKnownLocation!=null){
                                     //https://stackoverflow.com/questions/13781514/correctly-draw-on-google-maps-a-point-which-exceeds-90-degrees-of-latitude
-                                    int lat = (int) (lastKnownLocation.getLatitude() );
-                                    int lng = (int) (lastKnownLocation.getLongitude());
+                                    double lat = (double) (lastKnownLocation.getLatitude() );
+                                    double lng = (double) (lastKnownLocation.getLongitude());
                                     double[] offsetCoordinates = offsetCoordinates(lat, lng);
+                                    Log.i("offsetCoordinates",String.valueOf(lastKnownLocation.getLatitude()));
+                                    Log.i("offsetCoordinates",String.valueOf(offsetCoordinates[0]));
 
                                     GeoPoint point = new GeoPoint(offsetCoordinates[0], offsetCoordinates[1]);
                                     locationList.add(point);
@@ -314,17 +316,23 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     }
     public static double[] offsetCoordinates(double latitude, double longitude) {
         // Offset latitude if necessary
+        double lat = 0;
+        double lng = 0;
         if (latitude > 90) {
-            latitude = 180 - latitude;
+            lat = 180 - latitude;
+            latitude = lat;
         } else if (latitude < -90) {
-            latitude = -180 - latitude;
+            lat = -180 - latitude;
+            latitude = lat;
         }
 
         // Offset longitude if necessary
         if (longitude > 180) {
-            longitude = longitude - 360;
+            lng = longitude - 360;
+            longitude =lng;
         } else if (longitude < -180) {
-            longitude = longitude + 360;
+            lng = longitude + 360;
+            longitude =lng;
         }
 
         return new double[]{latitude, longitude};
