@@ -9,15 +9,19 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -65,8 +69,9 @@ public class AttendeeDB {
                 })
                 .addOnFailureListener(e -> Log.w("AttendeeDB", "Error adding document", e));
     }
+
     public void saveAttendeeInfoNoPhoto(String name, String contact, String homePage, String imageData, String deviceID) {
-        Attendee attendee = new Attendee(name,contact,homePage,imageData);
+        Attendee attendee = new Attendee(name, contact, homePage, imageData);
         firestore.collection("AttendeeProfileDB").document(deviceID).set(attendee);
     }
 
@@ -121,5 +126,35 @@ public class AttendeeDB {
         return firestore.collection("OrganizerdevicesDB")
                 .document(deviceID)
                 .collection("event");
+    }
+
+    public List<GeoPoint> getLocationDocRef(String organizerID, Long eventNum) {
+        DocumentReference documentReference;
+        List<GeoPoint> locationList = new ArrayList<>();
+        documentReference = firestore.collection("OrganizerdevicesDB")
+                .document(organizerID)
+                .collection("eventnum")
+                .document(String.valueOf(eventNum));
+        documentReference.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                // Retrieve the GeoPoint field
+                List<Map<String, Object>> locationArray = (List<Map<String, Object>>) documentSnapshot.get("location");
+                for (Map<String, Object> locationMap : locationArray) {
+                    double latitude = (double) locationMap.get("latitude");
+                    double longitude = (double) locationMap.get("longitude");
+                    GeoPoint geoPoint = new GeoPoint(latitude, longitude);
+                    locationList.add(geoPoint);
+                }
+            } else {
+                // Document does not exist
+                // Handle this case accordingly
+                Log.d("locationDocdontexist", "getLocationDocRef: ");
+            }
+        }).addOnFailureListener(e -> {
+            // Error fetching document
+            // Handle this case accordingly
+            Log.d("locationDoc", "getLocationDocRef: ");
+        });
+        return locationList;
     }
 }
