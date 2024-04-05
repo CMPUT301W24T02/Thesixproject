@@ -3,14 +3,12 @@ package com.example.thesix;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.os.Looper;
 import android.provider.Settings;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -18,7 +16,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -29,22 +26,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.widget.Toast;
-import android.provider.Settings;
 
 import java.util.List;
 
@@ -73,7 +64,6 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     private List<String> attendeeIDList;
     private List<Location> locationList;
     private Button getLocation;
-    private Button editButton;
     private LocationManager locationManager;
     private TextView welcomeVIP;
     private FusedLocationProviderClient fusedLocationClient;
@@ -84,7 +74,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_main_activity);
-        editButton = findViewById(R.id.editAttendeeProfile);
+
         scanButton = findViewById(R.id.scanButton);
         viewProfile = findViewById(R.id.viewAttendeeProfile);
         eventsButton = findViewById(R.id.allEventButton);
@@ -111,21 +101,16 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         }
         finalDeviceID = deviceID;
         askNotificationPermission();
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(AttendeeMainActivity.this,AttendeeProfileUpdate.class));
-            }
-        });
+
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //https://www.youtube.com/watch?v=bWEt-_z7BOY
-                IntentIntegrator intentIntegrator = new IntentIntegrator(AttendeeMainActivity.this);
-                intentIntegrator.setOrientationLocked(true);
-                intentIntegrator.setPrompt("Scan a QR Code");
-                intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
-                intentIntegrator.initiateScan();
+                //IntentIntegrator intentIntegrator = new IntentIntegrator(AttendeeMainActivity.this);
+                //intentIntegrator.setOrientationLocked(true);
+                //intentIntegrator.setPrompt("Scan a QR Code");
+                //intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+                //intentIntegrator.initiateScan();
                 //TODO : remove the code here later
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                         && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -136,20 +121,24 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                     showLocation();
                     // Handle case where last known location is not available
                     //lastKnownLocation
-                    if (lastKnownLocation != null) {
+                    IntentIntegrator intentIntegrator = new IntentIntegrator(AttendeeMainActivity.this);
+                    intentIntegrator.setOrientationLocked(true);
+                    intentIntegrator.setPrompt("Scan a QR Code");
+                    intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+                    intentIntegrator.initiateScan();
+                    //if (lastKnownLocation != null) {
                         // Use the last known location
                         // hi, I changed this part due to the failure of switch activity in view profile button
                         //database.saveUserLocation(deviceID,lastKnownLocation);
-                        database.saveUserLocation(organizerID);
+                    //    Log.i("location2", lastKnownLocation.toString()+"yesss");
+                    //    database.saveUserLocation(organizerID);
                         //Log.i("location1", lastKnownLocation.toString()+"yesss");
                         // Do something with latitude and longitude...
-                    } else {
+                    //} else {
 
-                    }
+                    //}
 
                 }
-
-
 
             }
         });
@@ -172,13 +161,10 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         ;
     }
 
-
     //https://www.youtube.com/watch?v=bWEt-_z7BOY
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(resultCode != RESULT_CANCELED) {
-
-
+        if (resultCode != RESULT_CANCELED) {
             super.onActivityResult(requestCode, resultCode, data);
             IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
             if (intentResult != null) {
@@ -189,6 +175,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
 
                     if (contents.startsWith("promo")) {
                         contents = contents.replace("promo", "");
+                        testing.setText(contents);
                         contentsArray = contents.split("device id", 2);
                         organizerID = contentsArray[1];
                         eventNum = Long.valueOf(contentsArray[0]);
@@ -212,25 +199,18 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
 
                     } else {
                         contentsArray = contents.split("device id", 2);
-
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                                && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                                != PackageManager.PERMISSION_GRANTED) {
-                            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
-                        } else {
-//                            showLocation();
+                        if (1 == 1) {
+                            showLocation();
                             // Handle case where last known location is not available
                             if (lastKnownLocation != null) {
                                 // Use the last known location
                                 // hi, I changed this part due to the failure of switch activity in view profile button
                                 //database.saveUserLocation(deviceID,lastKnownLocation);
-//                                database.saveUserLocation(organizerID);
-//                                Log.i("location1", lastKnownLocation.toString() + "yesss");
-//                                database.saveUserLocation(organizerID);
+                                Log.i("location1", lastKnownLocation.toString() + "yesss");
+                                //database.saveUserLocation(organizerID);
                                 // Do something with latitude and longitude...
                             } else {
-
+                                lastKnownLocation = null;
                             }
                             //https://cloud.google.com/firestore/docs/samples/firestore-data-set-array-operations
 
@@ -244,25 +224,15 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                             updateInvite(new InviteCallback() {
                                 @Override
                                 public void onInviteCallback(List<String> attendeeIDList, List<Long> inviteCountList) {
-                                    Log.d("123123",attendeeIDList.toString());
-                                    Log.d("123123",inviteCountList.toString());
-
                                     if (attendeeIDList.contains(deviceID)) {
                                         int index = attendeeIDList.indexOf(deviceID);
                                         Long value = inviteCountList.get(index) + 1;
-                                        Log.d("123123", String.valueOf(index));
-                                        Log.d("123123", String.valueOf(value));
                                         inviteCountList.set(index, value);
-                                        Log.d("123123","final"+inviteCountList.toString());
-
                                     } else {
                                         attendeeIDList.add(deviceID);
                                         inviteCountList.add(0L);
-                                        Log.d("123123","add"+attendeeIDList.toString());
-                                        Log.d("123123","add" +inviteCountList.toString());
                                     }
-                                    firestoreHelper.getDeviceDocRef(organizerID).collection("event")
-                                            .document(String.valueOf(eventNum))
+                                    firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum))
                                             .update("attendeeIDList", attendeeIDList).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
@@ -275,27 +245,8 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                                                     Log.w("update", "Error updating document", e);
                                                 }
                                             });
-                                    Log.d("123123","1"+inviteCountList.toString());
-                                    firestoreHelper.getDeviceDocRef(organizerID).collection("event")
-                                            .document(String.valueOf(eventNum))
-                                            .update("checkInCountList", inviteCountList)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Log.d("123123","3"+inviteCountList.toString());
-                                                    Log.d("123123", "DocumentSnapshot successfully updated!");
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Log.w("123123", "Error updating document", e);
-                                                }
-                                            });
-                                    Log.d("123123","2"+inviteCountList.toString());
-                                    firestoreHelper.getDeviceDocRef(organizerID).collection("event")
-                                            .document(String.valueOf(eventNum))
-                                            .update("totalCheckIn", FieldValue.increment(1))
+                                    firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum))
+                                            .update("inviteCountList", inviteCountList)
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
@@ -308,63 +259,20 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                                                     Log.w("update", "Error updating document", e);
                                                 }
                                             });
-                                    firestoreHelper.getAllEvent().document(String.valueOf(eventNum)).update("attendeeIDList", attendeeIDList)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Log.d("update", "DocumentSnapshot successfully updated!");
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Log.w("update", "Error updating document", e);
-                                                }
-                                            });
-                                    firestoreHelper.getAllEvent().document(String.valueOf(eventNum)).update("checkInCountList", inviteCountList)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Log.d("update", "DocumentSnapshot successfully updated!");
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Log.w("update", "Error updating document", e);
-                                                }
-                                            });
-                                    firestoreHelper.getAllEvent().document(String.valueOf(eventNum))
-                                            .update("totalCheckIn", FieldValue.increment(1))
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Log.d("update", "DocumentSnapshot successfully updated!");
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Log.w("update", "Error updating document", e);
-                                                }
-                                            });
-
                                 }
                             });
-
-//                        updateLocation(new LocationCallback() {
-//                            @Override
-//                            public void onLocationCallback(List<Location> locationList) {
-//                                locationList.add(lastKnownLocation);
-//                                database.saveUserLocation(organizerID).document(String.valueOf(eventNum)).update("location",locationList).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                    @Override
-//                                    public void onSuccess(Void unused) {
-//                                        Log.d("location","success");
-//                                    }
-//                                });
-//                            }
-//                        });
-
+                            updateLocation(new CustomLocationCallback() {
+                            @Override
+                            public void onLocationCallback(List<Location> locationList) {
+                               locationList.add(lastKnownLocation);
+                                database.saveUserLocation(organizerID).document(String.valueOf(eventNum)).update("location",locationList).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                   @Override
+                                    public void onSuccess(Void unused) {
+                                        Log.d("location","success");
+                                   }
+                               });
+                            }
+                       });
 
 
                         }
@@ -378,9 +286,14 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     @Override
     public void onLocationChanged(Location location) {
         lastKnownLocation=location;
+        lastKnownLocation = getLastKnownLocation(location);
         //welcomeVIP.setText(hereLocation(location));;
         //welcomeVIP.setText(String.valueOf(lastKnownLocation.getLatitude()+lastKnownLocation.getLongitude()));
 
+    }
+    public Location getLastKnownLocation(Location location){
+        //database.saveUserLocation(organizerID);
+        return location;
     }
 
 
@@ -406,10 +319,10 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     @Override
     public void onGpsStatusChanged(int event) {
     }
-    private interface LocationCallback {
+    private interface CustomLocationCallback {
         void onLocationCallback(List<Location> locationList);
     }
-    public void updateLocation(LocationCallback locationCallback) {
+    public void updateLocation(CustomLocationCallback locationCallback) {
         database.saveUserLocation(organizerID).document(String.valueOf(eventNum))
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -437,6 +350,8 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     private interface InviteCallback {
         void onInviteCallback(List<String> attendeeIDList, List<Long> inviteCountList);
     }
+
+
     public void updateInvite(InviteCallback inviteCallback) {
         firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum)).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
