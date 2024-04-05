@@ -1,6 +1,7 @@
 package com.example.thesix;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -42,6 +43,7 @@ import java.util.List;
 
 
 public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsListener{
+    private boolean request =false;
     private static final int PERMISSION_LOCATION =1000;
     private Button scanButton;
     private Button viewProfile;
@@ -109,7 +111,23 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         }
         finalDeviceID = deviceID;
         askNotificationPermission();
-
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+        }
+        else {
+            new AlertDialog.Builder(this)
+                    .setMessage("GPS is not enabled. Do you want to enable it?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        // User clicked Yes, open location settings
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(intent);
+                    })
+                    .setNegativeButton("No", (dialog, which) -> {
+                        // User clicked No, inform the user
+                        Toast.makeText(this, "Enable Location services to track location", Toast.LENGTH_LONG).show();
+                    })
+                    .show();
+        }
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,14 +144,15 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                     requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
                 }
                 else {
-                    showLocation();
                     // Handle case where last known location is not available
                     //lastKnownLocation
+                    showLocation();
                     IntentIntegrator intentIntegrator = new IntentIntegrator(AttendeeMainActivity.this);
                     intentIntegrator.setOrientationLocked(true);
                     intentIntegrator.setPrompt("Scan a QR Code");
                     intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
                     intentIntegrator.initiateScan();
+                    //showLocation();
                     //if (lastKnownLocation != null) {
                         // Use the last known location
                         // hi, I changed this part due to the failure of switch activity in view profile button
@@ -514,16 +533,30 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     @SuppressLint({"MissingPermission", "SetTextI18n"})
     private void showLocation() {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        //check if gps enabled
-        if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-            //start locating
-            //welcomeVIP.setText("Loading location");
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,this);
-
-        }
-        else{
-            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-        }
+            //check if gps enabled
+            if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+                //start locating
+                //welcomeVIP.setText("Loading location");
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,this);
+            }
+            else {
+                /*
+                new AlertDialog.Builder(this)
+                        .setMessage("GPS is not enabled. Do you want to enable it?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            // User clicked Yes, open location settings
+                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(intent);
+                        })
+                        .setNegativeButton("No", (dialog, which) -> {
+                            // User clicked No, inform the user
+                            Toast.makeText(this, "Enable Location services to track location", Toast.LENGTH_LONG).show();
+                        })
+                        .show();
+                //startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                //showLocation();
+                */
+            }
     }
 
     public void promoData(PromoDataCallback promoDataCallback) {
@@ -584,7 +617,12 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                 //       If the user selects "No thanks," allow the user to continue without notifications.
             }else {
                 // Directly ask for the permission
-                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+                if(request==true) {
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+                }
+                else{
+                    Toast.makeText(this,"Location request has not been granted.",Toast.LENGTH_LONG).show();
+                }
             }
         }
     }

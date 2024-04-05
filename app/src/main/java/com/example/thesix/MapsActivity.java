@@ -28,7 +28,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         database= new AttendeeDB();
-
+        Log.i("wedatabase", "onCreate: ");
         Bundle bundle = getIntent().getExtras();
         OrganizerdeviceID = bundle.getString("OrganizerdeviceID");
         eventnum = bundle.getLong("eventNum");
@@ -66,6 +66,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     private void addMarkers(List<GeoPoint> locationList) {
         for (GeoPoint point : locationList) {
+            Log.i("ReceivedLocationList1", locationList.toString());
             double latitude = point.getLatitude();
             double longitude = point.getLongitude();
             LatLng latLng = new LatLng(latitude, longitude);
