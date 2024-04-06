@@ -44,33 +44,36 @@ import java.util.Objects;
 
 public class EventDetailsConnector extends AppCompatActivity {
 
-    private TextView eventName;
-    private TextView eventDescription;
+    private TextView eventName; // TextView to display the event name
+    private TextView eventDescription; // TextView to display the event description
     private ImageView eventPoster;
     private Button generateGuestButton;
     private Button backButton;
     private Button shareInviteButton;
     private Button sharePromoButton;
-    long eventNum;
+    long eventNum; // Unique identifier for the event
     CollectionReference QrRef;
     private QrCodeDB firestoreHelper;
-    String deviceID;
-    String OrganizerdeviceID;
+    String deviceID; // Device ID of the current user
+    String OrganizerdeviceID; // Base string for the event image
     String imageBaseString;
-    String inviteBase64;
+    String inviteBase64; // Base64 representation of the event invite
     String promoBase64;
 
-    /**
-     nitializes UI components such as TextView (eventName, eventDescription), ImageView (eventPoster), and Button (backButton, generateGuestButton)
-     @param :Bundle savedInstanceState
-     @return
-     **/
 
+    /** initializes UI components such as TextView (eventName, eventDescription), ImageView (eventPoster), and Button (backButton, generateGuestButton)
+     * @param savedInstanceState If the activity is being re-initialized after
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_details_connector);
+        // getting device ID
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        // Gets the reference to the QR code collection for the current device ID
         eventName = findViewById(R.id.eventName);
         eventDescription = findViewById(R.id.eventDescription);
         eventPoster = findViewById(R.id.eventPoster);
@@ -81,6 +84,7 @@ public class EventDetailsConnector extends AppCompatActivity {
         firestoreHelper = new QrCodeDB();
         QrRef = firestoreHelper.getOldQrRef(deviceID);
 
+        //getting bundle with info
         Bundle bundle = getIntent().getExtras();
         String eventName1 = bundle.getString("eventName");
         String eventDescription1 = bundle.getString("eventDescription");
@@ -91,11 +95,10 @@ public class EventDetailsConnector extends AppCompatActivity {
 
 
         eventPosterImage(new EventPosterCallback() {
-            /**
-             Sets Image to Bitmap
-             @param : String String
-             @return :void
-             **/
+
+            /** Sets Image to Bitmap
+             * @param string  String of bitmap
+             */
             @Override
             public void onEventPosterCallback(String string) {
                 Bitmap b=StringToBitMap(string);
@@ -103,12 +106,10 @@ public class EventDetailsConnector extends AppCompatActivity {
             }
         });
 
-        /**
-         Naviagtes User Back to EventDetails Adapter
-         @param : View v
-         @return : void
-         **/
         backButton.setOnClickListener(new View.OnClickListener() {
+            /** Naviagtes User Back to EventDetails Adapter
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(EventDetailsConnector.this, EventDetailsAdapter.class));
@@ -116,15 +117,13 @@ public class EventDetailsConnector extends AppCompatActivity {
         });
 
 
-        /**
-         Generating guest Button , and signing them in
-         @param : View view
-         @return : void
-         **/
-
         generateGuestButton.setOnClickListener(new View.OnClickListener() {
+            /** Generating guest Button , and signing them in
+             * @param view The view that was clicked.
+             */
             @Override
             public void onClick(View view) {
+                //getting bundle
                 Bundle bundle = new Bundle();
                 bundle.putLong("eventNum", eventNum);
                 bundle.putString("OrganizerdeviceID",OrganizerdeviceID);
@@ -138,15 +137,16 @@ public class EventDetailsConnector extends AppCompatActivity {
             }
         });
 
-        /**
-         Allows user to Share promo code
-         @param : View v
-         @return : void
-         **/
         sharePromoButton.setOnClickListener(new View.OnClickListener() {
+            /** Allows user to Share promo code
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
                 sharePromo(new SharePromoCallback() {
+                    /** Callback for firebase
+                     * @param string  for string of database
+                     */
                     @Override
                     public void onSharePromoCallback(String string) {
                         Bitmap bitmap = Base64Tobitmap(string);
@@ -157,15 +157,16 @@ public class EventDetailsConnector extends AppCompatActivity {
             }
         });
 
-        /**
-         Allows for User to Share InviteQRCode
-         @param : View v
-         @return
-         **/
         shareInviteButton.setOnClickListener(new View.OnClickListener() {
+            /** Allows for User to Share InviteQRCode
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
                 shareInvite(new ShareInviteCallback() {
+                    /** Allows for User to Share InviteQRCode
+                     * @param string for onshareInviteCallback
+                     */
                     @Override
                     public void onShareInviteCallback(String string) {
                         Bitmap bitmap = Base64Tobitmap(string);
@@ -179,40 +180,38 @@ public class EventDetailsConnector extends AppCompatActivity {
             }
         });
     }
-    /**
-     Callback Interface to share InviteQRCode
-     @param : String
-     @return
-     **/
+
     private interface ShareInviteCallback{
+        /**Callback Interface to share InviteQRCod
+         * @param string for inviteCallback
+         */
         void onShareInviteCallback(String string);
     }
-    /**
-     Callback Interface to share PromoQrcode
-     @param : String
-     @return
-     **/
+
     private interface SharePromoCallback{
+        /**Callback Interface to share PromoQrcode
+         * @param string with promo info
+         */
         void onSharePromoCallback(String string);
     }
-    /**
-     Callback Interface to share EventPosterCallBack
-     @param : String
-     @return
-     **/
+
 
     private interface EventPosterCallback{
+        /** Callback Interface to share EventPosterCallBack
+         * @param string of event poster call back
+         */
         void onEventPosterCallback(String string);
     }
-    /**
-    Getting eventPoster Image
-     @param : EventPosterCallback
-     @return
-     **/
 
+    /** Getting eventPoster Image
+     * @param eventPosterCallback event poster call back for firebase
+     */
     public void eventPosterImage(EventPosterCallback eventPosterCallback) {
         QrRef.whereEqualTo("eventNum",eventNum).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    /**with successful data querying
+                     * @param task query for database
+                     */
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
@@ -229,15 +228,16 @@ public class EventDetailsConnector extends AppCompatActivity {
                     }
                 });
     }
-    /**
-     Allows user to Share Invite
-     @param : ShareInviteCallback ShareInviteCallback
-     @return void
-     **/
 
+    /**  Allows user to Share Invite
+     * @param shareInviteCallback  call back for firebase
+     */
     public void shareInvite(ShareInviteCallback shareInviteCallback) {
         QrRef.whereEqualTo("eventNum",eventNum).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    /**with successful data querying
+                     * @param task  query for databas
+                     */
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {

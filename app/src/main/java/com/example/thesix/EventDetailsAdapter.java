@@ -177,10 +177,13 @@ public class EventDetailsAdapter extends AppCompatActivity {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    //string  description for documents
                     String description = document.getString("description");
                     String eventname = document.getString("name");
                     Long eventNum = document.getLong("eventNum");
                     String base64String = document.getString("qrImageData");
+
+                    //event info adding to firebase
                     eventImageDataList.add(base64String);
                     eventNumList.add(eventNum);
                     eventnameDataList.add(eventname);
@@ -193,20 +196,22 @@ public class EventDetailsAdapter extends AppCompatActivity {
             }
         });
     }
-    /**
-     Coverts  string to bitmap
-     @param : String base64String
-     @return :Bitmap
-     **/
+
+    /** Coverts  string to bitmap
+     * @param base64String of string to 64
+     * @return Bitmap of converted string
+     */
     private Bitmap Base64Tobitmap(String base64String) {
         byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
 
+    /** Sharing Bitmap
+     * @param view of Sharing Bitmap
+     */
     public void ShareBitmap(View view) {
 
     }
-
     /**
      * Saves the image as PNG to the app's private external storage folder.
      * @param image Bitmap to save.
@@ -218,8 +223,10 @@ public class EventDetailsAdapter extends AppCompatActivity {
         StrictMode.setVmPolicy(builder.build());
         Uri uri = null;
         try {
+            //getting file file
             File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "to-share.png");
             FileOutputStream stream = new FileOutputStream(file);
+            //compressing image
             image.compress(Bitmap.CompressFormat.PNG, 90, stream);
             stream.close();
             uri = Uri.fromFile(file);
