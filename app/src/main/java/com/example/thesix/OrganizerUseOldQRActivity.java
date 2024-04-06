@@ -132,7 +132,7 @@ public class OrganizerUseOldQRActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(OrganizerUseOldQRActivity.this, OrganizerMainActivity.class));
+                startActivity(new Intent(OrganizerUseOldQRActivity.this, OrganizerChooseOldQRActivity.class));
             }
         });
 
@@ -161,7 +161,7 @@ public class OrganizerUseOldQRActivity extends AppCompatActivity {
                         Log.d("count", "DocumentSnapshot data: " + document.getData());
 
                         promoQrImageData = (String) document.get("promoQrImageData");
-                        inviteQrImageData = (String) document.get("inviteQrImageData");
+                        inviteQrImageData = (String) document.get("qrImageData");
                         myCallback.onCallback(eventNum,inviteQrImageData,promoQrImageData);
                     } else {
                         Log.d("count", "No such document");
