@@ -7,11 +7,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,6 +47,7 @@ public class AdminImagesActivity extends AppCompatActivity {
     //creating required Array lists
     private ArrayList<Long> eventNumList;
     private ArrayList<String> deviceIdList;
+    private String adminBase64Image;
 
     /** Creating Activity
      * @param savedInstanceState If the activity is being re-initialized after
@@ -71,6 +72,7 @@ public class AdminImagesActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         eventImagesRef = firestore.collection("inviteQrCodes");
         profileImagesRef = firestore.collection("AttendeeProfileDB");
+        adminBase64Image = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAANzQklUBQYFMwuNgAAAAGFJREFUKJGVzrERADEIA8Frys163Ot9IPgYHBAYzSJEBaGH4EUQkXdEknpH8v8v3lFQxHoXW9rZld/ZrmyBvjC0G5rZNVZ2czM7XRZ2ujC3u8vYTpaNHWJspwsbu+CpnS4fMs2CcPktswUAAAAASUVORK5CYII=";
 
         // For Event
         ArrayList<Bitmap> eventImageDataList = new ArrayList<>();
@@ -136,7 +138,8 @@ public class AdminImagesActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 // Replace Here
-                Bitmap profilePosterBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.event_poster);
+
+                Bitmap profilePosterBitmap = decodeBase64(adminBase64Image);
                 eventImageDataList.set(position, profilePosterBitmap);
                 eventImageAdapter.notifyDataSetChanged();
                 //getting position
@@ -157,7 +160,8 @@ public class AdminImagesActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 // Replace Here
-                Bitmap eventPosterBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.event_poster);
+
+                Bitmap eventPosterBitmap = decodeBase64(adminBase64Image);
                 profileImageDataList.set(position, eventPosterBitmap);
                 profileImageAdapter.notifyDataSetChanged();
 
@@ -222,7 +226,6 @@ public class AdminImagesActivity extends AppCompatActivity {
              */
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                String TAG = "button";
                 List<String> base64Strings = new ArrayList<>();
                 //clearing device id
                 deviceIdList.clear();
@@ -232,7 +235,6 @@ public class AdminImagesActivity extends AppCompatActivity {
                     //adding to firebase
                     deviceIdList.add(document.getId());
                     base64Strings.add(base64String);
-                    Log.d(TAG, "docIds Added"+ deviceIdList);
                 }
                 //on callback
                 myCallback.onCallback(base64Strings, imageDataList, imageAdapter);
@@ -277,24 +279,24 @@ public class AdminImagesActivity extends AppCompatActivity {
      * @param eventPosterBitmap with bitmap of event poster
      */
     private void eventFirestoreUpdate(long eventNum, Bitmap eventPosterBitmap) {
-        String base64Image = bitmapToBase64(eventPosterBitmap);
-        String TAG = "button";
-
         eventImagesRef.whereEqualTo("eventNum", eventNum)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    Log.d(TAG, "SuccessListener");
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        documentSnapshot.getReference().update("eventImageData", base64Image);
-                        Log.d(TAG, "eventImageData" + documentSnapshot.getReference());
+                        documentSnapshot.getReference().update("eventImageData", adminBase64Image);
                     }
+                    Toast.makeText(this, "Image Deleted, Default Set", Toast.LENGTH_LONG).show();
                 });
     }
 
-    /** Updating profileFirestoreUpdate
-     * @param deviceId deviceId
+  /** Updating profileFirestoreUpdate
+     * @param docId deviceId
      * @param eventPosterBitmap with bitmap of event poster
      */
-    private void profileFirestoreUpdate(String deviceId, Bitmap eventPosterBitmap) {
+    private void profileFirestoreUpdate(String docId, Bitmap eventPosterBitmap) {
+        // Change this to Admin pic
+        profileImagesRef.document(docId)
+                .update("profile_image", adminBase64Image);
+        Toast.makeText(this, "Image Deleted, Default Set", Toast.LENGTH_LONG).show();
     }
 }

@@ -70,7 +70,6 @@ public class AdminProfileActivity extends AppCompatActivity {
         // image list of Listview
         ListView imageList = findViewById(R.id.profile_list_view);
         imageList.setAdapter(imagesArrayAdapter);
-        Log.d("DD", "OnCreateAdminProfileActivity, set adapter");
 
         // Call readData method to populate profileDataList
         readData(new MyCallback() {
@@ -84,7 +83,6 @@ public class AdminProfileActivity extends AppCompatActivity {
             }
         });
 
-        // Set long click listener for the ListView
         imageList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             /** On Item Long click
              * @param parent   The AbsListView where the click happened
@@ -116,7 +114,6 @@ public class AdminProfileActivity extends AppCompatActivity {
                                                  */
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
-                                                    Log.d("AdminProfileActivity", "DocumentSnapshot successfully written!");
                                                     profileDataList.remove(position);
                                                     imagesArrayAdapter.notifyDataSetChanged();
                                                 }
@@ -137,7 +134,6 @@ public class AdminProfileActivity extends AppCompatActivity {
          */
         void onCallback(List<Attendee> list1);
     }
-
 
     /** Reading data
      * @param myCallback with callback firestore data

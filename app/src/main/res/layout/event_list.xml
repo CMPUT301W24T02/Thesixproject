@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="96dp"
         android:fontFamily="sans-serif-light"
-        android:text="@string/events_title"
+        android:text="EVENTS"
         android:textAlignment="viewStart"
         android:textColor="@color/gold"
         android:textSize="40sp"
