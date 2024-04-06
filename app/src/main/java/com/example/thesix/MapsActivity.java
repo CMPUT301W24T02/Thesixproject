@@ -9,6 +9,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.thesix.databinding.ActivityMapsBinding;
@@ -71,7 +72,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double longitude = point.getLongitude();
             LatLng latLng = new LatLng(latitude, longitude);
             mMap.addMarker(new MarkerOptions().position(latLng).title("Attendee"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom((latLng),11));
+
         }
     }
     @Override
