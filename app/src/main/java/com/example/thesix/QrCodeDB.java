@@ -90,6 +90,7 @@ public class QrCodeDB {
         return qrRef;
 
     }
+
     /**
      Retrieving oldQRef from firebase
      @param : String deviceId
@@ -102,6 +103,9 @@ public class QrCodeDB {
                 .collection("event");
         return qrRef;
 
+    }
+    public CollectionReference getDeviceColRef( String deviceID) {
+        return firestore.collection("OrganizerdevicesDB").document(deviceID).collection("event");
     }
     /**
      Retrieving DocumentReference from firebase
@@ -125,6 +129,11 @@ public class QrCodeDB {
                 .addOnFailureListener(e ->
                         Log.e("FirestoreHelper", "Error adding document", e));
 
+    }
+    public CollectionReference getTokenRef() {
+        CollectionReference TokenRef;
+        TokenRef = firestore.collection("deviceIdToToken");
+        return TokenRef;
     }
     public CollectionReference getAllEvent() {
         return firestore.collection("inviteQrCodes");

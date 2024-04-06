@@ -36,7 +36,7 @@ public class OrganizerUseOldQRActivity extends AppCompatActivity {
     private EditText descriptionEditText;
     private EditText eventnameEditText;
     private Button createEventButton;
-
+    private ArrayList<Bitmap> imageDataList;
     private QrCodeDB firestoreHelper;
     private Button backButton;
 
