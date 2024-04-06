@@ -78,10 +78,8 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     private List<Long> checkInCountList;
     private List<String> attendeeIDList;
     private List<GeoPoint> locationList;
-    private Button getLocation;
     private LocationManager locationManager;
-    private TextView welcomeVIP;
-    private FusedLocationProviderClient fusedLocationClient;
+
     private LocationCallback locationCallback;
     private Button editButton;
 
@@ -617,20 +615,36 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     }
 
     private interface PromoDataCallback {
+        /** promo data base Callback for firebase
+         * @param imageData event promo image data
+         * @param name name of event
+         * @param description event description
+         */
         void onPromoDataCallback(String imageData, String name, String description);
     }
     private interface InviteCallback {
+        /** invite data base Callback for firebase
+         * @param attendeeIDList attendee IDList
+         * @param inviteCountList attendee invite count list
+         */
         void onInviteCallback(List<String> attendeeIDList, List<Long> inviteCountList);
     }
 
 
+    /** updating invite invite call back
+     * @param inviteCallback invite call back
+     */
     public void updateInvite(InviteCallback inviteCallback) {
         firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum)).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            /** successful data querying
+             * @param task query for database
+             */
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
+                        // getting document fields
                         Log.d("scan1", "DocumentSnapshot data: " + document.getData());
                         attendeeIDList = (List<String>) document.get("attendeeIDList");
                         checkInCountList = (List<Long>) document.get("checkInCountList");
@@ -646,15 +660,24 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     }
 
 
-
+    /** Requesting Permission
+     * @param requestCode  The request code passed in {@link # requestPermissions(
+     * android.app.Activity, String[], int)}
+     * @param permissions  The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions
+     *                     which is either {@link android.content.pm.PackageManager#PERMISSION_GRANTED}
+     *                     or {@link android.content.pm.PackageManager#PERMISSION_DENIED}. Never null.
+     */
     @SuppressLint("MissingSuperCall")
     @Override
     public void onRequestPermissionsResult(int requestCode,@NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_LOCATION) {
+            //if permission is granted
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showLocation();
 
             } else {
+                //permission not granted
                 Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -667,37 +690,28 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
             //check if gps enabled
             if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
                 //start locating
-                //welcomeVIP.setText("Loading location");
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,this);
             }
             else {
-                /*
-                new AlertDialog.Builder(this)
-                        .setMessage("GPS is not enabled. Do you want to enable it?")
-                        .setPositiveButton("Yes", (dialog, which) -> {
-                            // User clicked Yes, open location settings
-                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivity(intent);
-                        })
-                        .setNegativeButton("No", (dialog, which) -> {
-                            // User clicked No, inform the user
-                            Toast.makeText(this, "Enable Location services to track location", Toast.LENGTH_LONG).show();
-                        })
-                        .show();
-                //startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                //showLocation();
-                */
+                // do nothing
             }
     }
 
+    /** Callback for firebase
+     * @param promoDataCallback promo dat Callback for firebase
+     */
     public void promoData(PromoDataCallback promoDataCallback) {
         firestoreHelper.getDeviceDocRef(contentsArray[1])
                 .collection("event")
                 .whereEqualTo("eventNum",Long.parseLong(contentsArray[0]))
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    /** with successful data querying
+                     * @param task query for database
+                     */
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            // getting document string
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 imageData = document.getString("eventImageData");
                                 name = document.getString("name");
@@ -712,6 +726,9 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                 });
     }
 
+    /** first launch of the app.
+     * @return boolean isFirstLaunch()
+     */
     private boolean isFirstLaunch() {
         // Implement logic to determine if this is the first launch of the app.
         // This could be based on a specific flag in SharedPreferences that you set on launch and clear on exit.
@@ -719,6 +736,9 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         return true;
     }
 
+    /**
+     * clearing attendee info
+     */
     private void clearAttendeeInfo() {
         SharedPreferences sharedPrefs = getSharedPreferences("AttendeePrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -735,6 +755,9 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                 }
             });
 
+    /**
+     * Asking Notification Permission
+     */
     private void askNotificationPermission() {
         // This is only necessary for API level >= 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
