@@ -126,6 +126,11 @@ public class QrCodeDB {
                         Log.e("FirestoreHelper", "Error adding document", e));
 
     }
+    public CollectionReference getTokenRef() {
+        CollectionReference TokenRef;
+        TokenRef = firestore.collection("deviceIdToToken");
+        return TokenRef;
+    }
     public CollectionReference getAllEvent() {
         return firestore.collection("inviteQrCodes");
     }
