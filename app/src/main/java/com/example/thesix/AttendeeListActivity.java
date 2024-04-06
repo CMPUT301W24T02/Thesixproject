@@ -39,7 +39,7 @@ import java.util.Set;
 
 public class AttendeeListActivity extends AppCompatActivity {
     private Button backButton;
-    private Button mapButton;
+    private Button mapButton; //making back buttom
     private Button notificationButton;
     private TextView totalcheckinNumber;
     CollectionReference QrRef;
@@ -54,28 +54,31 @@ public class AttendeeListActivity extends AppCompatActivity {
 
     private String eventName;
 
-    private QrCodeDB firestoreHelper;
+    private QrCodeDB firestoreHelper; //QrCodeDB
     String deviceID;
     String imageBaseString;
     String OrganizerdeviceID;
     private OrganizerMainActivity oma = new OrganizerMainActivity();
 
-    /**
-     * Initializes UI components such as buttons and a list view in the onCreate method.
-     * @param : @Nullable Bundle savedInstanceState
-     * @return : void
-     */
 
+    /**Initializes UI components such as buttons and a list view in the onCreate method.
+     * @param savedInstanceState If the activity is being re-initialized after
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_list_screen);
         firestoreHelper = new QrCodeDB();
+
+        //getting string device id
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         //String deviceID ="27150c669e8b1dc4";
         backButton = findViewById(R.id.backButton);
         mapButton = findViewById(R.id.mapButton);
 
+        //finding buttons ids
         notificationButton = findViewById(R.id.notificationButton);
         attendeeList = findViewById(R.id.attendee_list_view);
         totalcheckinNumber = findViewById(R.id.totalCheckin);
@@ -97,6 +100,9 @@ public class AttendeeListActivity extends AppCompatActivity {
         attendeeList.setAdapter(attendeeAdapter);
 
         setAttendeeList(new AttendeeCallback() {
+            /** Callback for firebase
+             * @param list1 list of attendee
+             */
             @Override
             public void onAttendeeCallback(List<Attendee> list1) {
                 // Create the array to hold invited guests
@@ -119,78 +125,72 @@ public class AttendeeListActivity extends AppCompatActivity {
             }
         });
 
-
-        /**
-         * Utilizes buttons (backButton, mapButton, notificationButton) to navigate to different activities.
-         * @param :int position, @Nullable View convertView, @NonNull ViewGroup parent
-         * @return : View
-         */
         backButton.setOnClickListener(new View.OnClickListener() {
+            /**Utilizes buttons (backButton, mapButton, notificationButton) to navigate to different activities.
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(AttendeeListActivity.this, EventDetailsAdapter.class));
 
             }
         });
-        /*
-        /**
-         * Utilizes buttons (backButton, mapButton, notificationButton) to navigate to different activities.
-         * @param : View
-         * @return :
-         */
 
         mapButton.setOnClickListener(new View.OnClickListener() {
+            /**Utilizes buttons (backButton, mapButton, notificationButton) to navigate to different activities.
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
+                //making a bundle and setting required data
                 Bundle bundle = new Bundle();
                 bundle.putLong("eventNum", eventNum);
                 bundle.putString("OrganizerdeviceID",OrganizerdeviceID);
                 Intent myIntent = new Intent(AttendeeListActivity.this, MapsActivity.class);
+                //creating log id
                 Log.d("hihi","Before ID: "+ eventNum);
                 myIntent.putExtras(bundle);
                 startActivity(myIntent);
             }
         });
 
-        /**
-         * Utilizes buttons (backButton, mapButton, notificationButton) to navigate to different activities.
-         * @param :View
-         * @return :
-         */
-
         notificationButton.setOnClickListener(new View.OnClickListener() {
+            /** Utilizes buttons (backButton, mapButton, notificationButton) to navigate to different activities.
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(AttendeeListActivity.this, NotificationActivity.class));
             }
         });
     }
-    /**
-     Callback Interface to get Attendees
-     @param : ist<Attendee> list1
-     @return
-     **/
 
     private interface AttendeeCallback {
+        /** Callback Interface to get Attendees
+         * @param list1 list of attendees
+         */
         void onAttendeeCallback(List<Attendee> list1);
     }
-    /**
-     * Sets Attendee List
-     * @param :AttendeeCallback attendeeCallback
-     * @return : void
-     */
 
+    /** Sets Attendee List
+     * @param attendeeCallback Callback for firebase
+     */
     public void setAttendeeList(AttendeeCallback attendeeCallback) {
         QrRef.whereEqualTo("eventNum", eventNum).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    /**with successful data querying
+                     * @param task query for database
+                     */
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                //querying for firebase
                                 attendeeString = (List<String>) document.get("attendeeList");
                                 checkinCount = (List<Long>) document.get("checkIn");
                                 totalCount = (long) document.get("totalCheckIn");
                                 eventName = (String) document.get("name");
+                                //adding data list of attendees
                                 for (int i = 0; i < attendeeString.size(); i++) {
                                     Attendee attendee = new Attendee(attendeeString.get(i), checkinCount.get(i));
                                     dataList.add(attendee);
