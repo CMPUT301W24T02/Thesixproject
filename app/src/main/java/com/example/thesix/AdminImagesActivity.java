@@ -103,7 +103,9 @@ public class AdminImagesActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 // Replace Here
-                Bitmap profilePosterBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.event_poster);
+                String adminBase64Image = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAANzQklUBQYFMwuNgAAAAGFJREFUKJGVzrERADEIA8Frys163Ot9IPgYHBAYzSJEBaGH4EUQkXdEknpH8v8v3lFQxHoXW9rZld/ZrmyBvjC0G5rZNVZ2czM7XRZ2ujC3u8vYTpaNHWJspwsbu+CpnS4fMs2CcPktswUAAAAASUVORK5CYII=";
+
+                Bitmap profilePosterBitmap = decodeBase64(adminBase64Image);
                 eventImageDataList.set(position, profilePosterBitmap);
                 eventImageAdapter.notifyDataSetChanged();
 
@@ -117,7 +119,9 @@ public class AdminImagesActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 // Replace Here
-                Bitmap eventPosterBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.event_poster);
+                String adminBase64Image = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAANzQklUBQYFMwuNgAAAAGFJREFUKJGVzrERADEIA8Frys163Ot9IPgYHBAYzSJEBaGH4EUQkXdEknpH8v8v3lFQxHoXW9rZld/ZrmyBvjC0G5rZNVZ2czM7XRZ2ujC3u8vYTpaNHWJspwsbu+CpnS4fMs2CcPktswUAAAAASUVORK5CYII=";
+
+                Bitmap eventPosterBitmap = decodeBase64(adminBase64Image);
                 profileImageDataList.set(position, eventPosterBitmap);
                 profileImageAdapter.notifyDataSetChanged();
 
@@ -159,7 +163,6 @@ public class AdminImagesActivity extends AppCompatActivity {
         profileImagesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                String TAG = "button";
                 List<String> base64Strings = new ArrayList<>();
                 deviceIdList.clear();
 
@@ -167,7 +170,6 @@ public class AdminImagesActivity extends AppCompatActivity {
                     String base64String = document.getString("profile_image");
                     deviceIdList.add(document.getId());
                     base64Strings.add(base64String);
-                    Log.d(TAG, "docIds Added"+ deviceIdList);
                 }
                 myCallback.onCallback(base64Strings, imageDataList, imageAdapter);
             }
@@ -177,6 +179,7 @@ public class AdminImagesActivity extends AppCompatActivity {
     public interface MyCallback {
         void onCallback(List<String> list1, ArrayList<Bitmap> imageDataList, CustomImageAdapter imageAdapter);
     }
+
     // CHatGPt: Prompt, bitmap to string, string to bitmap
     private Bitmap decodeBase64(String base64String) {
         byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
@@ -192,20 +195,24 @@ public class AdminImagesActivity extends AppCompatActivity {
     }
 
     private void eventFirestoreUpdate(long eventNum, Bitmap eventPosterBitmap) {
-        String base64Image = bitmapToBase64(eventPosterBitmap);
+        // Change this to Admin pic
+        String adminBase64Image = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAANzQklUBQYFMwuNgAAAAGFJREFUKJGVzrERADEIA8Frys163Ot9IPgYHBAYzSJEBaGH4EUQkXdEknpH8v8v3lFQxHoXW9rZld/ZrmyBvjC0G5rZNVZ2czM7XRZ2ujC3u8vYTpaNHWJspwsbu+CpnS4fMs2CcPktswUAAAAASUVORK5CYII=";
         String TAG = "button";
 
         eventImagesRef.whereEqualTo("eventNum", eventNum)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    Log.d(TAG, "SuccessListener");
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        documentSnapshot.getReference().update("eventImageData", base64Image);
-                        Log.d(TAG, "eventImageData" + documentSnapshot.getReference());
+                        documentSnapshot.getReference().update("eventImageData", adminBase64Image);
                     }
                 });
     }
 
-    private void profileFirestoreUpdate(String deviceId, Bitmap eventPosterBitmap) {
+    private void profileFirestoreUpdate(String docId, Bitmap eventPosterBitmap) {
+        // Change this to Admin pic
+        String adminBase64Image = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAANzQklUBQYFMwuNgAAAAGFJREFUKJGVzrERADEIA8Frys163Ot9IPgYHBAYzSJEBaGH4EUQkXdEknpH8v8v3lFQxHoXW9rZld/ZrmyBvjC0G5rZNVZ2czM7XRZ2ujC3u8vYTpaNHWJspwsbu+CpnS4fMs2CcPktswUAAAAASUVORK5CYII=";
+        String TAG = "button";
+        profileImagesRef.document(docId)
+                .update("profile_image", adminBase64Image);
     }
 }
