@@ -37,19 +37,31 @@ import java.util.List;
  */
 
 public class AdminImagesActivity extends AppCompatActivity {
+    //required Button
     private Button back2AdminButton;
+    //creating firestore instance
     private FirebaseFirestore firestore;
+    //creating collectionReferences
     private CollectionReference eventImagesRef;
     private CollectionReference profileImagesRef;
+    //creating required Array lists
     private ArrayList<Long> eventNumList;
     private ArrayList<String> deviceIdList;
 
+    /** Creating Activity
+     * @param savedInstanceState If the activity is being re-initialized after
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_images_screen);
 
+        //back2admin button finding
         back2AdminButton = findViewById(R.id.backButton);
+
+        //creating listviews
         ListView eventImageListView = findViewById(R.id.images_event_view);
         ListView profileImageListView = findViewById(R.id.images_profile_view);
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
