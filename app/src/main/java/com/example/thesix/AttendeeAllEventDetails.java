@@ -52,25 +52,31 @@ public class AttendeeAllEventDetails extends AppCompatActivity {
     String deviceID;
     String imageBaseString;
 
-    /**
-     * Initializes UI components such as TextView (eventName, eventDescription), ImageView (eventPoster), and Button (backButton)
-     * @param : Bundle Saved Instances
-     * @return : void
-     */
 
+    /** Creating AttendeeAllEventDetails
+     * @param savedInstanceState If the activity is being re-initialized after
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_event_details);
+        //getting deviceID
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        //finding Id's of buttons
         eventName = findViewById(R.id.eventName);
         eventDescription = findViewById(R.id.eventDescription);
         eventPoster = findViewById(R.id.eventPoster);
         backButton = findViewById(R.id.backButton);
+
+        //getting instance of firestore
         firestore = FirebaseFirestore.getInstance();
         QrRef = firestore.
                 collection("inviteQrCodes");
 
+        //bundle to send data
         Bundle bundle = getIntent().getExtras();
         String eventName1 = bundle.getString("eventName");
         String eventDescription1 = bundle.getString("eventDescription");
@@ -78,12 +84,11 @@ public class AttendeeAllEventDetails extends AppCompatActivity {
         eventName.setText(eventName1);
         eventDescription.setText(eventDescription1);
 
-        /**
-         * Does Event Poster data Callback
-         * @param : String String
-         * @return : void
-         */
+
         eventPosterImage(new EventPosterCallback() {
+            /** eventposter calling him out
+             * @param string of events
+             */
             @Override
             public void onEventPosterCallback(String string) {
                 Log.d("getevent", "ABC" + string);
@@ -92,46 +97,46 @@ public class AttendeeAllEventDetails extends AppCompatActivity {
             }
         });
 
-        /**
-         * sets back button
-         * @param : View v
-         * @return : void
-         */
         backButton.setOnClickListener(new View.OnClickListener() {
+            /** Start activity to AttendeeAllEventsActivity
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(AttendeeAllEventDetails.this, AttendeeAllEventsActivity.class));
             }
         });
     }
-    /**
-     * Does EventPoster Callback
-     * @param : String string
-     * @return : void
-     */
+
     private interface EventPosterCallback {
+        /** On event poster Callback
+         * @param string to string
+         */
         void onEventPosterCallback(String string);
     }
-    /**
-     * Setting Event Poster Image
-     * @param : EventPosterCallback eventPosterCallback
-     * @return : void
-     */
 
+    /**getting event poster image
+     * @param eventPosterCallback with firestore data
+     */
     public void eventPosterImage(EventPosterCallback eventPosterCallback) {
         QrRef.whereEqualTo("eventNum", eventNum).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
 
+                    /**On completing firebase data
+                     * @param task to query data
+                     */
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                //getting document string
                                 imageBaseString = document.getString("eventImageData");
                                 Log.d("getevent", document.getId() + " => " + document.getData());
                             }
                         } else {
                             Log.d("getevent", "Error getting documents: ", task.getException());
                         }
+                        //getting event poster call back
                         Log.d("getevent", "ab " + imageBaseString);
                         eventPosterCallback.onEventPosterCallback(imageBaseString);
 
@@ -140,16 +145,16 @@ public class AttendeeAllEventDetails extends AppCompatActivity {
                 });
     }
 
-    /**
-     * Changing Strig Data to Bitmap
-     * @param : String image
-     * @return : void
-     */
 
+    /** string of bitmap data
+     * @param image of string data
+     * @return bitmap of image
+     */
     public Bitmap StringToBitMap(String image) {
         try {
             byte[] encodeByte = Base64.decode(image, Base64.DEFAULT);
 
+            //getting input stream
             InputStream inputStream = new ByteArrayInputStream(encodeByte);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             return bitmap;

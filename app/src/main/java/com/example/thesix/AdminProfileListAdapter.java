@@ -18,17 +18,33 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 
 public class AdminProfileListAdapter extends ArrayAdapter<Attendee> {
-
+    ///getting activity context
     private Context context;
     private ArrayList<Attendee> attendees;
 
 
+    /** profile List Adapter
+     * @param context with activity context
+     * @param attendees list of attendees
+     */
     public AdminProfileListAdapter(Context context, ArrayList<Attendee> attendees) {
         super(context, 0, attendees);
         this.context = context;
         this.attendees = attendees;
     }
 
+    /** getting required View
+     * @param position    The position of the item within the adapter's data set of the item whose view
+     *                    we want.
+     * @param convertView The old view to reuse, if possible. Note: You should check that this view
+     *                    is non-null and of an appropriate type before using. If it is not possible to convert
+     *                    this view to display the correct data, this method can create a new view.
+     *                    Heterogeneous lists can specify their number of view types, so that this View is
+     *                    always of the right type (see {@link #getViewTypeCount()} and
+     *                    {@link #getItemViewType(int)}).
+     * @param parent      The parent that this view will eventually be attached to
+     * @return View
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -54,6 +70,10 @@ public class AdminProfileListAdapter extends ArrayAdapter<Attendee> {
         return view;
     }
 
+    /** decoding 64 to string
+     * @param base64String to decode from string
+     * @return getting Bitmap version of data
+     */
     private Bitmap decodeBase64(String base64String) {
         byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);

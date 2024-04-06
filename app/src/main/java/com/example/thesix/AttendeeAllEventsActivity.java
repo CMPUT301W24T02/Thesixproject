@@ -60,39 +60,47 @@ public class AttendeeAllEventsActivity extends AppCompatActivity {
     private Button backButton;
     private CollectionReference eventsRef;
 
-    /**
-     * Initializes UI components like lists, adapters, and buttons
-     * @param :  Bundle savedInstanceState
-     * @return : void
-     */
 
+    /** Creating AttendeeAllEvents
+     * @param savedInstanceState If the activity is being re-initialized after
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_list);
+        //asking for permissions
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
+        //creating arraylist
         eventnameDataList = new ArrayList<>();
         eventdescriptionDataList = new ArrayList<>();
         eventNumList = new ArrayList<>();
         eventImageDataList = new ArrayList<>();
+
+        //creating back buttons
         backButton = findViewById(R.id.backButton);
         firestore = FirebaseFirestore.getInstance();
         eventsRef = firestore.collection("inviteQrCodes");
+        //event name array adapter
         eventnameArrayAdapter = new ArrayAdapter<String>(
                 AttendeeAllEventsActivity.this,
                 R.layout.event_list_textview, R.id.itemTextView, eventnameDataList);
         ListView eventdescriptionList = findViewById(R.id.event_list);
         eventdescriptionList.setAdapter(eventnameArrayAdapter);
 
-        /**
-         * Does Read data Callback
-         * @param : List<String> list1, List<Long> list2, List<String> list3
-         * @return : void
-         */
+
         readData(new MyCallback() {
+            /** Callback of public event void
+             * @param list1 of string event data list1
+             * @param list2 of string event num list2
+             * @param list3 of string event num list3
+             */
             @Override
             public void onCallback(List<String> list1, List<Long> list2, List<String> list3) {
                 Log.d("callback", "3");
+                //casting array lists
                 eventnameDataList = (ArrayList<String>) list1;
                 eventNumList = (ArrayList<Long>) list2;
                 Log.d("callback", "1" + eventnameDataList.get(0));
@@ -100,18 +108,23 @@ public class AttendeeAllEventsActivity extends AppCompatActivity {
                 eventnameArrayAdapter.notifyDataSetChanged();
             }
         });
-        /**
-         * Sets Event Description
-         * @param : AdapterView<?> parent, View view, int position, long id
-         * @return : void
-         */
+
         eventdescriptionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /** On clicking Item of eventNum
+             * @param parent   The AdapterView where the click happened.
+             * @param view     The view within the AdapterView that was clicked (this
+             *                 will be a view provided by the adapter)
+             * @param position The position of the view in the adapter.
+             * @param id       The row id of the item that was clicked.
+             */
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                //creating intent
                 Intent i = new Intent(AttendeeAllEventsActivity.this, AttendeeAllEventDetails.class);
                 String eventName = (String) (eventdescriptionList.getItemAtPosition(position));
                 String eventDescription = "Singh";
+                //running through list
                 long eventNum = eventNumList.get(position);
                 for (int j = 0; j < eventnameDataList.size(); j++) {
                     String eventName1 = (String) (eventnameDataList.get(j));
@@ -120,7 +133,7 @@ public class AttendeeAllEventsActivity extends AppCompatActivity {
                         eventDescription = (String) (eventdescriptionDataList.get(j));
                     }
                 }
-
+                //creating bundle of data
                 Bundle bundle = new Bundle();
                 bundle.putString("eventName", eventName);
                 bundle.putString("eventDescription", eventDescription);
@@ -129,12 +142,11 @@ public class AttendeeAllEventsActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-        /**
-         * Sets back button to navigate to Admin Activity
-         * @param : View v
-         * @return :
-         */
+
         backButton.setOnClickListener(new View.OnClickListener() {
+            /** Starting AttendeeSelectEvents
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(AttendeeAllEventsActivity.this, AttendeeSelectEvents.class));
@@ -142,30 +154,33 @@ public class AttendeeAllEventsActivity extends AppCompatActivity {
         });
 
     }
-    /**
-     * Interface Callback
-     * @param :List<String> list1, List<Long> list2, List<String> list3
-     * @return :
-     */
 
     public interface MyCallback {
+        /** callback for firebase
+         * @param list1 list for event callback
+         * @param list2 list for event callback
+         * @param list3 list for event callback
+         */
         void onCallback(List<String> list1, List<Long> list2, List<String> list3);
     }
-    /**
-     * Reads data
-     * @param :MyCallback myCallback
-     * @return :
-     */
 
+    /** Callback with events
+     * @param myCallback with callback for events
+     */
     public void readData(MyCallback myCallback) {
         eventsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            /** querying for firebase
+             * @param queryDocumentSnapshots with comepleted firebase data
+             */
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    // getting data from firebase
                     String description = document.getString("description");
                     String eventname = document.getString("name");
                     Long eventNum = document.getLong("eventNum");
                     String base64String = document.getString("qrImageData");
+                    //adding to firebase
                     eventImageDataList.add(base64String);
                     eventNumList.add(eventNum);
                     eventnameDataList.add(eventname);
