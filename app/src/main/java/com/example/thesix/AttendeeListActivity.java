@@ -147,7 +147,7 @@ public class AttendeeListActivity extends AppCompatActivity {
                 bundle.putLong("eventNum", eventNum);
                 bundle.putString("OrganizerdeviceID",OrganizerdeviceID);
                 Intent myIntent = new Intent(AttendeeListActivity.this, MapsActivity.class);
-                //creatinging log id
+                //creating log id
                 Log.d("hihi","Before ID: "+ eventNum);
                 myIntent.putExtras(bundle);
                 startActivity(myIntent);
