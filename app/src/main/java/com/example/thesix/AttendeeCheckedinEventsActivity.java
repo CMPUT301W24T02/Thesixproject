@@ -125,12 +125,17 @@ public class AttendeeCheckedinEventsActivity extends AppCompatActivity {
 
     public void readData1(MyCallback myCallback) {
         eventsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            /**query for database
+             * @param queryDocumentSnapshots with successful data querying
+             */
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    //personal documents
                     DEVICEID = (List<String>) document.get("signUpIDList");
                     String eventname = document.getString("name");
                     Long eventNum = document.getLong("eventNum");
+                    //getting string device id
                     String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
                     for (int i = 0; i < DEVICEID.size(); i++) {
                         if (DEVICEID.get(i).equalsIgnoreCase(deviceID)) {
@@ -145,17 +150,26 @@ public class AttendeeCheckedinEventsActivity extends AppCompatActivity {
         });
     }
 
+    /**Reading data in database
+     * @param myCallback Callback for firebase
+     */
     public void readData(MyCallback myCallback) {
         eventsRef.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    /** query for database
+                     * @param task with successful data querying
+                     */
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 DEVICEID = (List<String>) document.get("attendeeIDList");
                                 Log.d("Arjun", "20");
+                                //getting string eventnum
                                 String eventname = document.getString("name");
                                 Long eventNum = document.getLong("eventNum");
+
+                                //getting string device id
                                 String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
                                 for (int i = 0; i < DEVICEID.size(); i++) {
                                     if (DEVICEID.get(i).equalsIgnoreCase(deviceID)) {
