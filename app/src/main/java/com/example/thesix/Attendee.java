@@ -125,6 +125,9 @@ public class Attendee {
     }
 
 
+    /** Getting Profile Image String
+     * @return String of profile image
+     */
     public String getProfile_image() {
         return profile_image;
     }
