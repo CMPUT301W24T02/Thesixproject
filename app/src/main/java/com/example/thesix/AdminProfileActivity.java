@@ -61,7 +61,6 @@ public class AdminProfileActivity extends AppCompatActivity {
         imagesArrayAdapter = new AdminProfileListAdapter(AdminProfileActivity.this, profileDataList);
         ListView imageList = findViewById(R.id.profile_list_view);
         imageList.setAdapter(imagesArrayAdapter);
-        Log.d("DD", "OnCreateAdminProfileActivity, set adapter");
 
         // Call readData method to populate profileDataList
         readData(new MyCallback() {
@@ -72,7 +71,6 @@ public class AdminProfileActivity extends AppCompatActivity {
             }
         });
 
-        // Set long click listener for the ListView
         imageList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -90,7 +88,6 @@ public class AdminProfileActivity extends AppCompatActivity {
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
-                                                    Log.d("AdminProfileActivity", "DocumentSnapshot successfully written!");
                                                     profileDataList.remove(position);
                                                     imagesArrayAdapter.notifyDataSetChanged();
                                                 }
@@ -119,7 +116,6 @@ public class AdminProfileActivity extends AppCompatActivity {
      * @param :MyCallback myCallback
      * @return :
      */
-
     public void readData(MyCallback myCallback) {
         profileRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override

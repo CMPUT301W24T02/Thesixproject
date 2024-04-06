@@ -145,12 +145,8 @@ public class AdminEventDetails extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 imageBaseString = document.getString("eventImageData");
-                                Log.d("getevent", document.getId() + " => " + document.getData());
                             }
-                        } else {
-                            Log.d("getevent", "Error getting documents: ", task.getException());
                         }
-                        Log.d("getevent", "ab " + imageBaseString);
                         eventPosterCallback.onEventPosterCallback(imageBaseString);
 
                     }
