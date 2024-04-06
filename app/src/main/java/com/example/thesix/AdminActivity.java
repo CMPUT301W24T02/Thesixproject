@@ -11,58 +11,68 @@ import androidx.appcompat.app.AppCompatActivity;
  * Clicking viewProfiles is not implemented yet.
  */
 public class AdminActivity extends AppCompatActivity {
+    //Initializing Buttons
     private Button viewEvents;
     private Button viewProfiles;
     private Button viewImages;
 
-    /**
-     *  * Initializes UI components such as Button (viewEvents,viewProfile, viewImages) in the onCreate method.
-     * @param : Bundle Saved Instances
-     * @return : void
+    /***
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
      */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_mainactivity);
-
+        //find id's of respective Buttons
         viewEvents = findViewById(R.id.viewEvents);
         viewProfiles = findViewById(R.id.viewProfiles);
         viewImages = findViewById(R.id.viewImages);
 
-        /**
-         * Clicking viewEvents navigates to AdminEventsActivity to display all events created on app.
-         * @param : View v
-         * @return : void
+        /***
+         * Allows us to View Events when clicking on button
          */
-
         viewEvents.setOnClickListener(new View.OnClickListener() {
+            /***
+             *
+             * @param view The view that was clicked.
+             */
             @Override
             public void onClick(View view) {
+                //Takes Admin to view list of all event activities
                 startActivity(new Intent(AdminActivity.this, AdminEventsActivity.class));
             }
         });
-        /**
-         * Clicking viewEvents navigates to display all profile created on app.
-         * @param : View v
-         * @return : void
-         */
 
+        /**
+         * Clicking viewProfiles navigates to display all profile created on app.
+         */
         viewProfiles.setOnClickListener(new View.OnClickListener() {
+            /***
+             *
+             * @param view The view that was clicked.
+             */
             @Override
             public void onClick(View view) {
+                //Takes Admin to view list of all profile activities
                 startActivity(new Intent(AdminActivity.this, AdminProfileActivity.class));
             }
         });
+
         /**
          * Clicking viewImages navigates to display all profile created on app.
-         * @param : View v
-         * @return : void
          */
-
         viewImages.setOnClickListener(new View.OnClickListener() {
+            /***
+             * @param view The view that was clicked.
+             */
             @Override
             public void onClick(View view) {
+                //Takes Admin to view list of all event images
                 startActivity(new Intent(AdminActivity.this, AdminImagesActivity.class));
             }
         });

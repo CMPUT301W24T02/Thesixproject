@@ -42,50 +42,71 @@ import java.util.ArrayList;
 
 public class AdminEventDetails extends AppCompatActivity {
 
+    //Initialize textview for event name , description and Poster
     private TextView eventName;
     private TextView eventDescription;
     private ImageView eventPoster;
+
+    // Initialize Buttons for Backbutton ,
     private Button backButton;
     long eventNum;
+
+    //initializing collection reference Qref
     CollectionReference QrRef;
+
+    //initialize firestore
     private FirebaseFirestore firestore;
+
+    //initialize String ID
     String deviceID;
     String imageBaseString;
 
-    /**
-     * Initializes UI components such as TextView (eventName, eventDescription), ImageView (eventPoster), and Button (backButton)
-     * @param : Bundle Saved Instances
-     * @return : void
-     */
 
+    /***
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_event_details);
+
+        //getting user's device id
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        //initializing TextView and Buttons
         eventName = findViewById(R.id.eventName);
         eventDescription = findViewById(R.id.eventDescription);
         eventPoster = findViewById(R.id.eventPoster);
         backButton = findViewById(R.id.backButton);
+
+        //getting firestore instances
         firestore = FirebaseFirestore.getInstance();
         QrRef = firestore.
                 collection("inviteQrCodes");
 
+        //getting a bundle with required information
         Bundle bundle = getIntent().getExtras();
         String eventName1 = bundle.getString("eventName");
         String eventDescription1 = bundle.getString("eventDescription");
+
+        //setting with required information
         eventNum = bundle.getLong("eventNum");
         eventName.setText(eventName1);
         eventDescription.setText(eventDescription1);
 
         /**
-         * Does Event Poster data Callback
-         * @param : String String
-         * @return : void
+         * Implementation of eventPosterCallback
          */
         eventPosterImage(new EventPosterCallback() {
+            /** Implementation of eventPosterCallback
+             * @param string to get QRCodeImageData
+             */
             @Override
             public void onEventPosterCallback(String string) {
+                //setting event Poster image to Bitmap
                 Log.d("getevent", "ABC" + string);
                 Bitmap b = StringToBitMap(string);
                 eventPoster.setImageBitmap(b);
@@ -93,35 +114,38 @@ public class AdminEventDetails extends AppCompatActivity {
         });
 
         /**
-         * sets back button
-         * @param : View v
-         * @return : void
-         */
+         * Setting back button onclickListener
+          */
         backButton.setOnClickListener(new View.OnClickListener() {
+            /** Setting back button onclickListener
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
+                //Takes to AdminEventsActivity
                 startActivity(new Intent(AdminEventDetails.this, AdminEventsActivity.class));
             }
         });
     }
+
     /**
-     * Does EventPoster Callback
-     * @param : String string
-     * @return : void
+     * Interface EventPosterCallback
      */
     private interface EventPosterCallback {
         void onEventPosterCallback(String string);
     }
-    /**
-     * Setting Event Poster Image
-     * @param : EventPosterCallback eventPosterCallback
-     * @return : void
-     */
 
+    /** Sets event poster
+     * @param eventPosterCallback to check when retrieval is complete
+     */
     public void eventPosterImage(EventPosterCallback eventPosterCallback) {
+        //retrieving QRref
         QrRef.whereEqualTo("eventNum", eventNum).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
 
+                    /** Add On Success to firebase
+                     * @param task to collect firebase data
+                     */
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
@@ -140,12 +164,11 @@ public class AdminEventDetails extends AppCompatActivity {
                 });
     }
 
-    /**
-     * Changing Strig Data to Bitmap
-     * @param : String image
-     * @return : void
-     */
 
+    /** Converting
+     * @param image
+     * @return
+     */
     public Bitmap StringToBitMap(String image) {
         try {
             byte[] encodeByte = Base64.decode(image, Base64.DEFAULT);
