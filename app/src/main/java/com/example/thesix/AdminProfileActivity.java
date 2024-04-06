@@ -32,39 +32,51 @@ import java.util.List;
  * Requests necessary permissions and sets up the layout for Profile listings.
  * Lists all profiles in the listview created in the app.
  *
- * Continue JavaDocs
- *
  */
 public class AdminProfileActivity extends AppCompatActivity {
-
+    //creating buttons
     private Button back2AdminButton;
     private ArrayList<Attendee> profileDataList;
     private FirebaseFirestore firestore;
     private Button backButton;
+    //colection reference data
     private CollectionReference profileRef;
     private AdminProfileListAdapter imagesArrayAdapter;
+    //string data
     private String attendeeName;
     private String contact;
     private String homePage;
     private String profile_image;
 
+    /** Creating data for admin Profile
+     * @param savedInstanceState If the activity is being re-initialized after
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_profile_screen);
+        //finding button
         back2AdminButton = findViewById(R.id.backButton);
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
+        // new profile data list
         profileDataList = new ArrayList<>();
         backButton = findViewById(R.id.backButton);
         firestore = FirebaseFirestore.getInstance();
+        //getting profile reference
         profileRef = firestore.collection("AttendeeProfileDB");
         imagesArrayAdapter = new AdminProfileListAdapter(AdminProfileActivity.this, profileDataList);
+        // image list of Listview
         ListView imageList = findViewById(R.id.profile_list_view);
         imageList.setAdapter(imagesArrayAdapter);
         Log.d("DD", "OnCreateAdminProfileActivity, set adapter");
 
         // Call readData method to populate profileDataList
         readData(new MyCallback() {
+            /** on callback from firestore
+             * @param list1 for imageArray Adapter
+             */
             @Override
             public void onCallback(List<Attendee> list1) {
                 // Update UI with populated data
@@ -74,11 +86,22 @@ public class AdminProfileActivity extends AppCompatActivity {
 
         // Set long click listener for the ListView
         imageList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            /** On Item Long click
+             * @param parent   The AbsListView where the click happened
+             * @param view     The view within the AbsListView that was clicked
+             * @param position The position of the view in the list
+             * @param id       The row id of the item that was clicked
+             * @return with boolean
+             */
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                //accessing collection
                 firestore.collection("AttendeeProfileDB")
                         .get()
                         .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            /**on successfully getting data
+                             * @param queryDocumentSnapshots with acquired data
+                             */
                             @Override
                             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                 if (!queryDocumentSnapshots.isEmpty()) {
@@ -88,6 +111,9 @@ public class AdminProfileActivity extends AppCompatActivity {
                                     firestore.collection("AttendeeProfileDB").document(documentId)
                                             .delete()
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                /** On successfully removing data
+                                                 * @param aVoid with success
+                                                 */
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     Log.d("AdminProfileActivity", "DocumentSnapshot successfully written!");
@@ -98,33 +124,33 @@ public class AdminProfileActivity extends AppCompatActivity {
                                 }
                             }
                         });
-
+                //notifying user
                 Toast.makeText(AdminProfileActivity.this, "Profile Deleted", Toast.LENGTH_LONG).show();
                 return true;
             }
         });
     }
 
-    /**
-     * Interface Callback
-     * @param :List<String> list1
-     * @return :
-     */
-
     public interface MyCallback {
+        /** interface for callback
+         * @param list1 of attendees
+         */
         void onCallback(List<Attendee> list1);
     }
-    /**
-     * Reads data
-     * @param :MyCallback myCallback
-     * @return :
-     */
 
+
+    /** Reading data
+     * @param myCallback with callback firestore data
+     */
     public void readData(MyCallback myCallback) {
         profileRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            /**on successfully querying from firestore
+             * @param queryDocumentSnapshots with successfully queries
+             */
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    //getting document strings
                     attendeeName = document.getString("name");
                     contact = document.getString("contact_number");
                     homePage = document.getString("home_page");
@@ -136,12 +162,11 @@ public class AdminProfileActivity extends AppCompatActivity {
             }
         });
 
-        /**
-         Initializes a UI component, a Button named back2AdminButton
-         @param :
-         @return
-         **/
+
         back2AdminButton.setOnClickListener(new View.OnClickListener() {
+            /**Getting to AdminActivity
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(AdminProfileActivity.this, AdminActivity.class));
