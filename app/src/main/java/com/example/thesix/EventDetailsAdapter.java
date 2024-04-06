@@ -56,25 +56,33 @@ public class EventDetailsAdapter extends AppCompatActivity {
     CollectionReference eventsRef;
     private String Organizerdeviceid;
 
-    /**
-     Initializes UI components like lists, adapters, and buttons
-     **/
+
+    /** Initializes UI components like lists, adapters, and buttons
+     * @param savedInstanceState If the activity is being re-initialized after
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_list);
+        //asking for permissions
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
+        //creating new arraylists
         eventnameDataList = new ArrayList<>();
         eventdescriptionDataList = new ArrayList<>();
         eventNumList = new ArrayList<>();
         eventImageDataList = new ArrayList<>();
         backButton = findViewById(R.id.backButton);
+
+        //new database instance
         firestoreHelper = new QrCodeDB();
 
 
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
         String Organizerdeviceid = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        deviceID ="27150c669e8b1dc4";
+
+        //deviceID ="27150c669e8b1dc4";
         eventsRef = firestoreHelper.getOldQrRef(deviceID);
         eventnameArrayAdapter = new ArrayAdapter<String>(
                 EventDetailsAdapter.this,
@@ -82,15 +90,17 @@ public class EventDetailsAdapter extends AppCompatActivity {
         ListView eventdescriptionList = findViewById(R.id.event_list);
         eventdescriptionList.setAdapter(eventnameArrayAdapter);
 
-        /**
-         Callback Interface to share Event details
-         @param : String
-         @return
-         **/
+
         readData(new MyCallback() {
+            /** Callback Interface to share Event details
+             * @param list1 event name DataList info
+             * @param list2 eventNumList info
+             * @param list3 event name ArrayAdapter info
+             */
             @Override
             public void onCallback(List<String> list1, List<Long> list2, List<String> list3) {
                 Log.d("callback", "3");
+                //setting array lists
                 eventnameDataList = (ArrayList<String>) list1;
                 eventNumList = (ArrayList<Long>) list2;
                 //Log.d("callback", "1" + eventnameDataList.get(0));
@@ -98,20 +108,26 @@ public class EventDetailsAdapter extends AppCompatActivity {
                 eventnameArrayAdapter.notifyDataSetChanged();
             }
         });
-        /**
-         Setting Event Details
-         @param : AdapterView parent, View view, int position, long id
-         @return :void
-         **/
+
         eventdescriptionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /**Setting Event Details
+             * @param parent   The AdapterView where the click happened.
+             * @param view     The view within the AdapterView that was clicked (this
+             *                 will be a view provided by the adapter)
+             * @param position The position of the view in the adapter.
+             * @param id       The row id of the item that was clicked.
+             */
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //startActivity(new Intent(EventDetailsAdapter.this, EventDetailsConnector.class));
 
+                //creating intents
                 Intent i = new Intent(EventDetailsAdapter.this, EventDetailsConnector.class);
                 String eventName = (String) (eventdescriptionList.getItemAtPosition(position));
                 String eventDescription = "Singh";
                 long eventNum = eventNumList.get(position);
+
+                //parsing through event data lists
                 for (int j = 0; j < eventnameDataList.size(); j++) {
                     String eventName1 = (String) (eventnameDataList.get(j));
                      if(eventName.equalsIgnoreCase(eventName1))
@@ -119,7 +135,9 @@ public class EventDetailsAdapter extends AppCompatActivity {
                          eventDescription = (String) (eventdescriptionDataList.get(j));
                      }
                 }
-                String Organizerdeviceid="27150c669e8b1dc4";
+
+                //String Organizerdeviceid="27150c669e8b1dc4";
+                //test case example
                 Bundle bundle = new Bundle();
                 bundle.putString("eventName", eventName);
                 bundle.putString("eventDescription", eventDescription);
@@ -129,12 +147,10 @@ public class EventDetailsAdapter extends AppCompatActivity {
                 startActivity(i);
             }
         });
-        /**
-         Clicking backButton navigates back to MainActivity.
-         @param: View v
-         @return void
-         **/
         backButton.setOnClickListener(new View.OnClickListener() {
+            /** Clicking backButton navigates back to MainActivity.
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(EventDetailsAdapter.this, OrganizerMainActivity.class));
@@ -142,20 +158,20 @@ public class EventDetailsAdapter extends AppCompatActivity {
         });
 
     }
-    /**
-     Callback Interface to share Event details
-     @param : String
-     @return
-     **/
 
     public interface MyCallback {
+        /** Callback Interface to share Event details
+         * @param list1 event num info
+         * @param list2 event data info
+         * @param list3 array adapter info
+         */
         void onCallback(List<String> list1, List<Long> list2, List<String> list3);
     }
-    /**
-     Reading Data from QR code
-     @param : MycCallBcak callBack
-     **/
 
+
+    /** Reading Data from QR code
+     * @param myCallback callback for firebase
+     */
     public void readData(MyCallback myCallback) {
         eventsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
