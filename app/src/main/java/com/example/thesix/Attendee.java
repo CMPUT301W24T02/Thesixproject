@@ -132,6 +132,9 @@ public class Attendee {
         return profile_image;
     }
 
+    /** getting Profile Image
+     * @param profile_image with string of profile image
+     */
     public void setProfile_image(String profile_image) {
         this.profile_image = profile_image;
     }
