@@ -95,13 +95,11 @@ public class AdminProfileActivity extends AppCompatActivity {
                                                     imagesArrayAdapter.notifyDataSetChanged();
                                                 }
                                             });
-                                } else {
-                                    Log.d("AdminProfileActivity", "No matching documents found");
                                 }
                             }
                         });
 
-                Toast.makeText(AdminProfileActivity.this, "Profile Successfully Deleted", Toast.LENGTH_LONG).show();
+                Toast.makeText(AdminProfileActivity.this, "Profile Deleted", Toast.LENGTH_LONG).show();
                 return true;
             }
         });
@@ -137,7 +135,6 @@ public class AdminProfileActivity extends AppCompatActivity {
                 myCallback.onCallback(profileDataList);
             }
         });
-
 
         /**
          Initializes a UI component, a Button named back2AdminButton
