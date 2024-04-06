@@ -38,7 +38,7 @@ public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
     ArrayList<Long> eventNumList;
 
     ArrayList<String> eventnameDataList;
-    ArrayList<String> eventdescriptionDataList;
+
     ArrayList<Bitmap> eventImageDataList;
     ArrayList<Bitmap> qrDataList;
     String deviceID;
@@ -56,7 +56,7 @@ public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
         setContentView(R.layout.event_list);
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
         eventnameDataList = new ArrayList<>();
-        eventdescriptionDataList = new ArrayList<>();
+
         eventNumList = new ArrayList<>();
         qrDataList = new ArrayList<>();
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -67,7 +67,7 @@ public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
         ListView eventdescriptionList = findViewById(R.id.event_list);
         eventdescriptionList.setAdapter(imagesArrayAdapter);
 
-        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
+        deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
 
 //        eventsRef = firestoreHelper.getOldQrRef(deviceID);
 //        eventnameArrayAdapter = new ArrayAdapter<String>(
@@ -105,20 +105,12 @@ public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
                 //startActivity(new Intent(EventDetailsAdapter.this, EventDetailsConnector.class));
 
                 Intent i = new Intent(OrganizerChooseOldQRActivity.this, OrganizerUseOldQRActivity.class);
-                String eventName = (String) (eventdescriptionList.getItemAtPosition(position));
-                String eventDescription = "Singh";
+
                 long eventNum = eventNumList.get(position);
-                for (int j = 0; j < eventnameDataList.size(); j++) {
-                    String eventName1 = (String) (eventnameDataList.get(j));
-                    if(eventName.equalsIgnoreCase(eventName1))
-                    {
-                        eventDescription = (String) (eventdescriptionDataList.get(j));
-                    }
-                }
+
 
                 Bundle bundle = new Bundle();
-                bundle.putString("eventName", eventName);
-                bundle.putString("eventDescription", eventDescription);
+
                 bundle.putLong("eventNum", eventNum);
                 i.putExtras(bundle);
                 startActivity(i);
@@ -156,7 +148,7 @@ public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                    String description = document.getString("description");
+
                     String eventname = document.getString("name");
                     Long eventNum = document.getLong("eventNum");
                     String base64String = document.getString("qrImageData");
@@ -164,7 +156,7 @@ public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
                     qrDataList.add(bitmap);
                     eventNumList.add(eventNum);
                     eventnameDataList.add(eventname);
-                    eventdescriptionDataList.add(description);
+
                     Log.d("list", document.getId() + "=>" + document.getData());
                     Log.d("list", eventnameDataList.get(0));
                 }

@@ -51,6 +51,10 @@ public class OrganizerChooseOldQRActivityTest {
         solo.sleep(3000);
     }
 
+    /**
+     *Test back button
+     *  */
+
     public void test_backButton(){
 
         // Asserts that the current activity is the AdminEventsActivity.Otherwise, show "Wrong Activity"
