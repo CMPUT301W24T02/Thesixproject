@@ -7,11 +7,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,6 +43,7 @@ public class AdminImagesActivity extends AppCompatActivity {
     private CollectionReference profileImagesRef;
     private ArrayList<Long> eventNumList;
     private ArrayList<String> deviceIdList;
+    private String adminBase64Image;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,6 +57,7 @@ public class AdminImagesActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         eventImagesRef = firestore.collection("inviteQrCodes");
         profileImagesRef = firestore.collection("AttendeeProfileDB");
+        adminBase64Image = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAANzQklUBQYFMwuNgAAAAGFJREFUKJGVzrERADEIA8Frys163Ot9IPgYHBAYzSJEBaGH4EUQkXdEknpH8v8v3lFQxHoXW9rZld/ZrmyBvjC0G5rZNVZ2czM7XRZ2ujC3u8vYTpaNHWJspwsbu+CpnS4fMs2CcPktswUAAAAASUVORK5CYII=";
 
         // For Event
         ArrayList<Bitmap> eventImageDataList = new ArrayList<>();
@@ -103,7 +105,6 @@ public class AdminImagesActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 // Replace Here
-                String adminBase64Image = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAANzQklUBQYFMwuNgAAAAGFJREFUKJGVzrERADEIA8Frys163Ot9IPgYHBAYzSJEBaGH4EUQkXdEknpH8v8v3lFQxHoXW9rZld/ZrmyBvjC0G5rZNVZ2czM7XRZ2ujC3u8vYTpaNHWJspwsbu+CpnS4fMs2CcPktswUAAAAASUVORK5CYII=";
 
                 Bitmap profilePosterBitmap = decodeBase64(adminBase64Image);
                 eventImageDataList.set(position, profilePosterBitmap);
@@ -119,7 +120,6 @@ public class AdminImagesActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 // Replace Here
-                String adminBase64Image = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAANzQklUBQYFMwuNgAAAAGFJREFUKJGVzrERADEIA8Frys163Ot9IPgYHBAYzSJEBaGH4EUQkXdEknpH8v8v3lFQxHoXW9rZld/ZrmyBvjC0G5rZNVZ2czM7XRZ2ujC3u8vYTpaNHWJspwsbu+CpnS4fMs2CcPktswUAAAAASUVORK5CYII=";
 
                 Bitmap eventPosterBitmap = decodeBase64(adminBase64Image);
                 profileImageDataList.set(position, eventPosterBitmap);
@@ -195,24 +195,20 @@ public class AdminImagesActivity extends AppCompatActivity {
     }
 
     private void eventFirestoreUpdate(long eventNum, Bitmap eventPosterBitmap) {
-        // Change this to Admin pic
-        String adminBase64Image = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAANzQklUBQYFMwuNgAAAAGFJREFUKJGVzrERADEIA8Frys163Ot9IPgYHBAYzSJEBaGH4EUQkXdEknpH8v8v3lFQxHoXW9rZld/ZrmyBvjC0G5rZNVZ2czM7XRZ2ujC3u8vYTpaNHWJspwsbu+CpnS4fMs2CcPktswUAAAAASUVORK5CYII=";
-        String TAG = "button";
-
         eventImagesRef.whereEqualTo("eventNum", eventNum)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         documentSnapshot.getReference().update("eventImageData", adminBase64Image);
                     }
+                    Toast.makeText(this, "Image Deleted, Default Set", Toast.LENGTH_LONG).show();
                 });
     }
 
     private void profileFirestoreUpdate(String docId, Bitmap eventPosterBitmap) {
         // Change this to Admin pic
-        String adminBase64Image = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAANzQklUBQYFMwuNgAAAAGFJREFUKJGVzrERADEIA8Frys163Ot9IPgYHBAYzSJEBaGH4EUQkXdEknpH8v8v3lFQxHoXW9rZld/ZrmyBvjC0G5rZNVZ2czM7XRZ2ujC3u8vYTpaNHWJspwsbu+CpnS4fMs2CcPktswUAAAAASUVORK5CYII=";
-        String TAG = "button";
         profileImagesRef.document(docId)
                 .update("profile_image", adminBase64Image);
+        Toast.makeText(this, "Image Deleted, Default Set", Toast.LENGTH_LONG).show();
     }
 }
