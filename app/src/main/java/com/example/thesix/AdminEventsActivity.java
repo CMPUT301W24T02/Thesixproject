@@ -29,12 +29,15 @@ import java.util.List;
  */
 
 public class AdminEventsActivity extends AppCompatActivity {
+    //initializing lists
     private ArrayList<Long> eventNumList;
 
     private ArrayList<String> eventnameDataList;
     private ArrayList<String> eventdescriptionDataList;
     private ArrayList<String> eventImageDataList;
     private ArrayAdapter<String> eventnameArrayAdapter;
+
+    //initializing firestore
     private FirebaseFirestore firestore;
     private Button backButton;
     private CollectionReference eventsRef;
