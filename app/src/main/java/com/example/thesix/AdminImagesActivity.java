@@ -224,36 +224,58 @@ public class AdminImagesActivity extends AppCompatActivity {
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 String TAG = "button";
                 List<String> base64Strings = new ArrayList<>();
+                //clearing device id
                 deviceIdList.clear();
 
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                     String base64String = document.getString("profile_image");
+                    //adding to firebase
                     deviceIdList.add(document.getId());
                     base64Strings.add(base64String);
                     Log.d(TAG, "docIds Added"+ deviceIdList);
                 }
+                //on callback
                 myCallback.onCallback(base64Strings, imageDataList, imageAdapter);
             }
         });
     }
 
     public interface MyCallback {
+        /** On event callback
+         * @param list1 with string data
+         * @param imageDataList data list of images
+         * @param imageAdapter data list adapter of images
+         */
         void onCallback(List<String> list1, ArrayList<Bitmap> imageDataList, CustomImageAdapter imageAdapter);
     }
+
+    /** bitmap to string
+     * @param base64String of image
+     * @return Bitmap of image
+     */
     // CHatGPt: Prompt, bitmap to string, string to bitmap
     private Bitmap decodeBase64(String base64String) {
         byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
+    /**string to bitmap
+     * @param bitmap of image
+     * @return String
+     */
     public String bitmapToBase64(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        //compressing images
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] byteArray = baos.toByteArray();
         String base64String = Base64.encodeToString(byteArray, Base64.DEFAULT);
         return base64String;
     }
 
+    /**Updating eventFirestoreUpdate
+     * @param eventNum with eventNum
+     * @param eventPosterBitmap with bitmap of event poster
+     */
     private void eventFirestoreUpdate(long eventNum, Bitmap eventPosterBitmap) {
         String base64Image = bitmapToBase64(eventPosterBitmap);
         String TAG = "button";
@@ -269,6 +291,10 @@ public class AdminImagesActivity extends AppCompatActivity {
                 });
     }
 
+    /** Updating profileFirestoreUpdate
+     * @param deviceId deviceId
+     * @param eventPosterBitmap with bitmap of event poster
+     */
     private void profileFirestoreUpdate(String deviceId, Bitmap eventPosterBitmap) {
     }
 }
