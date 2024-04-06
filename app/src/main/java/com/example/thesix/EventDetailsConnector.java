@@ -267,7 +267,7 @@ public class EventDetailsConnector extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                promoBase64 = document.getString("qrImageData");
+                                promoBase64 = document.getString("promoQrImageData");
 
                                 Log.d("getevent", document.getId() + " => " + document.getData());
                             }

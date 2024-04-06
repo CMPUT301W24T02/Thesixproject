@@ -39,12 +39,14 @@ public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
 
     ArrayList<String> eventnameDataList;
     ArrayList<String> eventdescriptionDataList;
-    ArrayList<String> eventImageDataList;
+    ArrayList<Bitmap> eventImageDataList;
+    ArrayList<Bitmap> qrDataList;
     private ArrayAdapter<String> eventnameArrayAdapter;
     private QrCodeDB firestoreHelper;
     private Button backButton;
     CollectionReference eventsRef;
-
+    private ArrayList<Bitmap> imageDataList;
+    private CustomImageAdapter imagesArrayAdapter;
     /**
      Initializes UI components like lists, adapters, and buttons
      **/
@@ -56,31 +58,37 @@ public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
         eventnameDataList = new ArrayList<>();
         eventdescriptionDataList = new ArrayList<>();
         eventNumList = new ArrayList<>();
+        qrDataList = new ArrayList<>();
         eventImageDataList = new ArrayList<>();
         backButton = findViewById(R.id.backButton);
         firestoreHelper = new QrCodeDB();
-
+        imageDataList = new ArrayList<>();
+        imagesArrayAdapter = new CustomImageAdapter(OrganizerChooseOldQRActivity.this, qrDataList);
+        ListView eventdescriptionList = findViewById(R.id.event_list);
+        eventdescriptionList.setAdapter(imagesArrayAdapter);
 
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); //get device ID
-        //String deviceID ="27150c669e8b1dc4";
-        eventsRef = firestoreHelper.getOldQrRef(deviceID);
-        eventnameArrayAdapter = new ArrayAdapter<String>(
-                OrganizerChooseOldQRActivity.this,
-                R.layout.event_list_textview, R.id.itemTextView, eventnameDataList);
-        ListView eventdescriptionList = findViewById(R.id.event_list);
-        eventdescriptionList.setAdapter(eventnameArrayAdapter);
+
+//        eventsRef = firestoreHelper.getOldQrRef(deviceID);
+//        eventnameArrayAdapter = new ArrayAdapter<String>(
+//                OrganizerChooseOldQRActivity.this,
+//                R.layout.event_list_textview, R.id.itemTextView, eventnameDataList);
+//        ListView eventdescriptionList = findViewById(R.id.event_list);
+//        eventdescriptionList.setAdapter(eventnameArrayAdapter);
+
 
         /**
          Callback Interface to share Event details
          @param : String
          @return
          **/
-        readData(new EventDetailsAdapter.MyCallback() {
+        readData(new MyCallback() {
             @Override
-            public void onCallback(List<String> list1, List<Long> list2, List<String> list3) {
+            public void onCallback(List<String> list1, List<Long> list2, List<Bitmap> list3) {
                 Log.d("callback", "3");
                 eventnameDataList = (ArrayList<String>) list1;
                 eventNumList = (ArrayList<Long>) list2;
+                qrDataList = (ArrayList<Bitmap>) list3;
                 //Log.d("callback", "1" + eventnameDataList.get(0));
                 //Log.d("callback", "2");
                 eventnameArrayAdapter.notifyDataSetChanged();
@@ -136,14 +144,14 @@ public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
      **/
 
     public interface MyCallback {
-        void onCallback(List<String> list1, List<Long> list2, List<String> list3);
+        void onCallback(List<String> list1, List<Long> list2, List<Bitmap> list3);
     }
     /**
      Reading Data from QR code
      @param : MycCallBcak callBack
      **/
 
-    public void readData(EventDetailsAdapter.MyCallback myCallback) {
+    public void readData(MyCallback myCallback) {
         eventsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -152,14 +160,15 @@ public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
                     String eventname = document.getString("name");
                     Long eventNum = document.getLong("eventNum");
                     String base64String = document.getString("qrImageData");
-                    eventImageDataList.add(base64String);
+                    Bitmap bitmap = decodeBase64(base64String);
+                    qrDataList.add(bitmap);
                     eventNumList.add(eventNum);
                     eventnameDataList.add(eventname);
                     eventdescriptionDataList.add(description);
                     Log.d("list", document.getId() + "=>" + document.getData());
                     Log.d("list", eventnameDataList.get(0));
                 }
-                myCallback.onCallback(eventnameDataList, eventNumList, eventImageDataList);
+                myCallback.onCallback(eventnameDataList, eventNumList, qrDataList);
 
             }
         });
@@ -198,6 +207,10 @@ public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
             Log.d("save_image", "IOException while trying to write file for sharing: " + e.getMessage());
         }
         return uri;
+    }
+    private Bitmap decodeBase64(String base64String) {
+        byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
 }
