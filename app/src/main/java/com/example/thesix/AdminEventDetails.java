@@ -97,9 +97,6 @@ public class AdminEventDetails extends AppCompatActivity {
         eventName.setText(eventName1);
         eventDescription.setText(eventDescription1);
 
-        /**
-         * Implementation of eventPosterCallback
-         */
         eventPosterImage(new EventPosterCallback() {
             /** Implementation of eventPosterCallback
              * @param string to get QRCodeImageData
@@ -113,9 +110,6 @@ public class AdminEventDetails extends AppCompatActivity {
             }
         });
 
-        /**
-         * Setting back button onclickListener
-          */
         backButton.setOnClickListener(new View.OnClickListener() {
             /** Setting back button onclickListener
              * @param v The view that was clicked.
@@ -165,9 +159,9 @@ public class AdminEventDetails extends AppCompatActivity {
     }
 
 
-    /** Converting
-     * @param image
-     * @return
+    /** Converting String of Image to BitMap
+     * @param image string of Image
+     * @return bitmap version of image
      */
     public Bitmap StringToBitMap(String image) {
         try {
