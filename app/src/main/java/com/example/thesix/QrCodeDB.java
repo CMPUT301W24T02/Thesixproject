@@ -90,6 +90,7 @@ public class QrCodeDB {
         return qrRef;
 
     }
+
     /**
      Retrieving oldQRef from firebase
      @param : String deviceId
@@ -102,6 +103,9 @@ public class QrCodeDB {
                 .collection("event");
         return qrRef;
 
+    }
+    public CollectionReference getDeviceColRef( String deviceID) {
+        return firestore.collection("OrganizerdevicesDB").document(deviceID).collection("event");
     }
     /**
      Retrieving DocumentReference from firebase

@@ -41,11 +41,11 @@ public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
     ArrayList<String> eventdescriptionDataList;
     ArrayList<Bitmap> eventImageDataList;
     ArrayList<Bitmap> qrDataList;
-    private ArrayAdapter<String> eventnameArrayAdapter;
+    String deviceID;
     private QrCodeDB firestoreHelper;
     private Button backButton;
     CollectionReference eventsRef;
-    private ArrayList<Bitmap> imageDataList;
+
     private CustomImageAdapter imagesArrayAdapter;
     /**
      Initializes UI components like lists, adapters, and buttons
@@ -59,10 +59,10 @@ public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
         eventdescriptionDataList = new ArrayList<>();
         eventNumList = new ArrayList<>();
         qrDataList = new ArrayList<>();
-        eventImageDataList = new ArrayList<>();
+        deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         backButton = findViewById(R.id.backButton);
         firestoreHelper = new QrCodeDB();
-        imageDataList = new ArrayList<>();
+        eventsRef = firestoreHelper.getDeviceColRef(deviceID);
         imagesArrayAdapter = new CustomImageAdapter(OrganizerChooseOldQRActivity.this, qrDataList);
         ListView eventdescriptionList = findViewById(R.id.event_list);
         eventdescriptionList.setAdapter(imagesArrayAdapter);
@@ -91,7 +91,7 @@ public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
                 qrDataList = (ArrayList<Bitmap>) list3;
                 //Log.d("callback", "1" + eventnameDataList.get(0));
                 //Log.d("callback", "2");
-                eventnameArrayAdapter.notifyDataSetChanged();
+                imagesArrayAdapter.notifyDataSetChanged();
             }
         });
         /**
