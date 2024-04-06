@@ -70,7 +70,7 @@ public class AdminProfileListAdapter extends ArrayAdapter<Attendee> {
         return view;
     }
 
-    /**
+    /** decoding 64 to string
      * @param base64String to decode from string
      * @return getting Bitmap version of data
      */

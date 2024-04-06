@@ -40,10 +40,10 @@ public class Attendee {
         this.profile_image = profileImage;
     }
 
-    /**
-     * Saves attendee information
-     * @param : Attendee attendee
-     * @return : void
+
+    /** Saves attendee information
+     * @param name  of attendee
+     * @param checkin long number
      */
     public Attendee(String name, Long checkin) {
 
@@ -52,28 +52,24 @@ public class Attendee {
     }
 
 
-    /**
-     * gets profile Name
-     * @param :
-     * @return : String
+    /** getting Name
+     * @return String with name
      */
     public String getName() {
         return name;
     }
 
-    /**
-     * sets profile Name
-     * @param :
-     * @return : String
+
+    /** sets profile Name
+     * @param name of person setter
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * Checks profile In
-     * @param :
-     * @return : Long
+
+    /** Checks profile In
+     * @return Long checkin
      */
     public Long getCheckin() {
         return checkin;
