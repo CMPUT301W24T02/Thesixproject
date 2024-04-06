@@ -64,7 +64,10 @@ public class AdminImagesActivity extends AppCompatActivity {
         //creating listviews
         ListView eventImageListView = findViewById(R.id.images_event_view);
         ListView profileImageListView = findViewById(R.id.images_profile_view);
+        //asking for permissions
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
+
+        //getting firestore instance
         firestore = FirebaseFirestore.getInstance();
         eventImagesRef = firestore.collection("inviteQrCodes");
         profileImagesRef = firestore.collection("AttendeeProfileDB");
@@ -85,6 +88,11 @@ public class AdminImagesActivity extends AppCompatActivity {
 
         // Firestore Event images
         readEventData(new MyCallback() {
+            /** Reading Event data
+             * @param list1 list for callback
+             * @param imageDataList image data-list with bitmap info
+             * @param imageAdapter image data-list adapter
+             */
             @Override
             public void onCallback(List<String> list1, ArrayList<Bitmap> imageDataList, CustomImageAdapter imageAdapter) {
                 for (String base64String : list1) {
@@ -93,12 +101,18 @@ public class AdminImagesActivity extends AppCompatActivity {
                         imageDataList.add(bitmap);
                     }
                 }
+                //notify change
                 imageAdapter.notifyDataSetChanged();
             }
         }, eventImageDataList, eventImageAdapter);
 
         // Firestore Profile images
         readProfileData(new MyCallback() {
+            /** Reading Profile data
+             * @param list1 to callback from firestore
+             * @param imageDataList with required data-list
+             * @param imageAdapter custom image adapter
+             */
             @Override
             public void onCallback(List<String> list1, ArrayList<Bitmap> imageDataList, CustomImageAdapter imageAdapter) {
                 for (String base64String : list1) {
@@ -112,13 +126,20 @@ public class AdminImagesActivity extends AppCompatActivity {
         }, profileImageDataList, profileImageAdapter);
 
         eventImageListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            /** On clicking item in adapter
+             * @param parent   The AbsListView where the click happened
+             * @param view     The view within the AbsListView that was clicked
+             * @param position The position of the view in the list
+             * @param id       The row id of the item that was clicked
+             * @return boolean whether clicked
+             */
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 // Replace Here
                 Bitmap profilePosterBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.event_poster);
                 eventImageDataList.set(position, profilePosterBitmap);
                 eventImageAdapter.notifyDataSetChanged();
-
+                //getting position
                 long eventNum = eventNumList.get(position);
                 eventFirestoreUpdate(eventNum, profilePosterBitmap);
                 return true;
@@ -126,6 +147,13 @@ public class AdminImagesActivity extends AppCompatActivity {
         });
 
         profileImageListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            /** Profile Image View
+             * @param parent   The AbsListView where the click happened
+             * @param view     The view within the AbsListView that was clicked
+             * @param position The position of the view in the list
+             * @param id       The row id of the item that was clicked
+             * @return boolean with status
+             */
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 // Replace Here
@@ -133,6 +161,7 @@ public class AdminImagesActivity extends AppCompatActivity {
                 profileImageDataList.set(position, eventPosterBitmap);
                 profileImageAdapter.notifyDataSetChanged();
 
+                //getting deviceId with position
                 String deviceId = deviceIdList.get(position);
                 profileFirestoreUpdate(deviceId, eventPosterBitmap);
 
@@ -141,6 +170,9 @@ public class AdminImagesActivity extends AppCompatActivity {
         });
 
         back2AdminButton.setOnClickListener(new View.OnClickListener() {
+            /** starting Activity for admin
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(AdminImagesActivity.this, AdminActivity.class));
@@ -148,27 +180,46 @@ public class AdminImagesActivity extends AppCompatActivity {
         });
     }
 
+    /** Reading Event Data
+     * @param myCallback with callabck information
+     * @param imageDataList with required data-list
+     * @param imageAdapter image data-list adapter
+     */
     // Firestore Read- Event Images
     public void readEventData(MyCallback myCallback, ArrayList<Bitmap> imageDataList, CustomImageAdapter imageAdapter) {
         eventImagesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            /** on success of getting query
+             * @param queryDocumentSnapshots with successful query
+             */
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 List<String> base64Strings = new ArrayList<>();
+                //clearing event number
                 eventNumList.clear();
+                //looping through queried data
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                     String base64String = document.getString("eventImageData");
                     Long eventNum = document.getLong("eventNum");
                     base64Strings.add(base64String);
                     eventNumList.add(eventNum);
                 }
+                //callback on completion
                 myCallback.onCallback(base64Strings, imageDataList, imageAdapter);
             }
         });
     }
 
+    /** Reading profile data
+     * @param myCallback calling back completed data
+     * @param imageDataList creating event image data list
+     * @param imageAdapter creating image data adapter
+     */
     // Firestore Read- Profile Images
     public void readProfileData(MyCallback myCallback, ArrayList<Bitmap> imageDataList, CustomImageAdapter imageAdapter) {
         profileImagesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            /** On successly accessing firestore
+             * @param queryDocumentSnapshots with document snapshots
+             */
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 String TAG = "button";
