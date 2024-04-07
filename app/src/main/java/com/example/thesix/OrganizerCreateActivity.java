@@ -20,34 +20,32 @@ public class OrganizerCreateActivity extends AppCompatActivity {
 
     /**
      Initializes UI components such as Button ( createNewQrCodeButton) and QrCodeDB instance (firestoreHelper)
-     @param : Bundle savedInstance
-     @return void
+     @param savedInstanceState instance state
      **/
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_create_screen);
+        //initialzing UI
         createNewQrCodeButton = findViewById(R.id.createNewQrCodeButton);
         firestoreHelper = new QrCodeDB();
         backButton  =findViewById(R.id.backButton);
 
-        /**
-         Clicking createNewQrCodeButton navigates to OrganizerUseNewQRActivity to create new QR codes
-         @return void
-         **/
         createNewQrCodeButton.setOnClickListener(new View.OnClickListener() {
+            /**Clicking createNewQrCodeButton navigates to OrganizerUseNewQRActivity to create new QR codes
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(OrganizerCreateActivity.this, OrganizerUseNewQRActivity.class));
             }
         });
-        /**
-
-         @param : Clicking backButton navigates back to MainActivity.
-         @return void
-         **/
+        //setting back button
         backButton.setOnClickListener(new View.OnClickListener() {
+            /**Clicking backButton navigates back to MainActivity.
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(OrganizerCreateActivity.this, OrganizerMainActivity.class));

@@ -60,47 +60,57 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
     private Long count;
     private String deviceID;
 
+    /** getting deviceId , creating new database
+     * @param savedInstanceState If the activity is being re-initialized after
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     */
     @Override
 
-    /**
-     getting deviceId , creating new database
-     @param :Bundle savedInstanceState
-     @return Documentreference
-     **/
+
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_use_new_qr_screen);
+        // Set the content view to the organizer's new QR screen layout
+        // Initialize UI components
         descriptionEditText = findViewById(R.id.eventDescription);
         eventnameEditText = findViewById(R.id.eventName);
         createEventButton = findViewById(R.id.createEventButton);
+        // Initialize the Firestore helper for database operations
         firestoreHelper = new QrCodeDB();
         backButton = findViewById(R.id.backButton);
         eventPoster = findViewById(R.id.eventPoster);
         useOldQRButton = findViewById(R.id.oldQRButton);
+        // Retrieve the device ID
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        /**
-         Choose picture for event
-         **/
         eventPoster.setOnClickListener(new View.OnClickListener() {
+            /** Choose picture for event
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
                 choosePicture(); //Function to select images
             }
         });
         useOldQRButton.setOnClickListener(new View.OnClickListener() {
+            /**Use Old Qr code on click listener
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(OrganizerUseNewQRActivity.this,OrganizerChooseOldQRActivity.class));
             }
         });
-        /**
-         Creating event button , with required event details
-         **/
+
         createEventButton.setOnClickListener(new View.OnClickListener() {
+            /** Creating event button , with required event details
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
+                //string data
                 String even = eventnameEditText.getText().toString();
                 String desc = descriptionEditText.getText().toString();
                 if (even.matches("")) {
@@ -116,18 +126,24 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
                 }
                 else {
                     readData(new MyCallback() {
+                        /** query for database
+                         * @param num on callback for firebase
+                         */
                         @Override
                         public void onCallback(long num) {
                             Log.d("callback", String.valueOf(num));
                             try {
-
+                                //creating string data
                                 String description = descriptionEditText.getText().toString();
                                 String eventName = eventnameEditText.getText().toString();
                                 String inviteQrString = num+ "device id"+deviceID;
                                 String promoQrString = "promo" + inviteQrString;
+                                //new QRCode Writer
                                 QRCodeWriter writer = new QRCodeWriter();
+                                //encoding data
                                 BitMatrix inviteBitMatrix = writer.encode(inviteQrString, BarcodeFormat.QR_CODE, 512, 512);
                                 BitMatrix promoBitMatrix = writer.encode(promoQrString, BarcodeFormat.QR_CODE, 512, 512);
+                                //creating bitmap
                                 Bitmap Invitebitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
                                 Bitmap Promobitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
 
@@ -169,11 +185,11 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
                 }
             }
         });
-        /**
-         Back button to take user back to main acitvity
-         **/
 
         backButton.setOnClickListener(new View.OnClickListener() {
+            /**Back button to take user back to main acitvity
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(OrganizerUseNewQRActivity.this, OrganizerMainActivity.class));
@@ -183,21 +199,22 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
     }
 
-    /**
-     Call back interface
-     @param : Long num
-     **/
     public interface MyCallback {
+        /**  Call back interface
+         * @param num Callback for firebase
+         */
         void onCallback(long num);
     }
-    /**
-     Reading Data from QR code
-     @param : MycCallBcak callBack
-     **/
+
+    /** Reading Data from QR code
+     * @param myCallback Callback for firebase
+     */
     public void readData(MyCallback myCallback) {
+        //getting device ID
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         firestoreHelper.getDeviceDocRef(deviceID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
+            //DocumentSnapshot successfully updated
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
@@ -206,6 +223,7 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
                         count = (Long) document.get("inviteCount");
                         myCallback.onCallback(count);
                     } else {
+                        //DocumentSnapshot not successfully updated
                         Log.d("count", "No such document");
                     }
                 } else {
@@ -216,39 +234,41 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
         });
 
     }
-    /**
-     Decoding QrCode to make it useable for other functions
-     @param : BitMap bitmap
-     @return String
-     **/
 
+
+    /**
+     * @param bitmap QR code bit map
+     * @return String data of QR
+     */
     public String BitMapToString(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        //compressing
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] byteArray = stream.toByteArray();
+        // storing into an array
         String result = Base64.encodeToString(byteArray, Base64.DEFAULT);
         return result;
 
     }
-    /**
-     Encoding QRcode Data
-     @param : Bitmap bitmap
-     @return String
-     **/
 
+    /** Encoding QRcode Data but PNG data
+     * @param bitmap  QR code bit map
+     * @return String data of QR
+     */
     private String bitmapToBase64(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        //compressing
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        // storing into an array
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 
     // Function to select image from the storage
+
     /**
-     Choosing picture from device
-     @param : void
-     @return void
-     **/
+     * Choosing picture from device
+     */
     private void choosePicture() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -256,21 +276,27 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
         startActivityForResult(intent, 1);
     }
 
-    /**
-     Setting all acquired Data to event
-     @param : int requestcode , int resultcode , intentData
-     @return void
-     **/
 
+    /**Setting all acquired Data to event
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode  The integer result code returned by the child activity
+     *                    through its setResult().
+     * @param data        An Intent, which can return result data to the caller
+     *                    (various data can be attached to Intent "extras").
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        //making request of code
         if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageuri = data.getData();
             //eventPoster.setImageURI(imageuri);
             try {
                 eventImageBitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), imageuri);
                 eventPoster.setImageBitmap(eventImageBitmap);
+                // has image been changed
                 imageChanged= true;
             } catch (IOException e) {
                 throw new RuntimeException(e);
