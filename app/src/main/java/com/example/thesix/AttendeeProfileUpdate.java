@@ -113,6 +113,12 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
                 return; // Exit the onClick method early
             }
 
+            // Check if any of the EditText fields have more than 25 characters
+            if (name.length() > 25 || contact.length() > 25 || homePage.length() > 25) {
+                Toast.makeText(AttendeeProfileUpdate.this, "Typed information cannot exceed 25 characters", Toast.LENGTH_SHORT).show();
+                return; // Exit the onClick method early
+            }
+
             String imagePath = temporaryImagePath != null ? temporaryImagePath : prefs.getString("profileImagePath", "");
 
             AttendeeDB attendeeDB = new AttendeeDB();
