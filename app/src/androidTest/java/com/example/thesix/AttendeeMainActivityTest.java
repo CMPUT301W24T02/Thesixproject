@@ -52,6 +52,7 @@ public class AttendeeMainActivityTest {
      */
     @Test
     public void test_switch_to_viewProfile(){
+        solo.clickOnText("Yes");
         // Asserts that the current activity is the AttendeeMainActivity.Otherwise, show "Wrong Activity"
         solo.assertCurrentActivity("Wrong Activity", AttendeeMainActivity.class);
 
@@ -67,6 +68,7 @@ public class AttendeeMainActivityTest {
         solo.goBack();
 
         solo.sleep(3000);
+
     }
 
     /**
@@ -74,6 +76,7 @@ public class AttendeeMainActivityTest {
      */
     @Test
     public void test_ProfileBackButton(){
+        solo.clickOnText("Yes");
         // Asserts that the current activity is the AttendeeMainActivity.Otherwise, show "Wrong Activity"
         solo.assertCurrentActivity("Wrong Activity", AttendeeMainActivity.class);
 
