@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -94,7 +95,9 @@ public class NotificationActivity extends AppCompatActivity {
                 Log.d("notificationTest","notification start");
                 Log.d("notificationTest",String.valueOf(eventNum));
                 String notification  = message.getText().toString();
+                Toast.makeText(NotificationActivity.this, "Notification has been Sent", Toast.LENGTH_LONG).show();
                 QrRef.whereEqualTo("eventNum", eventNum).get()
+
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                                    /** with successful data querying
                                                     * @param task query for database
