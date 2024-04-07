@@ -69,8 +69,8 @@ public class NotificationActivity extends AppCompatActivity {
         eventNum = bundle.getLong("eventNum");
         //eventNum = mIntent.getLongExtra("eventNum", 128);
         firestoreHelper = new QrCodeDB();
-        //deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        deviceID = "27150c669e8b1dc4";
+        deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        //deviceID = "27150c669e8b1dc4";
         QrRef = firestoreHelper.getOldQrRef(deviceID);
         tokenRef = firestoreHelper.getTokenRef();
 
