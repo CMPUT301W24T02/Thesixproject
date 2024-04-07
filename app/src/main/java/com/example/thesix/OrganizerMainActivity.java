@@ -47,7 +47,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
     private String deviceId;
     private QrCodeDB qrCodeDB;
     private ArrayList<String> eventIds;
-    private HashMap<String,ArrayList<String>> HashMap;
+    private HashMap<String,ArrayList<String>> signinMap;
     private String name;
 
 
@@ -65,6 +65,8 @@ public class OrganizerMainActivity extends AppCompatActivity {
         if (bundle != null) {
             deviceId = bundle.getString("deviceID");
         }
+        signinMap = new HashMap<String,ArrayList<String>>();
+
 
         generateEventButton = findViewById(R.id.createEventButton);
         generateViewEventButton = findViewById(R.id.viewEventButton);
@@ -79,61 +81,64 @@ public class OrganizerMainActivity extends AppCompatActivity {
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                     String id = document.getId();
                     ArrayList<String> originSignInArray = (ArrayList<String>)document.get("signUpIDList");
-                    HashMap.put(id,originSignInArray);
+
+                    signinMap.put(id,originSignInArray);
                     eventIds.add(id);
                 }
             }
         });
         //This loop will add listener to all event, and check if signin array changed or not, if an attendee has sign in event
         //it will looking for that attendee's name and send notification to organizer
-        for(String id : eventIds) {
-            collectionReference.document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                    @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        Log.w("Eventlistener", "Listen failed.", e);
-                        return;
-                    }
-
-                    if (snapshot != null && snapshot.exists()) {
-                        Log.d("Eventlistener", "Success! ");
-                        ArrayList<String> signInArray = (ArrayList<String>) snapshot.get("signUpIDList");
-                        if (signInArray != HashMap.get(id)) {
-                            String eventName = (String)snapshot.get("name");
-                            String newAttendeeId = signInArray.get(signInArray.size() - 1);
-                            DocumentReference attendeedoc = attendeeCol.document(newAttendeeId);
-                            attendeedoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        DocumentSnapshot document = task.getResult();
-                                        if (document.exists()) {
-
-                                            //token document info
-                                            Log.d("Eventlistener", "DocumentSnapshot data: " + document.getData());
-
-                                            name = (String) document.get("name");
-                                            Log.d("Eventlistener", "name" + name);
-                                            signInNotification(name, deviceId, eventName);
-                                        } else {
-                                            Log.d("Eventlistener", "No such document");
-                                        }
-                                    } else {
-                                        Log.d("Eventlistener", "get failed with ", task.getException());
-                                    }
-                                }
-
-                            });
-
-
-                        } else {
-                            Log.d("Eventlistener", "Current data: null");
+        if (eventIds != null) {
+            for (String id : eventIds) {
+                collectionReference.document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w("Eventlistener", "Listen failed.", e);
+                            return;
                         }
-                    }
 
-                }
-            });
+                        if (snapshot != null && snapshot.exists()) {
+                            Log.d("Eventlistener", "Success! ");
+                            ArrayList<String> signInArray = (ArrayList<String>) snapshot.get("signUpIDList");
+                            if (signInArray != signinMap.get(id)) {
+                                String eventName = (String) snapshot.get("name");
+                                String newAttendeeId = signInArray.get(signInArray.size() - 1);
+                                DocumentReference attendeedoc = attendeeCol.document(newAttendeeId);
+                                attendeedoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot document = task.getResult();
+                                            if (document.exists()) {
+
+                                                //token document info
+                                                Log.d("Eventlistener", "DocumentSnapshot data: " + document.getData());
+
+                                                name = (String) document.get("name");
+                                                Log.d("Eventlistener", "name" + name);
+                                                signInNotification(name, deviceId, eventName);
+                                            } else {
+                                                Log.d("Eventlistener", "No such document");
+                                            }
+                                        } else {
+                                            Log.d("Eventlistener", "get failed with ", task.getException());
+                                        }
+                                    }
+
+                                });
+
+
+                            } else {
+                                Log.d("Eventlistener", "Current data: null");
+                            }
+                        }
+
+                    }
+                });
+            }
         }
 
 
