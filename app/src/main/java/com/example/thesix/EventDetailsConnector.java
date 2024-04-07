@@ -236,7 +236,7 @@ public class EventDetailsConnector extends AppCompatActivity {
         QrRef.whereEqualTo("eventNum",eventNum).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     /**with successful data querying
-                     * @param task  query for databas
+                     * @param task  query for database
                      */
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -255,14 +255,16 @@ public class EventDetailsConnector extends AppCompatActivity {
 
                 });
     }
-    /**
-     Allows user to Share PromoQR
-     @param : SharePromoCallback SharePromoCallback
-     @return void
-     **/
+
+    /** Allows user to Share PromoQR
+     * @param sharePromoCallback  call back for firebase
+     */
     public void sharePromo(SharePromoCallback sharePromoCallback) {
         firestoreHelper.getOldQrRef2(deviceID).whereEqualTo("eventNum",eventNum).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    /**with successful data querying
+                     * @param task query for database
+                     */
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
@@ -280,42 +282,61 @@ public class EventDetailsConnector extends AppCompatActivity {
 
                 });
     }
-    /**
-     Coverts  string to bitmap
-     @param : String base64String
-     @return :Bitmap
-     **/
+
+    /** Coverts  string to bitmap
+     * @param base64String  base 64 string data
+     * @return Bitmap generated
+     */
     private Bitmap Base64Tobitmap(String base64String) {
         byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
 
+    /**Shares the provided bitmap image via an intent
+     * @param bitmap bitmap of data
+     */
     private void shareImage(Bitmap bitmap) {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder(); //https://stackoverflow.com/questions/48117511/exposed-beyond-app-through-clipdata-item-geturi
         StrictMode.setVmPolicy(builder.build());
+        // Create an intent for sharing
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/png");
+
+        // Save the bitmap image and get its URI
         Uri bmpUri;
         String textToShare = "Share Tutorial";
         bmpUri=saveImage(bitmap,getApplicationContext());
+
+        // Set the necessary extras for sharing
         share.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         share.putExtra(Intent.EXTRA_STREAM,bmpUri);
         share.putExtra(Intent.EXTRA_SUBJECT,"New App");
         share.putExtra(Intent.EXTRA_TEXT,textToShare);
+        // Start an activity to choose and share content
         startActivity(Intent.createChooser(share,"Share Content"));
     }
+
+    /**Saves the provided bitmap image to the device's cache directory and returns its URI
+     * @param image The bitmap image to save
+     * @param context The application context
+     * @return The URI of the saved image
+     */
     private static Uri saveImage(Bitmap image, Context context) {
+        // Resolve the StrictMode violation
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder(); //https://stackoverflow.com/questions/48117511/exposed-beyond-app-through-clipdata-item-geturi
         StrictMode.setVmPolicy(builder.build());
+        // Create a folder in the cache directory to store images
         File imagesFolder = new File(context.getCacheDir(),"images");
         Uri uri = null;
         try{
             imagesFolder.mkdirs();
+            // Create the folder if it doesn't exist
             File file = new File(imagesFolder, "shared_images.png");
             FileOutputStream stream = new FileOutputStream(file);
             image.compress(Bitmap.CompressFormat.PNG,90,stream);
             stream.flush();
             stream.close();
+            // Get the URI for the saved image file using FileProvider
             uri = FileProvider.getUriForFile(Objects.requireNonNull(context.getApplicationContext()),"com.example.thesix"+".provider",file);
         }
         catch(IOException e) {
@@ -324,15 +345,18 @@ public class EventDetailsConnector extends AppCompatActivity {
         return uri;
     }
     /**
-     Coverts  string to bitmap
-     @param : String base64String
-     @return :Bitmap
-     **/
+     * Converts a base64 encoded string to a Bitmap image
+     *
+     * @param image The base64 encoded string representing the image
+     * @return The decoded Bitmap image, or null if decoding fails
+     */
+
     public Bitmap StringToBitMap(String image){
         try{
             byte [] encodeByte=Base64.decode(image,Base64.DEFAULT);
-
+            // Convert the decoded byte array to an input stream
             InputStream inputStream  = new ByteArrayInputStream(encodeByte);
+            // Decode the input stream into a Bitmap image
             Bitmap bitmap  = BitmapFactory.decodeStream(inputStream);
             return bitmap;
         }catch(Exception e){
