@@ -242,6 +242,10 @@ public class AdminImagesActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Interface for callback
+     */
+
     public interface MyCallback {
         /** On event callback
          * @param list1 with string data

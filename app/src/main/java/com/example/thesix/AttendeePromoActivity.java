@@ -40,7 +40,13 @@ public class AttendeePromoActivity extends AppCompatActivity {
     private ImageView eventPoster;
     private Button backButton;
     private Button signUpButton;
+    /**
+     * fire store helper
+     */
     public QrCodeDB firestoreHelper;
+    /**
+     * long event number
+     */
     public Long eventNum;
     public String organizerID;
     List<String> signUpIDList;

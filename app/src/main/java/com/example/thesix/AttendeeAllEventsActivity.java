@@ -155,6 +155,10 @@ public class AttendeeAllEventsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Interface for callbacks
+     */
+
     public interface MyCallback {
         /** callback for firebase
          * @param list1 list for event callback

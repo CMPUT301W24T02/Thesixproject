@@ -199,6 +199,9 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * interface my callback
+     */
     public interface MyCallback {
         /**  Call back interface
          * @param num Callback for firebase

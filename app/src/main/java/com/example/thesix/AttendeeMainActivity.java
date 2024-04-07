@@ -661,7 +661,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
 
 
     /** Requesting Permission
-     * @param requestCode  The request code passed in {@link # requestPermissions(
+     * @param requestCode  The request code passed in link # requestPermissions(
      * android.app.Activity, String[], int)}
      * @param permissions  The requested permissions. Never null.
      * @param grantResults The grant results for the corresponding permissions

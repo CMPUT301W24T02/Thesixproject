@@ -116,6 +116,9 @@ public class AttendeeCheckedinEventsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Interface for callbacks
+     */
     public interface MyCallback {
         /** Callback for firebase
          * @param list1 with callback to string
@@ -123,6 +126,9 @@ public class AttendeeCheckedinEventsActivity extends AppCompatActivity {
         void onCallback(List<String> list1);
     }
 
+    /** Reading Data 1
+     * @param myCallback callback for firebase
+     */
     public void readData1(MyCallback myCallback) {
         eventsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             /**query for database

@@ -159,6 +159,9 @@ public class EventDetailsAdapter extends AppCompatActivity {
 
     }
 
+    /**
+     * Interface for my call back
+     */
     public interface MyCallback {
         /** Callback Interface to share Event details
          * @param list1 event num info

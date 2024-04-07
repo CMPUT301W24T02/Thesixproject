@@ -187,6 +187,9 @@ public class AdminEventsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Public Interface
+     */
     public interface MyCallback {
         /** Callback method to check whether firestore is updated
          * @param list1 on callback parameter
