@@ -167,6 +167,9 @@ public class QrCodeDB {
     public CollectionReference getAllEvent() {
         return firestore.collection("inviteQrCodes");
     }
-
+    // this method will return attendeeProfile collection
+    public CollectionReference getAttendeeDB(){
+        return  firestore.collection("AttendeeProfileDB");
+    }
 
 }

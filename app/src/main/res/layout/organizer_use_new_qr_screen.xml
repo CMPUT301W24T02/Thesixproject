@@ -76,7 +76,7 @@
         android:layout_marginTop="20dp"
         android:backgroundTint="@color/black"
         android:fontFamily="sans-serif-condensed"
-        android:text="Create Event Using New QR Code"
+        android:text="Create Event Using  New QR Code"
         android:textColor="@color/white"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
