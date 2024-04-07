@@ -145,6 +145,9 @@ public class OrganizerMainActivity extends AppCompatActivity {
 
 
         generateEventButton.setOnClickListener(new View.OnClickListener() {
+             /** Taking user to CreateNewQrCodeActivity
+             * @param view The view that was clicked.
+             */
             @Override
             public void onClick(View view) {
 
@@ -156,6 +159,9 @@ public class OrganizerMainActivity extends AppCompatActivity {
          Generating event display
          **/
         generateViewEventButton.setOnClickListener(new View.OnClickListener() {
+            /**         Generating event display
+             * @param view The view that was clicked.
+             */
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(OrganizerMainActivity.this, EventDetailsAdapter.class));
