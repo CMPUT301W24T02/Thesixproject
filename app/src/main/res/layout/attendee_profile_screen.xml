@@ -10,106 +10,108 @@
 
     <TextView
         android:id="@+id/name_textView"
-        android:layout_width="160dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="116dp"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="40dp"
+        app:layout_constraintBottom_toBottomOf="@+id/name_title"
         app:layout_constraintStart_toEndOf="@id/name_title"
-        app:layout_constraintTop_toBottomOf="@+id/profile_picture" />
+        app:layout_constraintTop_toTopOf="@+id/name_title"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/contact_textView"
-        android:layout_width="170dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="40dp"
+        app:layout_constraintBottom_toBottomOf="@+id/contact_title"
         app:layout_constraintStart_toEndOf="@id/contact_title"
-        app:layout_constraintTop_toBottomOf="@+id/name_title" />
+        app:layout_constraintTop_toTopOf="@+id/contact_title"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/homePage_textView"
-        android:layout_width="170dp"
-        android:layout_height="38dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="48dp"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="40dp"
+        app:layout_constraintBottom_toBottomOf="@+id/homePage_title"
         app:layout_constraintStart_toEndOf="@id/homePage_title"
-        app:layout_constraintTop_toBottomOf="@+id/contact_title" />
+        app:layout_constraintTop_toTopOf="@+id/homePage_title"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/name_title"
-        android:layout_width="93dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginBottom="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="40dp"
         android:text="@string/attendee_name"
-        android:textColor="@color/white"
-        android:textSize="23sp"
-        app:layout_constraintBottom_toTopOf="@+id/contact_title"
+        android:textColor="@color/gold"
+        android:textSize="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_picture" />
 
     <TextView
         android:id="@+id/contact_title"
-        android:layout_width="120dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="45dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="36dp"
         android:text="@string/attendee_contact"
-        android:textColor="@color/white"
-        android:textSize="23sp"
-        app:layout_constraintBottom_toTopOf="@+id/homePage_title"
+        android:textColor="@color/gold"
+        android:textSize="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name_title" />
 
     <TextView
         android:id="@+id/homePage_title"
-        android:layout_width="150dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="36dp"
         android:text="@string/attendee_home_page"
-        android:textColor="@color/white"
-        android:textSize="23sp"
+        android:textColor="@color/gold"
+        android:textSize="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contact_title" />
 
     <ImageView
         android:id="@+id/profile_picture"
-        android:layout_width="375dp"
-        android:layout_height="283dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="62dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="63dp"
+        app:layout_constraintDimensionRatio="H,1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/default_avatar"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintWidth_percent="0.65"
+        app:layout_constraintHeight_percent="0.3"/>
 
     <Button
         android:id="@+id/backButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
         android:backgroundTint="@color/black"
         android:fontFamily="sans-serif-condensed"
         android:text="@string/back"
         android:textColor="@color/white"
-        android:textSize="28sp"
+        android:textSize="28dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.092"
+        app:layout_constraintHorizontal_bias="0.089"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.947"
         app:strokeColor="@color/white"
         app:strokeWidth="3dp" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
