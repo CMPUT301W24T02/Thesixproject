@@ -7,8 +7,8 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-    <string name="create_event">Create Event</string>
-    <string name="view_events">View Events</string>
+    <string name="create_event">CREATE EVENTS</string>
+    <string name="view_events">VIEW EVENTS</string>
     <string name="share_invite_qr">SHARE INVITE QR</string>
     <string name="share_promo_qr">SHARE PROMO QR</string>
     <string name="save_changes">SAVE CHANGES</string>
@@ -34,9 +34,9 @@
     <string name="attendee_name">NAME:</string>
     <string name="attendee_contact">CONTACT:</string>
     <string name="attendee_home_page">HOME PAGE:</string>
-    <string name="name">name</string>
-    <string name="contact_number">contact number</string>
-    <string name="home_page">home page</string>
+    <string name="name">Name</string>
+    <string name="contact_number">Contact Number</string>
+    <string name="home_page">Home Page</string>
     <string name="SAVE_CHANGES">SAVE CHANGES</string>
 
 </resources>

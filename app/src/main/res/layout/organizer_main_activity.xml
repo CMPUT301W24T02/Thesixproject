@@ -28,9 +28,9 @@
         android:id="@+id/createEventButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="80dp"
+        android:layout_marginStart="75dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="75dp"
         android:backgroundTint="@color/black"
         android:fontFamily="sans-serif-condensed"
         android:text="@string/create_event"
@@ -42,7 +42,6 @@
         app:layout_constraintTop_toBottomOf="@+id/welcome_organizer"
         app:strokeColor="@color/white"
         app:strokeWidth="3dp" />
-
 
     <Button
         android:id="@+id/viewEventButton"
@@ -71,7 +70,7 @@
         app:layout_constraintHeight_percent="0.2"
         app:layout_constraintHorizontal_bias="0.973"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewImages"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
         app:layout_constraintWidth_percent="0.2"
         app:srcCompat="@drawable/the_six" />
