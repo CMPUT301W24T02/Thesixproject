@@ -33,8 +33,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * If user is admin redirect to AdminActivity.
      * if user is organizer redirect to OrganizerMainActivity
-     @param : Bundle savedInstanceState
-     @return
+     @param savedInstanceState bundle of instance state
      **/
     @SuppressLint("MissingInflatedId")
     @Override

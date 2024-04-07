@@ -19,12 +19,17 @@ import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private GoogleMap mMap;
-    private ActivityMapsBinding binding;
-    private long eventnum;
+    private GoogleMap mMap; // Reference to the Google Map object
+    private ActivityMapsBinding binding;  // View binding object for the activity_maps layout
+    private long eventnum; // Event number associated with the map
     private String OrganizerdeviceID;
     private AttendeeDB database;
 
+    /** On Creating Maps Activity
+     * @param savedInstanceState If the activity is being re-initialized after
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,12 +48,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         database.getLocationDocRef(OrganizerdeviceID, eventnum, new AttendeeDB.LocationCallback() {
+            /** On Location Received
+             * @param locationList list of geopoints
+             */
             @Override
             public void onLocationReceived(List<GeoPoint> locationList) {
                 Log.i("ReceivedLocationList", locationList.toString());
                 addMarkers(locationList);
             }
 
+            /** On error Location Error
+             * @param errorMessage to adding locaton error
+             */
             @Override
             public void onLocationError(String errorMessage) {
                 Log.e("LocationError", errorMessage);
@@ -64,6 +75,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
+     * @param locationList list of Geolocations
      */
     private void addMarkers(List<GeoPoint> locationList) {
         for (GeoPoint point : locationList) {
