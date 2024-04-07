@@ -153,7 +153,15 @@ public class EventDetailsAdapter extends AppCompatActivity {
              */
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(EventDetailsAdapter.this, OrganizerMainActivity.class));
+//                startActivity(new Intent(EventDetailsAdapter.this, OrganizerMainActivity.class));
+                Bundle bundle = new Bundle();
+                bundle.putString("deviceID", deviceID);
+                Intent myIntent = new Intent(EventDetailsAdapter.this,  OrganizerMainActivity.class);
+                Log.d("hihi","Before ID: "+ deviceID);
+                //myIntent.putExtra("eventNum", eventNum);
+                //startActivity(myIntent);
+                myIntent.putExtras(bundle);
+                startActivity(myIntent);
             }
         });
 
