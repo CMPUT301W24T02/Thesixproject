@@ -23,6 +23,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -47,7 +48,7 @@ public class NotificationActivity extends AppCompatActivity {
     String deviceID;
     private String eventName;
     long eventNum;
-    private String[] deviceIdList;
+    private ArrayList<String> deviceIdList;
     private String token;
 
 
@@ -65,10 +66,12 @@ public class NotificationActivity extends AppCompatActivity {
         back2AttendeesButton = findViewById(R.id.noti2AttendeesButton);
         sendNotificationButton = findViewById(R.id.sendNotificationButton);
         message = findViewById(R.id.sendNotification);
-        Intent mIntent = getIntent();
-        eventNum = mIntent.getLongExtra("eventNum", 0);
+        Bundle bundle = getIntent().getExtras();
+        eventNum = bundle.getLong("eventNum");
+        //eventNum = mIntent.getLongExtra("eventNum", 128);
         firestoreHelper = new QrCodeDB();
-        deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        //deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        deviceID = "27150c669e8b1dc4";
         QrRef = firestoreHelper.getOldQrRef(deviceID);
         tokenRef = firestoreHelper.getTokenRef();
 
@@ -92,16 +95,22 @@ public class NotificationActivity extends AppCompatActivity {
         sendNotificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("notificationTest","notification start");
+                Log.d("notificationTest",String.valueOf(eventNum));
                 String notification  = message.getText().toString();
                 QrRef.whereEqualTo("eventNum", eventNum).get()
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 if (task.isSuccessful()) {
+                                    Log.d("notificationTest","event get success");
+                                    Log.d("notificationTest", (String.valueOf(task.getResult().size())));
                                     for (QueryDocumentSnapshot document : task.getResult()) {
                                         eventName = (String) document.get("name");
-                                        deviceIdList = (String[]) document.get("attendeeIDList");
+                                        deviceIdList = (ArrayList<String>) document.get("attendeeIDList");
                                         if (deviceIdList != null) {
+                                            Log.d("notificationTest","get deviceId list");
+                                            Log.d("notificationTest",deviceIdList.get(0));
                                             for (String device : deviceIdList) {
                                                 DocumentReference docRef = tokenRef.document(device);
                                                 docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -110,24 +119,30 @@ public class NotificationActivity extends AppCompatActivity {
                                                         if (task.isSuccessful()) {
                                                             DocumentSnapshot document = task.getResult();
                                                             if (document.exists()) {
-                                                                Log.d("TokenGetting", "DocumentSnapshot data: " + document.getData());
+                                                                Log.d("notificationTest", "DocumentSnapshot data: " + document.getData());
                                                                 token = (String)document.get("token");
+                                                                Log.d("notificationTest","Token"+token);
                                                                 sendNotification(notification,token,eventName);
                                                             } else {
-                                                                Log.d("TokenGetting", "No such document");
+                                                                Log.d("notificationTest", "No such document");
                                                             }
                                                         } else {
-                                                            Log.d("TokenGetting", "get failed with ", task.getException());
+                                                            Log.d("notificationTest", "get failed with ", task.getException());
                                                         }
                                                     }
                                                 });
-
-
-                                                }
                                             }
+                                        }
+                                        else{
+                                            Log.d("notificationTest","failed to get deviceid list");
                                         }
                                     }
                                 }
+                                else{
+                                    Log.d("notificationTest","get event failed");
+                                }
+                                }
+
 
                         }
                         );
@@ -148,7 +163,7 @@ public class NotificationActivity extends AppCompatActivity {
 
             jsonObject.put("notification",notificationObj);
             jsonObject.put("data",dataObj);
-            jsonObject.put("token",token);
+            jsonObject.put("to",Token);
 
             callApi(jsonObject);
 
@@ -164,11 +179,12 @@ public class NotificationActivity extends AppCompatActivity {
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
-                .header("Authorization", "Bearer AAAArB3cQ50:APA91bG_togOY7bXrsTTB4-odg_57yUVbu3kRJXeRKDOR_yo7D9YJ_u13JxNRDxcpTg_Ryo4Zy7aJUoVKWEOiXUng7z_Hu4YG-388eOWVdAVwICh2JDC78uknlcbbl-HyvGukJ__kINK")
+                .header("Authorization", "key = AAAArB3cQ50:APA91bG_togOY7bXrsTTB4-odg_57yUVbu3kRJXeRKDOR_yo7D9YJ_u13JxNRDxcpTg_Ryo4Zy7aJUoVKWEOiXUng7z_Hu4YG-388eOWVdAVwICh2JDC78uknlcbbl-HyvGukJ__kINK")
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
+
 
             }
 

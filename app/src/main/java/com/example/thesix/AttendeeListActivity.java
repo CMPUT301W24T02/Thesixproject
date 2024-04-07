@@ -161,7 +161,14 @@ public class AttendeeListActivity extends AppCompatActivity {
         notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AttendeeListActivity.this, NotificationActivity.class));
+                Bundle bundle = new Bundle();
+                bundle.putLong("eventNum", eventNum);
+                Intent myIntent = new Intent(AttendeeListActivity.this, NotificationActivity.class);
+                Log.d("hihi","Before ID: "+ eventNum);
+                //myIntent.putExtra("eventNum", eventNum);
+                //startActivity(myIntent);
+                myIntent.putExtras(bundle);
+                startActivity(myIntent);
             }
         });
     }
