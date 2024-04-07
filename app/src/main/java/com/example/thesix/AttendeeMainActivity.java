@@ -139,6 +139,18 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         //// Check if GPS is enabled, if not prompt user to enable it
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+            new AlertDialog.Builder(this)
+                    .setMessage("Permission to use your location to track you.")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        // User clicked Yes, open location settings
+                    })
+                    .setNegativeButton("No", (dialog, which) -> {
+                        // User clicked No, inform the user
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(intent);
+                        Toast.makeText(this, "Disable location services to stop tracking..", Toast.LENGTH_LONG).show();
+                    })
+                    .show();
         }
         else {
             // GPS is not enabled, prompt user to enable it
