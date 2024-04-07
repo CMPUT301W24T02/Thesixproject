@@ -128,6 +128,10 @@ public class AdminProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Interface for callback
+     */
+
     public interface MyCallback {
         /** interface for callback
          * @param list1 of attendees

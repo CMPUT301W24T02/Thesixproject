@@ -169,49 +169,49 @@ public class EventDetails {
     }
 
     /** get checkInCountList
-     * @return  List<Long> with list of get  checkInCountList
+     * @return  List with list of get  checkInCountList
      */
     public List<Long> getCheckInCountList() {
         return checkInCountList;
     }
 
     /** stes check in count
-     * @param checkInCountList  List<Long> with list of get  checkInCountList
+     * @param checkInCountList  List with list of get  checkInCountList
      */
     public void setCheckInCountList(List<Long> checkInCountList) {
         this.checkInCountList = checkInCountList;
     }
 
     /** Gets AttendeeList
-     * @return List<String> with AttendeeIDList
+     * @return List with AttendeeIDList
      */
     public List<String> getAttendeeIDList() {
         return attendeeIDList;
     }
 
     /** Sets AttendeeList
-     * @param attendeeIDList  List<String> with AttendeeIDList
+     * @param attendeeIDList  List with AttendeeIDList
      */
     public void setAttendeeIDList(List<String> attendeeIDList) {
         this.attendeeIDList = attendeeIDList;
     }
 
     /** Gets Sign up list
-     * @return List<String> with signUpList
+     * @return List with signUpList
      */
     public List<String> getSignUpIDList() {
         return signUpIDList;
     }
 
     /** Sets Sign up list
-     * @param signUpIDList List<String> with signUpList
+     * @param signUpIDList List  with signUpList
      */
     public void setSignUpIDList(List<String> signUpIDList) {
         this.signUpIDList = signUpIDList;
     }
 
     /** Gets list of locations
-     * @return List<Location> list of locations
+     * @return List list of locations
      */
     public List<Location> getLocation() {
         return location;

@@ -165,10 +165,6 @@ public class OrganizerUseOldQRActivity extends AppCompatActivity {
 
     }
 
-    /**
-     Call back interface
-     @param : Long num
-     **/
     public interface MyCallback {
         /**
          * @param num of event number

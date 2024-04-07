@@ -34,6 +34,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * organizer chooses old QR activity
+ */
 public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
     ArrayList<Long> eventNumList;
 
@@ -146,17 +149,12 @@ public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
         });
 
     }
-    /**
-     Callback Interface to share Event details
-     @param : String
-     @return
-     **/
-
     public interface MyCallback {
         /**
          * @param list1 event name Data List
          * @param list2 event Num data List
          * @param list3 qr Data List
+         *
          */
         void onCallback(List<String> list1, List<Long> list2, List<Bitmap> list3);
     }
@@ -199,6 +197,9 @@ public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
 
+    /**
+     * @param view view of Bitmap
+     */
     public void ShareBitmap(View view) {
 
     }

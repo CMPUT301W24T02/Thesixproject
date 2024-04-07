@@ -17,6 +17,9 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ *  Gets Attendee Profiles in a list
+ */
 public class AdminProfileListAdapter extends ArrayAdapter<Attendee> {
     ///getting activity context
     private Context context;

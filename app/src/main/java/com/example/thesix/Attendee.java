@@ -18,6 +18,9 @@ public class Attendee {
     private String homePage;
     private String profile_image;
 
+    /**
+     * Default constructor required for calls to DataSnapshot.getValue(Attendee.class)
+     */
     public Attendee() {
         // Default constructor required for calls to DataSnapshot.getValue(Attendee.class)
     }
@@ -31,6 +34,7 @@ public class Attendee {
      * @param name      the name of the attendee
      * @param contact   the contact number of the attendee
      * @param homePage  the home page URL or handle of the attendee
+     * @param profileImage  profile Image String information
      */
     public Attendee(String name,String contact, String homePage, String profileImage){
 
@@ -77,8 +81,7 @@ public class Attendee {
 
     /**
      * Set check in
-     * @param : Long checkin
-     * @return : void
+     * @param checkin number , set it for that
      */
     public void setCheckin(Long checkin) {
         this.checkin = checkin;
