@@ -39,7 +39,7 @@ import okhttp3.Response;
  * Main functionality of Organizer
  **/
 public class OrganizerMainActivity extends AppCompatActivity {
-
+     //generated buttons
     private Button generateEventButton;
     private Button generateViewEventButton;
     private CollectionReference collectionReference;
