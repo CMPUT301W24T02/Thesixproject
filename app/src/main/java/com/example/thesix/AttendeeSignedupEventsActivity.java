@@ -62,19 +62,18 @@ public class AttendeeSignedupEventsActivity extends AppCompatActivity {
     private Button backButton;
     private CollectionReference eventsRef;
 
-
     /**
-     * Initializes UI components like lists, adapters, and buttons
+     * Initializes UI components like lists, adapters, and buttons.
      *
-     * @param : Bundle savedInstanceState
-     * @return : void
+     * @param savedInstanceState The saved instance state bundle.
      */
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_list);
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
+
+        // Initialize variables
         eventnameDataList = new ArrayList<>();
         eventNumList = new ArrayList<>();
         signedupEventDataList = new ArrayList<>();
@@ -84,15 +83,18 @@ public class AttendeeSignedupEventsActivity extends AppCompatActivity {
         signedupeventnameArrayAdapter = new ArrayAdapter<String>(
                 AttendeeSignedupEventsActivity.this,
                 R.layout.event_list_textview, R.id.itemTextView, signedupEventDataList);
+
+        // Set up UI components and adapters
+        // Set listeners
         ListView eventList = findViewById(R.id.event_list);
         eventList.setAdapter(signedupeventnameArrayAdapter);
 
-        /**
-         * Does Read data Callback
-         * @param : List<String> list1, List<Long> list2, List<String> list3
-         * @return : void
-         */
         readData(new MyCallback() {
+            /**
+             * Handles the callback with the provided list.
+             *
+             * @param list1 The list of strings received in the callback.
+             */
             @Override
             public void onCallback(List<String> list1) {
                 Log.d("callback", "3");
@@ -102,12 +104,11 @@ public class AttendeeSignedupEventsActivity extends AppCompatActivity {
                 signedupeventnameArrayAdapter.notifyDataSetChanged();
             }
         });
-        /**
-         * Sets back button to navigate to Admin Activity
-         * @param : View v
-         * @return :
-         */
+
         backButton.setOnClickListener(new View.OnClickListener() {
+            /** Start Activity to AttendeeSelect Events
+             * @param v The view that was clicked.
+             */
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(AttendeeSignedupEventsActivity.this, AttendeeSelectEvents.class));
@@ -116,32 +117,28 @@ public class AttendeeSignedupEventsActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Interface Callback
-     *
-     * @param :List<String> list1, List<Long> list2, List<String> list3
-     * @return :
-     */
-
     public interface MyCallback {
+        /**
+         * @param list1 firebase callback
+         */
         void onCallback(List<String> list1);
     }
 
-    /**
-     * Reads data
-     *
-     * @param :MyCallback myCallback
-     * @return :
-     */
-
     public void readData1(MyCallback myCallback) {
         eventsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            /** query for database
+             * @param queryDocumentSnapshots with successful data querying
+             */
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+
+                    //device ID for document
                     DEVICEID = (List<String>) document.get("signUpIDList");
                     String eventname = document.getString("name");
                     Long eventNum = document.getLong("eventNum");
+
+                    //getting device id
                     String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
                     for (int i = 0; i < DEVICEID.size(); i++) {
                         if (DEVICEID.get(i).equalsIgnoreCase(deviceID)) {
@@ -156,17 +153,27 @@ public class AttendeeSignedupEventsActivity extends AppCompatActivity {
         });
     }
 
+    /** query for database
+     * @param myCallback with successful data querying
+     */
     public void readData(MyCallback myCallback) {
         eventsRef.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    /** with successful data querying
+                     * @param task query for database
+                     */
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                //signed IDuplist
                                 DEVICEID = (List<String>) document.get("signUpIDList");
                                 Log.d("Arjun", "20");
+
+                                //event document collection
                                 String eventname = document.getString("name");
                                 Long eventNum = document.getLong("eventNum");
+                                //getting string device id
                                 String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
                                 for (int i = 0; i < DEVICEID.size(); i++) {
                                     if (DEVICEID.get(i).equalsIgnoreCase(deviceID)) {
