@@ -99,7 +99,7 @@ public class AttendeeCheckedinEventDetails extends AppCompatActivity {
         });
 
         backButton.setOnClickListener(new View.OnClickListener() {
-            /** Start activity to AttendeeAllEventsActivity
+            /** Start activity to AttendeeCheckedinEventsActivity
              * @param v The view that was clicked.
              */
             @Override
@@ -108,7 +108,7 @@ public class AttendeeCheckedinEventDetails extends AppCompatActivity {
             }
         });
         announcement.setOnClickListener(new View.OnClickListener() {
-            /** Start activity to AttendeeAllEventsActivity
+            /** Start activity to AttendeeCheckedinAnnouncements
              * @param v The view that was clicked.
              */
             @Override
