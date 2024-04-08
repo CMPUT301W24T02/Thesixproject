@@ -34,7 +34,6 @@ import com.google.firebase.firestore.QuerySnapshot;
  **/
 public class MainActivity extends AppCompatActivity {
     QrCodeDB firestorehelper;
-    private String adminId = "713972a529878c33";//change this
     List<String> adminList;
     List<String> organizerList;
     /**
@@ -49,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         firestorehelper = new QrCodeDB();
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        //deviceID ="27150c669e8b1dc4";
+
         Log.d(deviceID, "this is device id ");
         Log.d("DeviceId", deviceID);
         adminList = new ArrayList<>();
