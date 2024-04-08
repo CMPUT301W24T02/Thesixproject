@@ -27,6 +27,7 @@ import androidx.core.content.FileProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -51,6 +52,8 @@ public class EventDetailsConnector extends AppCompatActivity {
     private Button backButton;
     private Button shareInviteButton;
     private Button sharePromoButton;
+
+    private FirebaseFirestore firestore;
     long eventNum; // Unique identifier for the event
     CollectionReference QrRef;
     private QrCodeDB firestoreHelper;
@@ -82,7 +85,10 @@ public class EventDetailsConnector extends AppCompatActivity {
         shareInviteButton = findViewById(R.id.shareInviteButton);
         sharePromoButton = findViewById(R.id.sharePromoButton);
         firestoreHelper = new QrCodeDB();
-        QrRef = firestoreHelper.getOldQrRef(deviceID);
+
+        firestore = FirebaseFirestore.getInstance();
+        QrRef = firestore.
+                collection("inviteQrCodes");
 
         //getting bundle with info
         Bundle bundle = getIntent().getExtras();
