@@ -45,11 +45,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * AttendeeCheckedinAnnouncements class displays all event names display and navigation within an Android application.
- * Requests necessary permissions and sets up the layout for event listing.
- * Lists all events in the listview created in the app.
+ * AttendeeCheckedinAnnouncements class displays all the announcements of an event
+ * Lists all announcements in the listview created in the app.
  * Retrieves event details asynchronously from a Firebase Firestore database using the readData method.
- * Handles item clicks to navigate to another activity (AdminEventDetails) with selected event details.
  */
 
 public class AttendeeCheckedinAnnouncements extends AppCompatActivity {
@@ -66,7 +64,7 @@ public class AttendeeCheckedinAnnouncements extends AppCompatActivity {
 
 
     /**
-     * Creating Attendee Checked in activity
+     * Creating Attendee Checkedinannouncement activity
      *
      * @param savedInstanceState If the activity is being re-initialized after
      *                           previously being shut down then this Bundle contains the data it most
@@ -98,7 +96,7 @@ public class AttendeeCheckedinAnnouncements extends AppCompatActivity {
 
         readData(new MyCallback() {
             /** Callback for firebase
-             * @param list1 for event data callback
+             * @param list1 for announcements caallback
              */
             @Override
             public void onCallback(List<String> list1) {
@@ -110,7 +108,7 @@ public class AttendeeCheckedinAnnouncements extends AppCompatActivity {
         });
 
         backButton.setOnClickListener(new View.OnClickListener() {
-            /**Start Activity to AttendeeSelectEvents
+            /**Start Activity to AttendeeCheckedinEventDetails
              * @param v The view that was clicked.
              */
             @Override

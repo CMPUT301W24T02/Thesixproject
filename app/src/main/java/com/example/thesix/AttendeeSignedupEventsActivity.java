@@ -62,6 +62,8 @@ public class AttendeeSignedupEventsActivity extends AppCompatActivity {
     private Button backButton;
     private CollectionReference eventsRef;
 
+    private ArrayList<String> eventdescriptionDataList;
+
     /**
      * Initializes UI components like lists, adapters, and buttons.
      *
@@ -77,6 +79,7 @@ public class AttendeeSignedupEventsActivity extends AppCompatActivity {
         eventnameDataList = new ArrayList<>();
         eventNumList = new ArrayList<>();
         signedupEventDataList = new ArrayList<>();
+        eventdescriptionDataList = new ArrayList<>();
         backButton = findViewById(R.id.backButton);
         firestore = FirebaseFirestore.getInstance();
         eventsRef = firestore.collection("inviteQrCodes");
@@ -101,6 +104,44 @@ public class AttendeeSignedupEventsActivity extends AppCompatActivity {
                 signedupEventDataList = (ArrayList<String>) list1;
                 Log.d("callback", "2");
                 signedupeventnameArrayAdapter.notifyDataSetChanged();
+            }
+        });
+
+        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /** On clicking Item of eventNum
+             * @param parent   The AdapterView where the click happened.
+             * @param view     The view within the AdapterView that was clicked (this
+             *                 will be a view provided by the adapter)
+             * @param position The position of the view in the adapter.
+             * @param id       The row id of the item that was clicked.
+             */
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                //creating intent
+                Intent i = new Intent(AttendeeSignedupEventsActivity.this, AttendeeSignedupEventDetails.class);
+                String eventName = (String) (eventList.getItemAtPosition(position));
+                String eventDescription="";
+                //running through list
+                long eventNum = eventNumList.get(position);
+
+                Log.d("Arjun", "name" + eventName);
+                for (int j = 0; j < signedupEventDataList.size(); j++) {
+                    String eventName1 = (String) (signedupEventDataList.get(j));
+
+                    Log.d("Arjun", "name" + eventName1);
+                    if(eventName.equalsIgnoreCase(eventName1))
+                    {
+                        eventDescription = (String) (eventdescriptionDataList.get(j));
+                    }
+                }
+                //creating bundle of data
+                Bundle bundle = new Bundle();
+                bundle.putString("eventName", eventName);
+                bundle.putString("eventDescription", eventDescription);
+                bundle.putLong("eventNum", eventNum);
+                i.putExtras(bundle);
+                startActivity(i);
             }
         });
 
@@ -170,6 +211,8 @@ public class AttendeeSignedupEventsActivity extends AppCompatActivity {
                                 Log.d("Arjun", "20");
 
                                 //event document collection
+
+                                String description = document.getString("description");
                                 String eventname = document.getString("name");
                                 Long eventNum = document.getLong("eventNum");
                                 //getting string device id
@@ -178,6 +221,7 @@ public class AttendeeSignedupEventsActivity extends AppCompatActivity {
                                     if (DEVICEID.get(i).equalsIgnoreCase(deviceID)) {
                                         eventNumList.add(eventNum);
                                         signedupEventDataList.add(eventname);
+                                        eventdescriptionDataList.add(description);
                                     }
                                 }
                             }
