@@ -21,6 +21,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.checkerframework.common.returnsreceiver.qual.This;
 
@@ -50,6 +52,9 @@ public class AttendeePromoActivity extends AppCompatActivity {
     public Long eventNum;
     public String organizerID;
     List<String> signUpIDList;
+    public AttendeeDB attendeedb;
+    String deviceID;
+    String imageData;
 
     /**
      * Initializes the activity, sets up UI components, retrieves event information from the intent,
@@ -67,24 +72,32 @@ public class AttendeePromoActivity extends AppCompatActivity {
         eventPoster = findViewById(R.id.eventPoster); // ImageView for displaying the event poster image
         backButton = findViewById(R.id.backButton); //Button for navigating back to the main activity
         signUpButton = findViewById(R.id.signUpButton);
-
+        deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         // Firestore database helper
         firestoreHelper = new QrCodeDB();
-
+        attendeedb = new AttendeeDB();
         // Event information
         Bundle bundle = getIntent().getExtras();
         String name = bundle.getString("name");
         String description = bundle.getString("description");
-        String imageData = bundle.getString("imageData");
-
         organizerID = bundle.getString("organizerID");
         eventNum = bundle.getLong("eventNum");
+        loadData(new PromoCallback() {
+            @Override
+            public void onPromoCallback(String imageData) {
+                Bitmap bitmap = StringToBitMap(imageData);
+                eventName.setText(name);
+                eventDescription.setText(description);
+                eventPoster.setImageBitmap(bitmap);
+
+            }
+        });
+
+
         Log.d("showing",name+description);
 
-        eventName.setText(name);
-        eventDescription.setText(description);
-        Bitmap bitmap = StringToBitMap(imageData);
-        eventPoster.setImageBitmap(bitmap);
+
+
 
         //button to take back to the beginning
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -122,7 +135,8 @@ public class AttendeePromoActivity extends AppCompatActivity {
                         }
 
                         // Update the sign-up list in Firestore
-                        firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum))
+                        firestoreHelper.getDeviceDocRef(organizerID).collection("event")
+                                .document(String.valueOf(eventNum))
                                 .update("signUpIDList", signUpIDList).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
@@ -141,6 +155,25 @@ public class AttendeePromoActivity extends AppCompatActivity {
             }
         });
 
+    }
+    private interface PromoCallback{
+        void onPromoCallback(String imageData);
+    }
+    public void loadData(PromoCallback promoCallback) {
+        Log.d("asdf",organizerID);
+        firestoreHelper.getDeviceDocRef(organizerID).collection("event").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+
+                    String base64String = document.getString("qrImageData");
+                    imageData = document.getString("eventImageData");
+                    //event info adding to firebase
+
+                }
+                promoCallback.onPromoCallback(imageData);
+            }
+        });
     }
     private interface SignUpCallback {
 
