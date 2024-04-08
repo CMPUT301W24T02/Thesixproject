@@ -128,11 +128,9 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         //String deviceID = bundle.getString("deviceID");
 
         // Retrieve device ID from intent extras
-        Bundle bundle = getIntent().getExtras();
-        String deviceID = null;
-        if (bundle != null) {
-            deviceID = bundle.getString("deviceID");
-        }
+
+        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
         finalDeviceID = deviceID;
 
         // Request notification permission
