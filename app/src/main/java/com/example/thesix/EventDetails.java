@@ -26,6 +26,8 @@ public class EventDetails {
     private List<String> attendeeIDList;
     private Long totalCheckIn;
     private List<String> signUpIDList;
+
+    private List<String> notificationList;
     private List<Location> location;
 
 
@@ -43,7 +45,7 @@ public class EventDetails {
      * @param locations list of locations
      */
     public EventDetails(String eventImageData, String inviteQrImageData, String promoQrImageData, long eventNum, String eventDescription,
-                        String eventName, List<Long> checkIn, Long totalCheckIn, List<String> attendeeIDList, List<String> signUpIDList,List <Location> locations) {
+                        String eventName, List<Long> checkIn, Long totalCheckIn, List<String> attendeeIDList, List<String> signUpIDList,List<String> notificationList,List <Location> locations) {
 
         //event imageData
         this.eventImageData = eventImageData;
@@ -58,6 +60,7 @@ public class EventDetails {
         this.attendeeIDList = attendeeIDList;
         this.signUpIDList = signUpIDList;
         this.location = locations;
+        this.notificationList=notificationList;
     }
 
 
@@ -91,6 +94,13 @@ public class EventDetails {
         this.inviteQrImageData = qrImageData;
     }
 
+    public List<String> getNotificationList() {
+        return notificationList;
+    }
+
+    public void setNotificationList(List<String> notificationList) {
+        this.notificationList = notificationList;
+    }
 
     /** getEventNum() retrieves the event number
      * @return event number

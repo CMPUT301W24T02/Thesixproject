@@ -170,9 +170,10 @@ public class OrganizerUseNewQRActivity extends AppCompatActivity {
                                 List<String> attendeeList= new ArrayList<String>();
                                 List<Long> checkIn = new ArrayList<Long>();
                                 List<String> attendeeIDList = new ArrayList<>();
+                                List<String> notificationList = new ArrayList<>();
                                 List<String> signUpIDList = new ArrayList<>();
                                 List<Location> location = new ArrayList<>();
-                                EventDetails eventdetail = new EventDetails(eventImageBase64, inviteQrImageBase64, promoQrImageBase64, num, description, eventName,checkIn, 0L,attendeeIDList,signUpIDList,location);
+                                EventDetails eventdetail = new EventDetails(eventImageBase64, inviteQrImageBase64, promoQrImageBase64, num, description, eventName,checkIn, 0L,attendeeIDList,signUpIDList,notificationList, location);
                                 firestoreHelper.saveInviteQRCode(deviceID, eventdetail,num);
 
                             } catch (WriterException e) {
