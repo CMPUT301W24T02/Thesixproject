@@ -245,7 +245,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                         // Handle promo QR code
 
                         contents = contents.replace("promo", "");
-                        testing.setText(contents);
+                        
                         contentsArray = contents.split("device id", 2);
 
                         //organizer id
