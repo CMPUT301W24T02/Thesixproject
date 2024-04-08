@@ -86,9 +86,8 @@ public class EventDetailsConnector extends AppCompatActivity {
         sharePromoButton = findViewById(R.id.sharePromoButton);
         firestoreHelper = new QrCodeDB();
 
-        firestore = FirebaseFirestore.getInstance();
-        QrRef = firestore.
-                collection("inviteQrCodes");
+
+        QrRef = firestoreHelper.getOldQrRef(deviceID);
 
         //getting bundle with info
         Bundle bundle = getIntent().getExtras();
