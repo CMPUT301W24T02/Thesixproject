@@ -7,16 +7,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,6 +42,7 @@ import java.util.List;
 public class AdminImagesActivity extends AppCompatActivity {
     //required Button
     private Button back2AdminButton;
+    private QrCodeDB firestoreHelper;
     //creating firestore instance
     private FirebaseFirestore firestore;
     //creating collectionReferences
@@ -47,6 +51,8 @@ public class AdminImagesActivity extends AppCompatActivity {
     //creating required Array lists
     private ArrayList<Long> eventNumList;
     private ArrayList<String> deviceIdList;
+    private ArrayList<String> deviceid;
+    CollectionReference QrRef;
     private String adminBase64Image;
 
     /** Creating Activity
@@ -65,6 +71,10 @@ public class AdminImagesActivity extends AppCompatActivity {
         //creating listviews
         ListView eventImageListView = findViewById(R.id.images_event_view);
         ListView profileImageListView = findViewById(R.id.images_profile_view);
+        deviceid = new ArrayList<>();
+        //String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        deviceid.add("2f7daf8e12a8cb75");
+        deviceid.add("27150c669e8b1dc4");
         //asking for permissions
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
 
@@ -291,6 +301,26 @@ public class AdminImagesActivity extends AppCompatActivity {
                     }
                     Toast.makeText(this, "Image Deleted, Default Set", Toast.LENGTH_LONG).show();
                 });
+        for(int i= 0;i<deviceid.size();i++)
+        {
+            String deviceID = deviceid.get(i);
+            firestoreHelper = new QrCodeDB();
+            QrRef = firestoreHelper.getOldQrRef(deviceID);
+            QrRef.document(String.valueOf(eventNum))
+                    .update("eventImageData", adminBase64Image)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("arjun","Before ID: "+ eventNum);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("arjun2","Before ID: "+ eventNum);
+                        }
+                    });}
+
     }
 
   /** Updating profileFirestoreUpdate
