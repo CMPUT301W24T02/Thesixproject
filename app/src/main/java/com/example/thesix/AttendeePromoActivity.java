@@ -149,6 +149,20 @@ public class AttendeePromoActivity extends AppCompatActivity {
                                         Log.w("update", "Error updating document", e);
                                     }
                                 });
+                        firestoreHelper.getInviteQR()
+                                .document(String.valueOf(eventNum))
+                                .update("signUpIDList", signUpIDList).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("update", "DocumentSnapshot successfully updated!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w("update", "Error updating document", e);
+                                    }
+                                });
                     }
                 });
 
