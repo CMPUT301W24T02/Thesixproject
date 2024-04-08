@@ -16,9 +16,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -101,6 +107,17 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
             startActivityForResult(pickPhoto, 2); // requestCode 2 for image selection
         });
 
+        removePictureButton.setOnClickListener(v -> {
+            removeProfilePicture(prefs);
+            String name = nameEditText.getText().toString();
+            String contact = contactEditText.getText().toString();
+            String homePage = homePageEditText.getText().toString();
+            profileBitmap = createBitmap(name+deviceID);
+            String base64 = bitmapToBase64(profileBitmap);
+            AttendeeDB attendeeDB = new AttendeeDB();
+            attendeeDB.saveAttendeeInfoNoPhoto(name,contact,homePage,base64,deviceID);
+        });
+
         submitButton.setOnClickListener(v -> {
             // Gather the information entered by the user
             String name = nameEditText.getText().toString();
@@ -180,7 +197,62 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
 
         backButton.setOnClickListener(v -> finish());
 
-        removePictureButton.setOnClickListener(v -> removeProfilePicture(prefs));
+        loadProfile(new AttendeeProfileActivity.ProfileCallback() {
+            @Override
+            public void onProfileCallback(String name, String contact, String homepage, String bitmapString) {
+                nameEditText.setText(name);
+                contactEditText.setText(contact);
+                homePageEditText.setText(homepage);
+                Bitmap bitmap = StringToBitMap(bitmapString);
+                profileImageView.setImageBitmap(bitmap);
+            }
+        });
+    }
+
+    public Bitmap StringToBitMap(String image){
+        try{
+            byte [] encodeByte=Base64.decode(image,Base64.DEFAULT);
+            // Convert the decoded byte array to an input stream
+            InputStream inputStream  = new ByteArrayInputStream(encodeByte);
+            // Decode the input stream into a Bitmap image
+            Bitmap bitmap  = BitmapFactory.decodeStream(inputStream);
+            return bitmap;
+        }catch(Exception e){
+            e.getMessage();
+            return null;
+        }
+    }
+
+    public void loadProfile(AttendeeProfileActivity.ProfileCallback profileCallback) {
+        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        AttendeeDB firestorehelper = new AttendeeDB();
+        firestorehelper.getAttendeeDocRef().document(deviceID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            //DocumentSnapshot successfully updated
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("count", "DocumentSnapshot data: " + document.getData());
+
+                        String name = (String) document.get("name");
+                        String homepage = (String) document.get("homePage");
+                        String contact = (String) document.get("contact");
+                        String bitmapString = (String) document.get("profile_image");
+//                        Log.d("pull",name);
+//                        Log.d("pull",homepage);
+//                        Log.d("pull",contact);
+                        profileCallback.onProfileCallback(name,contact,homepage,bitmapString);
+                    } else {
+                        //DocumentSnapshot not successfully updated
+                        Log.d("count", "No such document");
+                    }
+                } else {
+                    Log.d("count", "get failed with ", task.getException());
+                }
+
+            }
+        });
     }
 
     /** On activity Result
@@ -261,9 +333,6 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
             // Reset the ImageView to display a default image
             profileImageView.setImageResource(android.R.drawable.ic_menu_gallery); // Reset to a default image
             Toast.makeText(this, "Profile picture removed", Toast.LENGTH_SHORT).show();
-        } else {
-            // If no document ID is found, display a toast message indicating that no profile picture is present
-            Toast.makeText(this, "No profile picture to remove", Toast.LENGTH_SHORT).show();
         }
     }
     /**
