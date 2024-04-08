@@ -98,7 +98,6 @@ public class SiginListActivity extends AppCompatActivity{
                                             DocumentSnapshot document = task.getResult();
                                             if (document.exists()) {
                                                 name = (String) document.get("name");
-                                                Log.d("signlist", name);
                                                 if (name == null){
                                                     name = "Guest " + count;
                                                     count += 1;
