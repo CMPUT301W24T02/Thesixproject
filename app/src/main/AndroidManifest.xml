@@ -64,6 +64,8 @@
         <activity android:name=".AttendeeSelectEvents" />
         <activity android:name=".AttendeeAllEventsActivity" />
         <activity android:name=".AttendeeCheckedinEventsActivity" />
+        <activity android:name=".AttendeeCheckedinEventDetails" />
+        <activity android:name=".AttendeeCheckedinAnnouncements" />
         <activity android:name=".AttendeeSignedupEventsActivity" />
         <activity android:name=".AttendeeAllEventDetails" />
         <activity android:name=".OrganizerMainActivity" />

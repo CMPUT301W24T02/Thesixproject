@@ -54,7 +54,7 @@ public class OrganizerChooseOldQRActivityTest {
     /**
      *Test back button
      *  */
-
+    @Test
     public void test_backButton(){
 
         // Asserts that the current activity is the AdminEventsActivity.Otherwise, show "Wrong Activity"

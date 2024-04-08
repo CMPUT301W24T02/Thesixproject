@@ -13,6 +13,7 @@ import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +30,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * MainActivity checks if the user trying to enter the app is organizer or and admin and redirects accordingly..
  **/
 public class MainActivity extends AppCompatActivity {
+    QrCodeDB firestorehelper;
     private String adminId = "713972a529878c33";//change this
     /**
      * If user is admin redirect to AdminActivity.
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        firestorehelper = new QrCodeDB();
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         //deviceID ="27150c669e8b1dc4";
         Log.d(deviceID, "this is device id ");
@@ -55,8 +57,9 @@ public class MainActivity extends AppCompatActivity {
          else {
             //sending device id to attendeeactivitypage
 
-            //Intent intent =new Intent(MainActivity.this,AttendeeMainActivity.class);
             Intent intent =new Intent(MainActivity.this,AttendeeMainActivity.class);
+            //Intent intent =new Intent(MainActivity.this,OrganizerMainActivity.class);
+           
             intent.putExtra("deviceID",deviceID);
             startActivity(intent);
             //startActivity(new Intent(MainActivity.this, AttendeeMainActivity.class));
@@ -64,6 +67,13 @@ public class MainActivity extends AppCompatActivity {
             //startActivity(new Intent(MainActivity.this, AttendeeProfileActivity.class));
             //startActivity(new Intent(MainActivity.this, AttendeeMainActivity.class));
         }
+    }
+    private interface IDCallback {
+        void onIDCallback(List<String> adminIDList, List<String> organizerIDList);
+    }
+
+    public void getID(IDCallback idCallback) {
+        firestorehelper.getFireStore();
     }
 
 
