@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="116dp"
         android:textColor="@color/white"
-        android:textSize="40dp"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/name_title"
         app:layout_constraintStart_toEndOf="@id/name_title"
         app:layout_constraintTop_toTopOf="@+id/name_title"
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
         android:textColor="@color/white"
-        android:textSize="40dp"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/contact_title"
         app:layout_constraintStart_toEndOf="@id/contact_title"
         app:layout_constraintTop_toTopOf="@+id/contact_title"
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:textColor="@color/white"
-        android:textSize="40dp"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/homePage_title"
         app:layout_constraintStart_toEndOf="@id/homePage_title"
         app:layout_constraintTop_toTopOf="@+id/homePage_title"
@@ -52,7 +52,7 @@
         android:layout_marginTop="40dp"
         android:text="@string/attendee_name"
         android:textColor="@color/gold"
-        android:textSize="40dp"
+        android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_picture" />
 
@@ -64,7 +64,7 @@
         android:layout_marginTop="36dp"
         android:text="@string/attendee_contact"
         android:textColor="@color/gold"
-        android:textSize="40dp"
+        android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name_title" />
 
@@ -76,7 +76,7 @@
         android:layout_marginTop="36dp"
         android:text="@string/attendee_home_page"
         android:textColor="@color/gold"
-        android:textSize="40dp"
+        android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contact_title" />
 

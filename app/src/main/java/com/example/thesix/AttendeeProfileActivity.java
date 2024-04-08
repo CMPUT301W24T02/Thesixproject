@@ -3,19 +3,29 @@ package com.example.thesix;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -42,6 +52,11 @@ public class AttendeeProfileActivity extends AppCompatActivity {
     List<Integer> colorlist;
     int[] finalColorList1;
     int[] finalColorList2;
+    private AttendeeDB firestorehelper;
+    String name;
+    String contact;
+    String homepage;
+    String bitmapString;
 
     /** Create Attendee profile activity
      * @param savedInstanceState If the activity is being re-initialized after
@@ -54,7 +69,7 @@ public class AttendeeProfileActivity extends AppCompatActivity {
         setContentView(R.layout.attendee_profile_screen);
         finalColorList1 = new int[16];
         finalColorList2 = new int[16];
-
+        firestorehelper = new AttendeeDB();
         // List of colors for profile picture
         colorlist = Arrays.asList(
                 getResources().getColor(R.color.black),
@@ -75,13 +90,27 @@ public class AttendeeProfileActivity extends AppCompatActivity {
         back2AttendeeButton = findViewById(R.id.backButton);
 
         // Setup button to go back to AttendeeMainActivity
-        back2AttendeeButton.setOnClickListener(v -> finish());
+        back2AttendeeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AttendeeProfileActivity.this, AttendeeMainActivity.class));
+            }
+        });
 
         // Setup ImageView click to navigate to AttendeeProfileUpdate for editing
 
-
+        loadProfile(new ProfileCallback() {
+            @Override
+            public void onProfileCallback(String name, String contact, String homepage, String bitmapString) {
+                nameTextView.setText(name);
+                contactTextView.setText(contact);
+                homePageTextView.setText(homepage);
+                Bitmap bitmap = StringToBitMap(bitmapString);
+                profilePicture.setImageBitmap(bitmap);
+            }
+        });
         // Load profile information including image
-        displayAttendeeInfo();
+//        displayAttendeeInfo();
     }
 
     /**
@@ -89,20 +118,20 @@ public class AttendeeProfileActivity extends AppCompatActivity {
      * Checks if the attendee profile was updated while the activity was paused.
      * If the profile was updated, it refreshes the displayed attendee information.
      */
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Check if the profile was updated
-        SharedPreferences prefs = getSharedPreferences("AttendeePrefs", MODE_PRIVATE);
-        boolean profileUpdated = prefs.getBoolean("profileUpdated", false);
-        if (profileUpdated) {
-            displayAttendeeInfo(); // Refresh the profile information
-            // Reset the flag
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean("profileUpdated", false);
-            editor.apply();
-        }
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        // Check if the profile was updated
+//        SharedPreferences prefs = getSharedPreferences("AttendeePrefs", MODE_PRIVATE);
+//        boolean profileUpdated = prefs.getBoolean("profileUpdated", false);
+//        if (profileUpdated) {
+//            displayAttendeeInfo(); // Refresh the profile information
+//            // Reset the flag
+//            SharedPreferences.Editor editor = prefs.edit();
+//            editor.putBoolean("profileUpdated", false);
+//            editor.apply();
+//        }
+//    }
 
     /** When activity result
      * @param requestCode The integer request code originally supplied to
@@ -113,55 +142,55 @@ public class AttendeeProfileActivity extends AppCompatActivity {
      * @param data        An Intent, which can return result data to the caller
      *                    (various data can be attached to Intent "extras").
      */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            // Refresh data when returning from AttendeeProfileUpdate and updates have been made
-            displayAttendeeInfo();
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == 1 && resultCode == RESULT_OK) {
+//            // Refresh data when returning from AttendeeProfileUpdate and updates have been made
+//            displayAttendeeInfo();
+//        }
+//    }
 
     /**
      * Displays attendee information retrieved from SharedPreferences.
      * Sets the name, contact, and home page text views with the corresponding data.
      * If the profile picture was removed, it generates a default profile picture.
      */
-    private void displayAttendeeInfo() {
-        // Access SharedPreferences
-        SharedPreferences prefs = getSharedPreferences("AttendeePrefs", MODE_PRIVATE);
-        // Set name text view with attendee's name
-        nameTextView.setText(prefs.getString("name", ""));
-        contactTextView.setText(prefs.getString("contact", ""));
-        // Set home page text view with attendee's home page URL
-        homePageTextView.setText(prefs.getString("homePage", ""));
+//    private void displayAttendeeInfo() {
+//        // Access SharedPreferences
+//        SharedPreferences prefs = getSharedPreferences("AttendeePrefs", MODE_PRIVATE);
+//        // Set name text view with attendee's name
+//        nameTextView.setText(prefs.getString("name", ""));
+//        contactTextView.setText(prefs.getString("contact", ""));
+//        // Set home page text view with attendee's home page URL
+//        homePageTextView.setText(prefs.getString("homePage", ""));
 
         // Check if the profile picture was removed
-        boolean isProfilePictureRemoved = prefs.getBoolean("isProfilePictureRemoved", false);
-        if (isProfilePictureRemoved) {
-            Log.d("qwer","2");
-            // Create default profile picture bitmap
-            profileBitmap = createBitmap("testing");
-            // Set the image view with the default profile picture
-            profilePicture.setImageBitmap(profileBitmap);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean("isProfilePictureRemoved", false);
-            editor.apply();
-        } else {
-            // If the profile picture was not removed, check if a custom profile picture exists
-            String imagePath = prefs.getString("profileImagePath", null);
-            if (imagePath != null && new File(imagePath).exists()) {
-                Log.d("qwer","1");
-                //Set the image view with the custom profile picture
-                profilePicture.setImageURI(Uri.fromFile(new File(imagePath)));
-            } else {
-                Log.d("qwer","3");
-                profileBitmap = createBitmap("testing");
-                // Set the image view with the default profile picture
-                profilePicture.setImageBitmap(profileBitmap);
-            }
-        }
-    }
+//        boolean isProfilePictureRemoved = prefs.getBoolean("isProfilePictureRemoved", false);
+//        if (isProfilePictureRemoved) {
+//            Log.d("qwer","2");
+//            // Create default profile picture bitmap
+//            profileBitmap = createBitmap("testing");
+//            // Set the image view with the default profile picture
+//            profilePicture.setImageBitmap(profileBitmap);
+//            SharedPreferences.Editor editor = prefs.edit();
+//            editor.putBoolean("isProfilePictureRemoved", false);
+//            editor.apply();
+//        } else {
+//            // If the profile picture was not removed, check if a custom profile picture exists
+//            String imagePath = prefs.getString("profileImagePath", null);
+//            if (imagePath != null && new File(imagePath).exists()) {
+//                Log.d("qwer","1");
+//                //Set the image view with the custom profile picture
+//                profilePicture.setImageURI(Uri.fromFile(new File(imagePath)));
+//            } else {
+//                Log.d("qwer","3");
+//                profileBitmap = createBitmap("testing");
+//                // Set the image view with the default profile picture
+//                profilePicture.setImageBitmap(profileBitmap);
+//            }
+//        }
+//    }
 
     /**
      * Creates a bitmap with a customized pattern based on the provided string.
@@ -221,7 +250,35 @@ public class AttendeeProfileActivity extends AppCompatActivity {
         return result;
 
     }
+    private interface ProfileCallback {
+        void onProfileCallback(String name, String contact, String homepage, String bitmapString);
+    }
+    public void loadProfile(ProfileCallback profileCallback) {
+        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        firestorehelper.getAttendeeDocRef(deviceID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            //DocumentSnapshot successfully updated
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("count", "DocumentSnapshot data: " + document.getData());
+                        name = (String) document.get("name");
+                        homepage = (String) document.get("homePage");
+                        contact = (String) document.get("contact");
+                        bitmapString = (String) document.get("profile_image");
+                        profileCallback.onProfileCallback(name,contact,homepage,bitmapString);
+                    } else {
+                        //DocumentSnapshot not successfully updated
+                        Log.d("count", "No such document");
+                    }
+                } else {
+                    Log.d("count", "get failed with ", task.getException());
+                }
 
+            }
+        });
+    }
     /**
      * Calculates the SHA-256 hash of the input string.
      * @param input input The input string for which the hash is to be calculated.
@@ -260,6 +317,19 @@ public class AttendeeProfileActivity extends AppCompatActivity {
         }
 
         return hexString.toString();
+    }
+    public Bitmap StringToBitMap(String image){
+        try{
+            byte [] encodeByte=Base64.decode(image,Base64.DEFAULT);
+            // Convert the decoded byte array to an input stream
+            InputStream inputStream  = new ByteArrayInputStream(encodeByte);
+            // Decode the input stream into a Bitmap image
+            Bitmap bitmap  = BitmapFactory.decodeStream(inputStream);
+            return bitmap;
+        }catch(Exception e){
+            e.getMessage();
+            return null;
+        }
     }
 
 }
