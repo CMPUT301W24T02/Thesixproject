@@ -199,8 +199,8 @@ public class EventDetailsAdapter extends AppCompatActivity {
                     eventNumList.add(eventNum);
                     eventnameDataList.add(eventname);
                     eventdescriptionDataList.add(description);
-                    Log.d("list", document.getId() + "=>" + document.getData());
-                    Log.d("list", eventnameDataList.get(0));
+                    //Log.d("list", document.getId() + "=>" + document.getData());
+                    //Log.d("list", eventnameDataList.get(0));
                 }
                 myCallback.onCallback(eventnameDataList, eventNumList, eventImageDataList);
 
