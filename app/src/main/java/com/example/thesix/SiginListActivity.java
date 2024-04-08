@@ -58,8 +58,8 @@ public class SiginListActivity extends AppCompatActivity{
         count = 1;
 
         //getting string device id
-        //deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        deviceID ="2f7daf8e12a8cb75";
+        deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        //deviceID ="2f7daf8e12a8cb75";
         nameList = new ArrayList<>();
         deviceIDList = new ArrayList<>();
         backButton = findViewById(R.id.backButton);
