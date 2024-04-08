@@ -89,7 +89,8 @@ public class AttendeeListActivity extends AppCompatActivity {
         QrRef = firestoreHelper.getOldQrRef(deviceID);
 
         Bundle bundle = getIntent().getExtras();
-        OrganizerdeviceID = bundle.getString("OrganizerdeviceID");
+        OrganizerdeviceID=Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        //OrganizerdeviceID = bundle.getString("OrganizerdeviceID");
         eventNum = bundle.getLong("eventNum");
 
         //Intent mIntent = getIntent();

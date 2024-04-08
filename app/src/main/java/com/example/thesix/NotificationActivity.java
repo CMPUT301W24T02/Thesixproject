@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -25,6 +27,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -43,8 +46,11 @@ public class NotificationActivity extends AppCompatActivity {
 
     private Button sendNotificationButton; // Button to send notifications
     private EditText message;
+    private String organizerID;
     private QrCodeDB firestoreHelper;
     CollectionReference QrRef;
+
+    List<String> notificationList;
     CollectionReference tokenRef;
     String deviceID;
     private String eventName;
@@ -68,6 +74,13 @@ public class NotificationActivity extends AppCompatActivity {
         message = findViewById(R.id.sendNotification);
         Bundle bundle = getIntent().getExtras();
         eventNum = bundle.getLong("eventNum");
+        String name = bundle.getString("name");
+        String description = bundle.getString("description");
+        organizerID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        Log.d("arjun", "DocumentSnapshot data: " + organizerID);
+
+
+        eventNum = bundle.getLong("eventNum");
         //eventNum = mIntent.getLongExtra("eventNum", 128);
         firestoreHelper = new QrCodeDB();
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -76,13 +89,21 @@ public class NotificationActivity extends AppCompatActivity {
         tokenRef = firestoreHelper.getTokenRef();
 
 
+
         back2AttendeesButton.setOnClickListener(new View.OnClickListener() {
             /**Sets a click listener for the back2AttendeesButton button to navigate back to the AttendeeListActivity.
              * @param v The view that was clicked.
              */
         @Override
         public void onClick(View v) {
-            startActivity(new Intent(NotificationActivity.this, AttendeeListActivity.class));
+
+            Intent i = new Intent(NotificationActivity.this, AttendeeListActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("eventName", eventName);
+            bundle.putLong("eventNum", eventNum);
+            i.putExtras(bundle);
+            startActivity(i);
+            //startActivity(new Intent(NotificationActivity.this, AttendeeListActivity.class));
         }
     });
 
@@ -95,6 +116,51 @@ public class NotificationActivity extends AppCompatActivity {
                 Log.d("notificationTest","notification start");
                 Log.d("notificationTest",String.valueOf(eventNum));
                 String notification  = message.getText().toString();
+                signUp(new NotificationActivity.notificationCallback() {
+                    /**
+                     * Callback method invoked when the sign-up operation is completed.
+                     * This method updates the sign-up list with the device ID if the device
+                     * is not already signed up for the event.
+                     *
+                     * @param notificationList The list of device IDs that have signed up for the event.
+                     */
+                    @Override
+                    public void onnotificationCallback(List<String> notificationList) {
+                        // Get the device ID
+                        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                        notificationList.add(notification);
+
+                        // Update the notification list in Firestore
+                        firestoreHelper.getDeviceDocRef(organizerID).collection("event")
+                                .document(String.valueOf(eventNum))
+                                .update("notificationList", notificationList).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("update", "DocumentSnapshot successfully updated!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w("update", "Error updating document", e);
+                                    }
+                                });
+                        firestoreHelper.getInviteQR()
+                                .document(String.valueOf(eventNum))
+                                .update("notificationList", notificationList).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("update", "DocumentSnapshot successfully updated!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w("update", "Error updating document", e);
+                                    }
+                                });
+                    }
+                });
 
                 Toast.makeText(NotificationActivity.this, "Notification has been Sent", Toast.LENGTH_LONG).show();
                 QrRef.whereEqualTo("eventNum", eventNum).get()
@@ -114,7 +180,6 @@ public class NotificationActivity extends AppCompatActivity {
                                         if (deviceIdList != null) {
 
                                             Log.d("notificationTest","get deviceId list");
-                                            Log.d("notificationTest",deviceIdList.get(0));
                                            //checking device id condition
 
                                             for (String device : deviceIdList) {
@@ -224,5 +289,39 @@ public class NotificationActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private interface notificationCallback {
+
+        /**
+         * Callback method invoked when the sign-up operation is completed.
+         * This method receives the list of device IDs that have signed up for the event.
+         * @param notificationList list of device id
+         */
+        void onnotificationCallback(List<String> notificationList);
+    }
+    private void signUp(NotificationActivity.notificationCallback notificationCallback) {
+        // Retrieve the document reference for the event from Firestore
+
+        firestoreHelper.getDeviceDocRef(organizerID).collection("event")
+                .document(String.valueOf(eventNum)).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                // Get the list of device IDs that have signed up for the event
+                                notificationList = (List<String>) document.get("notificationList");
+                                notificationCallback.onnotificationCallback(notificationList);
+                                // Invoke the callback method with the sign-up list
+                                Log.d("signup", "DocumentSnapshot data: " + document.getData());
+                            } else {
+                                Log.d("signup", "No such document");
+                            }
+                        } else {
+                            Log.d("signup", "get failed with ", task.getException());
+                        }
+                    }
+                });
     }
 }
