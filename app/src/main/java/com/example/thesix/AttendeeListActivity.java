@@ -41,6 +41,7 @@ public class AttendeeListActivity extends AppCompatActivity {
     private Button backButton;
     private Button mapButton; //making back buttom
     private Button notificationButton;
+    private Button signInListButton;
     private TextView totalcheckinNumber;
     CollectionReference QrRef;
     long eventNum;
@@ -78,6 +79,7 @@ public class AttendeeListActivity extends AppCompatActivity {
         //String deviceID ="27150c669e8b1dc4";
         backButton = findViewById(R.id.backButton);
         mapButton = findViewById(R.id.mapButton);
+        signInListButton = findViewById(R.id.SigninList);
 
         //finding buttons ids
         notificationButton = findViewById(R.id.notificationButton);
@@ -169,6 +171,20 @@ public class AttendeeListActivity extends AppCompatActivity {
                 //startActivity(myIntent);
                 myIntent.putExtras(bundle);
                 startActivity(myIntent);
+            }
+        });
+        signInListButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putLong("eventNum", eventNum);
+                Intent myIntent = new Intent(AttendeeListActivity.this, SiginListActivity.class);
+                Log.d("hihi","Before ID: "+ eventNum);
+                //myIntent.putExtra("eventNum", eventNum);
+                //startActivity(myIntent);
+                myIntent.putExtras(bundle);
+                startActivity(myIntent);
+
             }
         });
     }
