@@ -158,27 +158,27 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         finalDeviceID = deviceID;
-        database.getAttendeeCollection().get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                if (deviceID == document.getId()) {
-                                    i = 1;
-                                }
-                                Log.d("no", document.getId());
-                            }
-                            if (i==0) {
-                                Bitmap bitmap = createBitmap(deviceID);
-                                String base64 = BitMapToString(bitmap);
-                                database.saveAttendeeInfoNoPhoto(null,null,null,base64,deviceID);
-                            }
-                        } else {
-                            Log.d("no", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
+//        database.getAttendeeCollection().get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                if (deviceID == document.getId()) {
+//                                    i = 1;
+//                                }
+//                                Log.d("no", document.getId());
+//                            }
+//                            if (i==0) {
+//                                Bitmap bitmap = createBitmap(deviceID);
+//                                String base64 = BitMapToString(bitmap);
+//                                database.saveAttendeeInfoNoPhoto(null,null,null,base64,deviceID);
+//                            }
+//                        } else {
+//                            Log.d("no", "Error getting documents: ", task.getException());
+//                        }
+//                    }
+//                });
         // Request notification permission
         askNotificationPermission();
         //// Check if GPS is enabled, if not prompt user to enable it
