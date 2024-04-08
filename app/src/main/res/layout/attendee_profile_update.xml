@@ -105,7 +105,7 @@
         app:layout_constraintHorizontal_bias="0.846"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/backButton"
-        app:strokeColor="@color/iphone1G"
+        app:strokeColor="@color/gold"
         app:strokeWidth="3dp" />
 
 
