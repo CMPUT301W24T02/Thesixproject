@@ -58,8 +58,8 @@ public class SiginListActivity extends AppCompatActivity{
         count = 1;
 
         //getting string device id
-        deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        //deviceID ="2f7daf8e12a8cb75";
+        //deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        deviceID ="2f7daf8e12a8cb75";
         nameList = new ArrayList<>();
         deviceIDList = new ArrayList<>();
         backButton = findViewById(R.id.backButton);
@@ -79,6 +79,9 @@ public class SiginListActivity extends AppCompatActivity{
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 deviceIDList = (ArrayList<String>) document.get("signUpIDList");
+                                if(deviceIDList.size() > 100){
+                                    Toast.makeText(SiginListActivity.this, "The limit reached, but we still takes check in", Toast.LENGTH_SHORT).show();
+                                }
                             }
                             Log.d("signlist","first"+deviceIDList.get(0));
                         }
