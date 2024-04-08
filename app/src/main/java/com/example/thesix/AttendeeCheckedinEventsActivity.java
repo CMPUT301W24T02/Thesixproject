@@ -98,7 +98,6 @@ public class AttendeeCheckedinEventsActivity extends AppCompatActivity {
             public void onCallback(List<String> list1) {
                 Log.d("callback", "3");
                 checkedinEventDataList = (ArrayList<String>) list1;
-                Log.d("callback", "1" + checkedinEventDataList.get(0));
                 Log.d("callback", "2");
                 checkedineventnameArrayAdapter.notifyDataSetChanged();
             }
