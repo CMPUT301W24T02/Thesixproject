@@ -255,7 +255,7 @@ public class AttendeeProfileActivity extends AppCompatActivity {
     }
     public void loadProfile(ProfileCallback profileCallback) {
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        firestorehelper.getAttendeeDocRef(deviceID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        firestorehelper.getAttendeeDocRef().document(deviceID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             //DocumentSnapshot successfully updated
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -263,10 +263,14 @@ public class AttendeeProfileActivity extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d("count", "DocumentSnapshot data: " + document.getData());
+
                         name = (String) document.get("name");
                         homepage = (String) document.get("homePage");
                         contact = (String) document.get("contact");
                         bitmapString = (String) document.get("profile_image");
+//                        Log.d("pull",name);
+//                        Log.d("pull",homepage);
+//                        Log.d("pull",contact);
                         profileCallback.onProfileCallback(name,contact,homepage,bitmapString);
                     } else {
                         //DocumentSnapshot not successfully updated
