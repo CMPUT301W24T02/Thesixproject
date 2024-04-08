@@ -45,7 +45,7 @@ public class AttendeeCheckedinEventDetails extends AppCompatActivity {
     private TextView eventName;
     private TextView eventDescription;
     private ImageView eventPoster;
-    private Button backButton;
+    private Button backButton, announcement;
     long eventNum;
     CollectionReference QrRef;
     private FirebaseFirestore firestore;
@@ -70,6 +70,7 @@ public class AttendeeCheckedinEventDetails extends AppCompatActivity {
         eventDescription = findViewById(R.id.eventDescription);
         eventPoster = findViewById(R.id.eventPoster);
         backButton = findViewById(R.id.backButton);
+        announcement = findViewById(R.id.announcements);
 
         //getting instance of firestore
         firestore = FirebaseFirestore.getInstance();
@@ -104,6 +105,15 @@ public class AttendeeCheckedinEventDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(AttendeeCheckedinEventDetails.this, AttendeeCheckedinEventsActivity.class));
+            }
+        });
+        announcement.setOnClickListener(new View.OnClickListener() {
+            /** Start activity to AttendeeAllEventsActivity
+             * @param v The view that was clicked.
+             */
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AttendeeCheckedinEventDetails.this, AttendeeCheckedinAnnouncements.class));
             }
         });
     }
