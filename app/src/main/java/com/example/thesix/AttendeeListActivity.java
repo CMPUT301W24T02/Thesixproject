@@ -210,14 +210,16 @@ public class AttendeeListActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 //querying for firebase
-                                attendeeString = (List<String>) document.get("attendeeList");
+                                //attendeeString = (List<String>) document.get("attendeeList");
                                 attendeeIDString = (List<String>) document.get("attendeeIDList");
-                                checkinCount = (List<Long>) document.get("checkIn");
+                                checkinCount = (List<Long>) document.get("checkInCountList");
                                 totalCount = attendeeIDString.size();
+                                Log.d("Mel", "Size" + totalCount);
                                 eventName = (String) document.get("name");
                                 //adding data list of attendees
-                                for (int i = 0; i < attendeeString.size(); i++) {
-                                    Attendee attendee = new Attendee(attendeeString.get(i), checkinCount.get(i));
+                                for (int i = 0; i < attendeeIDString.size(); i++) {
+                                    Log.d("Mel1", "Loop");
+                                    Attendee attendee = new Attendee(attendeeIDString.get(i), checkinCount.get(i));
                                     dataList.add(attendee);
                                 }
                             }
