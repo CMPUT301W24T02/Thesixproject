@@ -96,6 +96,7 @@
             android:label="AttendeeProfileActivity"/>
         <activity android:name=".AttendeeProfileUpdate"
             android:label="AttendeeProfileUpdate"/>
+        <activity android:name=".SiginListActivity"/>
         <service android:name=".PushNotificationService"
             android:stopWithTask="false"
             android:exported="false">

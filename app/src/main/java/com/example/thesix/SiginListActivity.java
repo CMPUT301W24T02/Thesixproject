@@ -59,6 +59,7 @@ public class SiginListActivity extends AppCompatActivity{
 
         //getting string device id
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        //deviceID ="2f7daf8e12a8cb75";
         nameList = new ArrayList<>();
         deviceIDList = new ArrayList<>();
         backButton = findViewById(R.id.backButton);
@@ -74,32 +75,46 @@ public class SiginListActivity extends AppCompatActivity{
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        Log.d("signlist","1st");
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 deviceIDList = (ArrayList<String>) document.get("signUpIDList");
                             }
+                            Log.d("signlist","first"+deviceIDList.get(0));
                         }
+                        for(int j = 0; j<deviceIDList.size();j++){
+                            Log.d("signlist","loop start");
+                            String ID = (String) (deviceIDList.get(j));
+                            Log.d("signlist",ID);
+                            DocumentReference docRef = attendeeCol.document(ID);
+                            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d("signlist","successful");
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            name = (String) document.get("name");
+                                            Log.d("signlist",name);
+                                            nameList.add(name);
+                                            signUpArrayAdapter.notifyDataSetChanged();
+                                        } else {
+                                            name = "guest" + count;
+                                            Log.d("signlist",name);
+                                            nameList.add(name);
+                                            count += 1;
+                                            signUpArrayAdapter.notifyDataSetChanged();
+                                        }
+                                    }else {
+                                        Log.d("signlist","not successful");
+                                    }
+                                }
+                            });
+                        }
+
                     }
                 });
-        for(String id : deviceIDList){
-            DocumentReference docRef = attendeeCol.document(id);
-            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            name = (String) document.get("name");
-                            nameList.add(name);
-                        } else {
-                            name = "guest" + count;
-                            nameList.add(name);
-                            count += 1;
-                        }
-                    }
-                }
-            });
-        }
-        signUpArrayAdapter.notifyDataSetChanged();
+
+
         backButton.setOnClickListener(new View.OnClickListener() {
             /** Generating guest Button , and signing them in
              * @param view The view that was clicked.
