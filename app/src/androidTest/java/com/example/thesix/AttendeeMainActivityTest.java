@@ -48,10 +48,35 @@ public class AttendeeMainActivityTest {
     }
 
     /**
+     * Test if can switch AttendeeMainActivity to AttendeeSelectEvents by allEvent Button
+     */
+    @Test
+    public void test_switch_to_selectEvents(){
+        solo.clickOnText("Yes");
+        // Asserts that the current activity is the AttendeeMainActivity.Otherwise, show "Wrong Activity"
+        solo.assertCurrentActivity("Wrong Activity", AttendeeMainActivity.class);
+
+        // click MY EVENTS Button HERE
+        solo.clickOnView(solo.getView(R.id.allEventButton));
+
+        // Asserts that the current activity is the AttendeeSelectEvents.Otherwise, show "Wrong Activity"
+        solo.assertCurrentActivity("Wrong Activity",AttendeeSelectEvents.class);
+
+        solo.sleep(3000);
+
+        // go back to AttendeeMainActivity
+        solo.goBack();
+
+        solo.sleep(3000);
+
+    }
+
+    /**
      * Test if can switch AttendeeMainActivity to AttendeeProfileActivity by ViewProfile Button
      */
     @Test
     public void test_switch_to_viewProfile(){
+        solo.clickOnText("Yes");
         // Asserts that the current activity is the AttendeeMainActivity.Otherwise, show "Wrong Activity"
         solo.assertCurrentActivity("Wrong Activity", AttendeeMainActivity.class);
 
@@ -67,13 +92,39 @@ public class AttendeeMainActivityTest {
         solo.goBack();
 
         solo.sleep(3000);
+
     }
+    /**
+     * Test if can switch AttendeeMainActivity to AttendeeProfileUpdate by EDIT PROFILE Button
+     */
+    @Test
+    public void test_switch_to_profileUpdate(){
+        solo.clickOnText("Yes");
+        // Asserts that the current activity is the AttendeeMainActivity.Otherwise, show "Wrong Activity"
+        solo.assertCurrentActivity("Wrong Activity", AttendeeMainActivity.class);
+
+        // click MY EVENTS Button HERE
+        solo.clickOnView(solo.getView(R.id.editAttendeeProfile));
+
+        // Asserts that the current activity is the AttendeeProfileUpdate.Otherwise, show "Wrong Activity"
+        solo.assertCurrentActivity("Wrong Activity",AttendeeProfileUpdate.class);
+
+        solo.sleep(3000);
+
+        // go back to AttendeeMainActivity
+        solo.goBack();
+
+        solo.sleep(3000);
+
+    }
+
 
     /**
      * Test if can switch AttendeeProfileActivity to AttendeeMainActivity by click the backButton on the screen
      */
     @Test
-    public void test_ProfileBackButton(){
+    public void test_BackButton(){
+        solo.clickOnText("Yes");
         // Asserts that the current activity is the AttendeeMainActivity.Otherwise, show "Wrong Activity"
         solo.assertCurrentActivity("Wrong Activity", AttendeeMainActivity.class);
 

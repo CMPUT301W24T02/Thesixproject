@@ -99,7 +99,6 @@ public class AttendeeSignedupEventsActivity extends AppCompatActivity {
             public void onCallback(List<String> list1) {
                 Log.d("callback", "3");
                 signedupEventDataList = (ArrayList<String>) list1;
-                Log.d("callback", "1" + signedupEventDataList.get(0));
                 Log.d("callback", "2");
                 signedupeventnameArrayAdapter.notifyDataSetChanged();
             }

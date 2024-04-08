@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -127,11 +128,9 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         //String deviceID = bundle.getString("deviceID");
 
         // Retrieve device ID from intent extras
-        Bundle bundle = getIntent().getExtras();
-        String deviceID = null;
-        if (bundle != null) {
-            deviceID = bundle.getString("deviceID");
-        }
+
+        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
         finalDeviceID = deviceID;
 
         // Request notification permission
@@ -245,7 +244,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                         // Handle promo QR code
 
                         contents = contents.replace("promo", "");
-                        testing.setText(contents);
+                        
                         contentsArray = contents.split("device id", 2);
 
                         //organizer id
@@ -266,7 +265,9 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
 
                                 //starting bundle intent
                                 Bundle bundle = new Bundle();
-                                bundle.putString("imageData", imageData);
+                                Log.d("asdf",description);
+                                Log.d("asdf",organizerID);
+                                Log.d("asdf", String.valueOf(eventNum));
                                 bundle.putString("name", name);
                                 bundle.putString("description", description);
                                 bundle.putString("organizerID", organizerID);
@@ -337,6 +338,26 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
                                                     Log.w("update", "Error updating document", e);
                                                 }
                                             });
+                                    firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum))
+                                            .update("totalCheckIn", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                /** DocumentSnapshot successfully updated
+                                                 * @param aVoid successfully get data
+                                                 */
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("update", "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            //add on failure listener
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                /** DocumentSnapshot not successfully updated
+                                                 * @param e error that was caught
+                                                 */
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("update", "Error updating document", e);
+                                                }
+                                            });
                                     //getting document reference
                                     firestoreHelper.getDeviceDocRef(organizerID).collection("event").document(String.valueOf(eventNum))
                                             .update("checkInCountList", inviteCountList)
@@ -352,6 +373,28 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
 
                                             .addOnFailureListener(new OnFailureListener() {
                                                 /** DocumentSnapshot not successfully updated
+                                                 * @param e error that was caught
+                                                 */
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("update", "Error updating document", e);
+                                                }
+                                            });
+                                    //gte all events from firebase and update
+                                    firestoreHelper.getAllEvent().document(String.valueOf(eventNum))
+                                            .update("totalCheckIn", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                /**DocumentSnapshot successfully updated
+                                                 * @param aVoid  successfully get data
+                                                 *
+                                                 */
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("update", "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                /** DocumentSnapshot not successfully updated
+
                                                  * @param e error that was caught
                                                  */
                                                 @Override

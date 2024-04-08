@@ -3,22 +3,36 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+
+
 import androidx.core.app.ActivityCompat;
+
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * AdminEventsActivity class manages all event names display and navigation within an Android application.
@@ -35,11 +49,14 @@ public class AdminEventsActivity extends AppCompatActivity {
     private ArrayList<String> eventnameDataList;
     private ArrayList<String> eventdescriptionDataList;
     private ArrayList<String> eventImageDataList;
+    private ArrayList<String> deviceid;
     private ArrayAdapter<String> eventnameArrayAdapter;
 
     //initializing firestore
     private FirebaseFirestore firestore;
     private Button backButton;
+    CollectionReference QrRef;
+    private QrCodeDB firestoreHelper;
     private CollectionReference eventsRef;
 
 
@@ -53,6 +70,11 @@ public class AdminEventsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_list);
         //requesting for storage access
+
+        deviceid = new ArrayList<>();
+        //String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        deviceid.add("2f7daf8e12a8cb75");
+        deviceid.add("27150c669e8b1dc4");
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
 
         //creating new Arraylists
@@ -65,6 +87,7 @@ public class AdminEventsActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         firestore = FirebaseFirestore.getInstance();
         eventsRef = firestore.collection("inviteQrCodes");
+        firestoreHelper = new QrCodeDB();
 
         //building Array Adapter
         eventnameArrayAdapter = new ArrayAdapter<String>(
@@ -175,13 +198,37 @@ public class AdminEventsActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     //toast with event deletion
+
+                                                    Log.d("hihii","Before ID: "+ eventNum);
                                                     Toast.makeText(AdminEventsActivity.this, "Event Deleted!", Toast.LENGTH_LONG).show();
                                                 }
                                             });
                                 }
                             }
                         });
+
+
+
+                for(int i= 0;i<deviceid.size();i++)
+                {
+                    String deviceID = deviceid.get(i);
+                    QrRef = firestoreHelper.getOldQrRef(deviceID);
+                QrRef.document(String.valueOf(eventNum))
+                        .delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d("arjun","Before ID: "+ eventNum);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d("arjun2","Before ID: "+ eventNum);
+                            }
+                        });}
                 return true;
+
             }
         });
 

@@ -103,7 +103,6 @@ public class AttendeeAllEventsActivity extends AppCompatActivity {
                 //casting array lists
                 eventnameDataList = (ArrayList<String>) list1;
                 eventNumList = (ArrayList<Long>) list2;
-                Log.d("callback", "1" + eventnameDataList.get(0));
                 Log.d("callback", "2");
                 eventnameArrayAdapter.notifyDataSetChanged();
             }

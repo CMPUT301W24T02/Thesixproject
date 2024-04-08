@@ -103,7 +103,12 @@ public class AttendeeDB {
         firestore.collection("AttendeeProfileDB").document(deviceID).set(attendee);
     }
 
-
+    /**
+     *  Get attendee reference
+     */
+    public CollectionReference getAttendeeDocRef() {
+        return firestore.collection("AttendeeProfileDB");
+    }
     /** Updates attendee information to Firestore
      * @param documentId document id .to string()
      * @param name name of attendee
@@ -115,8 +120,8 @@ public class AttendeeDB {
         Map<String, Object> attendee = new HashMap<>();
         //updating
         attendee.put("name", name);
-        attendee.put("contact_number", contact);
-        attendee.put("home_page", homePage);
+        attendee.put("contact", contact);
+        attendee.put("homePage", homePage);
         String imageBase64 = encodeImageToBase64(imagePath);
         if (imageBase64 != null) {
             attendee.put("profile_image", imageBase64);
