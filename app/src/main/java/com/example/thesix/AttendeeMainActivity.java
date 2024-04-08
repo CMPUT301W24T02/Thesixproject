@@ -265,7 +265,9 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
 
                                 //starting bundle intent
                                 Bundle bundle = new Bundle();
-                                bundle.putString("imageData", imageData);
+                                Log.d("asdf",description);
+                                Log.d("asdf",organizerID);
+                                Log.d("asdf", String.valueOf(eventNum));
                                 bundle.putString("name", name);
                                 bundle.putString("description", description);
                                 bundle.putString("organizerID", organizerID);
