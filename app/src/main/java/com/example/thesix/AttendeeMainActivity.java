@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -42,7 +44,12 @@ import android.widget.Toast;
 
 import org.checkerframework.common.returnsreceiver.qual.This;
 
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -60,7 +67,10 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     // UI elements
     private Button scanButton;
     private Button viewProfile;
+    byte[] byteList;
     private Button eventsButton;
+    List<Integer> colorlist;
+
     TextView testing;
     private QrCodeDB firestoreHelper;
     String contents;
@@ -80,9 +90,12 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
     private List<String> attendeeIDList;
     private List<GeoPoint> locationList;
     private LocationManager locationManager;
+    int[] finalColorList1;
+    int[] finalColorList2;
 
     private LocationCallback locationCallback;
     private Button editButton;
+    int i;
 
     /**
      * Initializes the activity when created.
@@ -92,6 +105,19 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        finalColorList1 = new int[16];
+        finalColorList2 = new int[16];
+        colorlist = Arrays.asList(
+                getResources().getColor(R.color.black),
+                getResources().getColor(R.color.white),
+                getResources().getColor(R.color.blue),
+                getResources().getColor(R.color.green),
+                getResources().getColor(R.color.yellow),
+                getResources().getColor(R.color.magenta),
+                getResources().getColor(R.color.cyan),
+                getResources().getColor(R.color.orange),
+                getResources().getColor(R.color.purple),
+                getResources().getColor(R.color.red));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_main_activity);
         // Initialize UI elements
@@ -101,7 +127,7 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         //get deviceId
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         editButton = findViewById(R.id.editAttendeeProfile);
-
+        i = 0;
         //getLocation = findViewById(R.id.getLocationButton);
         //welcomeVIP=findViewById(R.id.welcome_vip);
         //coordinates = findViewById(R.id.locationinfo);
@@ -132,7 +158,27 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         finalDeviceID = deviceID;
-
+        database.getAttendeeCollection().get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if (deviceID == document.getId()) {
+                                    i = 1;
+                                }
+                                Log.d("no", document.getId());
+                            }
+                            if (i==0) {
+                                Bitmap bitmap = createBitmap(deviceID);
+                                String base64 = BitMapToString(bitmap);
+                                database.saveAttendeeInfoNoPhoto(null,null,null,base64,deviceID);
+                            }
+                        } else {
+                            Log.d("no", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
         // Request notification permission
         askNotificationPermission();
         //// Check if GPS is enabled, if not prompt user to enable it
@@ -835,5 +881,72 @@ public class AttendeeMainActivity extends AppCompatActivity implements IbaseGpsL
             }
         }
     }
+    private Bitmap createBitmap(String string) {
+        // Create a new bitmap with dimensions 16x16 and RGB_565 configuration
+        Bitmap Invitebitmap = Bitmap.createBitmap(16, 16, Bitmap.Config.RGB_565);
+        try {
+            // Generate SHA-256 hash of the input string
+            byteList = getSHA(string);
+        } catch (NoSuchAlgorithmException e) {
+            // Throw a runtime exception if SHA-256 algorithm is not available
+            throw new RuntimeException(e);
+        }
+        // Assign colors to the first 16 pixels based on the hash values
+        // Set colors for each pixel in the bitmap based on the generated color lists
+        for (int i = 0 ;i<16;i++) {
+            finalColorList1[i] = colorlist.get(Math.abs(byteList[i]%10));
+        }
+        for (int i = 16 ;i<32;i++) {
+            finalColorList2[i-16] = colorlist.get(Math.abs(byteList[i]%10));
+        }
+
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y <16; y++) {
+                if (x%2 == 0) {
+                    Invitebitmap.setPixel(x, y, finalColorList1[(x+y)%16]);
+                }
+                else {
+                    Invitebitmap.setPixel(x, y, finalColorList2[(x+y)%16]);
+                }
+            }
+        }
+        // Return the generated bitmap
+        return Invitebitmap;
+    }
+    /**
+     * Calculates the SHA-256 hash of the input string.
+     * @param input input The input string for which the hash is to be calculated.
+     * @return The SHA-256 hash value as a byte array.
+     * @throws NoSuchAlgorithmException If the SHA-256 algorithm is not available.
+     */
+    //https://www.geeksforgeeks.org/sha-256-hash-in-java/
+    public static byte[] getSHA(String input) throws NoSuchAlgorithmException
+    {
+        // Static getInstance method is called with hashing SHA
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+        // digest() method called
+        // to calculate message digest of an input
+        // and return array of byte
+        return md.digest(input.getBytes(StandardCharsets.UTF_8));
+    }
+    /**
+     * Converts a Bitmap image to a Base64-encoded string.
+     *
+     * @param bitmap The Bitmap image to be converted.
+     * @return The Base64-encoded string representation of the Bitmap image.
+     */
+    public String BitMapToString(Bitmap bitmap) {
+        // Create a ByteArrayOutputStream to store the compressed image data
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        // Compress the bitmap image to JPEG format with maximum quality (100)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        // Encode the byte array as a Base64 string
+        String result = Base64.encodeToString(byteArray, Base64.DEFAULT);
+        return result;
+
+    }
 
 }
+
