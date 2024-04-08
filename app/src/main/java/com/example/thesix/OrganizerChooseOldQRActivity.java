@@ -42,7 +42,7 @@ public class OrganizerChooseOldQRActivity  extends AppCompatActivity {
 
     ArrayList<String> eventnameDataList; //ArrayList to store the list of event names.
 
-    ArrayList<Bitmap> eventImageDataList;
+
     ArrayList<Bitmap> qrDataList;
     String deviceID;
     private QrCodeDB firestoreHelper;
