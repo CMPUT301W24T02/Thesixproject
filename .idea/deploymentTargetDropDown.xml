@@ -8,13 +8,15 @@
             <Target>
               <type value="RUNNING_DEVICE_TARGET" />
               <deviceKey>
-                <Key>
+
                   <type value="VIRTUAL_DEVICE_PATH" />
                   <value value="$PROJECT_DIR$/../.android/avd/Pixel_2_API_UpsideDownCakePrivacySandbox.avd" />
+                
                 </Key>
               </deviceKey>
             </Target>
           </runningDeviceTargetSelectedWithDropDown>
+
           <timeTargetWasSelectedWithDropDown value="2024-04-08T17:42:08.876360Z" />
         </State>
       </entry>
