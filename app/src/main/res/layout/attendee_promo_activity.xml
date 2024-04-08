@@ -15,6 +15,7 @@
         android:layout_marginTop="88dp"
         android:backgroundTint="@color/black"
         android:text="SIGN UP"
+        android:textSize = "20dp"
         android:textColor="@color/gold"
         app:layout_constraintEnd_toEndOf="@+id/eventDescription"
         app:layout_constraintHorizontal_bias="0.45"
