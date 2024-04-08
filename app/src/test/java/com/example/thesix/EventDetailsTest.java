@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import android.location.Location;
+import android.util.Log;
 
 public class EventDetailsTest {
 
@@ -14,27 +16,23 @@ public class EventDetailsTest {
 
     @BeforeEach
     public void setUp() {
-        List<String> attendeeList = new ArrayList<>();
-        attendeeList.add("Attendee 1");
-        attendeeList.add("Attendee 2");
+
 
         List<Long> checkInCountList = new ArrayList<>();
         checkInCountList.add(10L);
         checkInCountList.add(20L);
         List<String> attendeeIDList = new ArrayList<>();
-        attendeeList.add("Attendee 1");
-        attendeeList.add("Attendee 2");
+        attendeeIDList.add("27150c669e8b1dc4");
+        attendeeIDList.add("2f7daf8e12a8cb75");
         List<String> sighUpIDList = new ArrayList<>();
         List<String> notificationList = new ArrayList<>();
-        attendeeList.add("Attendee 1");
-        attendeeList.add("Attendee 2");
+        sighUpIDList.add("2f7daf8e12a8cb75");
+        notificationList.add("27150c669e8b1dc4");
         List<Location> locationList = new ArrayList<>();
         Location location1 = null;
-        location1.setLatitude(10);
-        location1.setLongitude(10);
+
         Location location2 = null;
-        location1.setLatitude(20.1871);
-        location1.setLongitude(20.7663);
+
         locationList.add(location1);
         locationList.add(location2);
 
@@ -58,6 +56,7 @@ public class EventDetailsTest {
 
     @Test
     public void testGetEventImageData() {
+
         assertEquals("eventImageData", eventDetails.getEventImageData());
     }
 
@@ -135,6 +134,7 @@ public class EventDetailsTest {
         assertEquals(50L, (long)eventDetails.getTotalCheckIn());
     }
 
+
     @Test
     public void testGetCheckInCountList() {
         List<Long> expectedCheckInCountList = new ArrayList<>();
@@ -151,4 +151,37 @@ public class EventDetailsTest {
         eventDetails.setCheckInCountList(newCheckInCountList);
         assertEquals(newCheckInCountList, eventDetails.getCheckInCountList());
     }
+
+    @Test
+    public void testGetAttendeeIDList() {
+        List<String> attendeeIDList = new ArrayList<>();
+        attendeeIDList.add("27150c669e8b1dc4");
+        attendeeIDList.add("2f7daf8e12a8cb75");
+        assertEquals(attendeeIDList,eventDetails.getAttendeeIDList());
+    }
+    @Test
+    public void testSetAttendeeIDList() {
+        List<String> attendeeIDList = new ArrayList<>();
+        attendeeIDList.add("2f7daf8e12a8cb75");
+        attendeeIDList.add("27150c669e8b1dc4");
+        attendeeIDList.add("2f7daf8e12a8cb75");
+        eventDetails.setAttendeeIDList(attendeeIDList);
+        assertEquals(attendeeIDList,eventDetails.getAttendeeIDList());
+    }
+
+    @Test
+    public void testGetSignUpIDList() {
+        List<String> sighUpIDList = new ArrayList<>();
+        sighUpIDList.add("2f7daf8e12a8cb75");
+        assertEquals(sighUpIDList,eventDetails.getSignUpIDList());
+    }
+    @Test
+    public void testSetSignUpIDList() {
+        List<String> sighUpIDList = new ArrayList<>();
+        sighUpIDList.add("2f7daf8e12a8cb75");
+        sighUpIDList.add("27150c669e8b1dc4");
+        eventDetails.setSignUpIDList(sighUpIDList);
+        assertEquals(sighUpIDList,eventDetails.getSignUpIDList());
+    }
+
 }

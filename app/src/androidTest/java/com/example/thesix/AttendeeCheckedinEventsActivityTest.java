@@ -1,8 +1,7 @@
 package com.example.thesix;
-import static org.junit.Assert.assertTrue;
 
 import android.app.Activity;
-import android.widget.EditText;
+import android.content.Intent;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -10,23 +9,24 @@ import androidx.test.rule.ActivityTestRule;
 import com.robotium.solo.Solo;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Rule;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+
 @RunWith(AndroidJUnit4.class)
-public class EventDetailsAdapterTest {
+
+public class AttendeeCheckedinEventsActivityTest {
     /*Declaration of variables*/
 
     private Solo solo;
 
     /*Establishes test rules*/
     @Rule
-    public ActivityTestRule<EventDetailsAdapter> rule =
-            new ActivityTestRule<>(EventDetailsAdapter.class, true, true);
+    public ActivityTestRule<AttendeeCheckedinEventsActivity> rule =
+            new ActivityTestRule<>(AttendeeCheckedinEventsActivity.class, true, true);
 
     /**
      * Runs before all tests and creates solo instance.
@@ -37,7 +37,6 @@ public class EventDetailsAdapterTest {
 
         solo = new Solo(InstrumentationRegistry.getInstrumentation(),rule.getActivity());
     }
-
     /**
      * Gets the Activity
      * @throws Exception
@@ -49,15 +48,26 @@ public class EventDetailsAdapterTest {
 
         solo.sleep(3000);
     }
-
-
-
     /**
-     * Close activity after each test
-     * @throws Exception
-     */
-    @After
-    public void tearDown() throws Exception{
-        solo.finishOpenedActivities();
+     *Test back button
+     *  */
+    @Test
+    public void testCurrentActivity(){
+
+
+        // Asserts that the current activity is the AttendeeCheckedinAnnouncements.Otherwise, show "Wrong Activity"
+        solo.assertCurrentActivity("Wrong Activity", AttendeeCheckedinEventsActivity.class);
+        solo.sleep(3000);
+
+    }
+    @Test
+    public void testButton() {
+        solo.clickOnView(solo.getView(R.id.backButton));
+        solo.assertCurrentActivity("Wrong Activity",AttendeeSelectEvents.class);
+
+        solo.sleep(3000);
+
+        // go back to AdminActivity
+        solo.goBack();
     }
 }

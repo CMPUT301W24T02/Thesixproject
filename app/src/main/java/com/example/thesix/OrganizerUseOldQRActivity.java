@@ -36,7 +36,7 @@ public class OrganizerUseOldQRActivity extends AppCompatActivity {
     private EditText descriptionEditText;
     private EditText eventnameEditText;
     private Button createEventButton;
-    private ArrayList<Bitmap> imageDataList;
+
     private QrCodeDB firestoreHelper;
     private Button backButton;
 
@@ -48,10 +48,10 @@ public class OrganizerUseOldQRActivity extends AppCompatActivity {
     String promoQrImageData;
     String inviteQrImageData;
 
-    private Long count;
+
     private String deviceID;
     Long eventNum;
-    private Location location;
+
 
     /**getting deviceId , creating new database
      * @param savedInstanceState If the activity is being re-initialized after
