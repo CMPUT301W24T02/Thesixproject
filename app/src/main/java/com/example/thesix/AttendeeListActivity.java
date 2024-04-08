@@ -41,6 +41,7 @@ public class AttendeeListActivity extends AppCompatActivity {
     private Button backButton;
     private Button mapButton; //making back buttom
     private Button notificationButton;
+    private Button signInListButton;
     private TextView totalcheckinNumber;
     CollectionReference QrRef;
     long eventNum;
@@ -48,8 +49,9 @@ public class AttendeeListActivity extends AppCompatActivity {
     AttendeeListAdapter attendeeAdapter;   // acts as a communication bridge between front and back end
     ArrayList<Attendee> dataList;
     List<String> attendeeString;
+    List<String> attendeeIDString;
     List<Long> checkinCount;
-    private long totalCount;
+    private int totalCount;
     private ProgressBar progressBar;
 
     private String eventName;
@@ -77,6 +79,7 @@ public class AttendeeListActivity extends AppCompatActivity {
         //String deviceID ="27150c669e8b1dc4";
         backButton = findViewById(R.id.backButton);
         mapButton = findViewById(R.id.mapButton);
+        signInListButton = findViewById(R.id.SigninList);
 
         //finding buttons ids
         notificationButton = findViewById(R.id.notificationButton);
@@ -109,8 +112,8 @@ public class AttendeeListActivity extends AppCompatActivity {
                 // Combine Lists
 
                 attendeeAdapter.notifyDataSetChanged();
-                progressBar.setProgress((int) totalCount);
-                String total_count = Long.toString(totalCount) + "/100";
+                progressBar.setProgress(totalCount);
+                String total_count = totalCount + "/100";
                 totalcheckinNumber.setText(total_count);
                 /*
                 String total_count = Long.toString(totalCount);
@@ -170,6 +173,20 @@ public class AttendeeListActivity extends AppCompatActivity {
                 startActivity(myIntent);
             }
         });
+        signInListButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putLong("eventNum", eventNum);
+                Intent myIntent = new Intent(AttendeeListActivity.this, SiginListActivity.class);
+                Log.d("hihi","Before ID: "+ eventNum);
+                //myIntent.putExtra("eventNum", eventNum);
+                //startActivity(myIntent);
+                myIntent.putExtras(bundle);
+                startActivity(myIntent);
+
+            }
+        });
     }
 
     private interface AttendeeCallback {
@@ -194,8 +211,9 @@ public class AttendeeListActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 //querying for firebase
                                 attendeeString = (List<String>) document.get("attendeeList");
+                                attendeeIDString = (List<String>) document.get("attendeeIDList");
                                 checkinCount = (List<Long>) document.get("checkIn");
-                                totalCount = (long) document.get("totalCheckIn");
+                                totalCount = attendeeIDString.size();
                                 eventName = (String) document.get("name");
                                 //adding data list of attendees
                                 for (int i = 0; i < attendeeString.size(); i++) {
