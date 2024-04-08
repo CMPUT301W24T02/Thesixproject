@@ -137,10 +137,12 @@ public class OrganizerUseOldQRActivity extends AppCompatActivity {
                             List<String> attendeeIDList = new ArrayList<>();
                             List<String> signUpIDList = new ArrayList<>();
                             List<Location> locations = new ArrayList<>();
+
+                            List<String> notificationList = new ArrayList<>();
                             // Convert event poster to Base64 string
                             String eventImageBase64 = BitMapToString(eventImageBitmap);
                             // Create event details object
-                            EventDetails eventdetail = new EventDetails(eventImageBase64, inviteQrImageData, promoQrImageData, num, description, eventName,checkIn, 0L,attendeeIDList,signUpIDList, locations);
+                            EventDetails eventdetail = new EventDetails(eventImageBase64, inviteQrImageData, promoQrImageData, num, description, eventName,checkIn, 0L,attendeeIDList,signUpIDList,notificationList, locations);
                             // Save event details to Firestore
                             firestoreHelper.saveInviteQRCode(deviceID, eventdetail,num);
 

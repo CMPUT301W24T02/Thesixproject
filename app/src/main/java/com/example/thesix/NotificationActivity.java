@@ -95,6 +95,7 @@ public class NotificationActivity extends AppCompatActivity {
                 Log.d("notificationTest","notification start");
                 Log.d("notificationTest",String.valueOf(eventNum));
                 String notification  = message.getText().toString();
+
                 Toast.makeText(NotificationActivity.this, "Notification has been Sent", Toast.LENGTH_LONG).show();
                 QrRef.whereEqualTo("eventNum", eventNum).get()
 

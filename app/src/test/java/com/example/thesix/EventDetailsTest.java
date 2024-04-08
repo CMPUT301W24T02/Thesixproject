@@ -25,6 +25,7 @@ public class EventDetailsTest {
         attendeeList.add("Attendee 1");
         attendeeList.add("Attendee 2");
         List<String> sighUpIDList = new ArrayList<>();
+        List<String> notificationList = new ArrayList<>();
         attendeeList.add("Attendee 1");
         attendeeList.add("Attendee 2");
         List<Location> locationList = new ArrayList<>();
@@ -50,6 +51,7 @@ public class EventDetailsTest {
                 30L,
                 attendeeIDList,
                 sighUpIDList,
+                notificationList,
                 locationList
         );
     }
