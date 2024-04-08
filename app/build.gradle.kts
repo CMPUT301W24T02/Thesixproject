@@ -55,6 +55,8 @@ dependencies {
     testImplementation ("org.mockito:mockito-core:3.12.4")
     testImplementation ("org.powermock:powermock-module-junit4:2.0.9")
     testImplementation ("org.powermock:powermock-api-mockito2:2.0.9")
+    androidTestImplementation ("com.google.firebase:firebase-firestore:24.10.3")
+    androidTestImplementation ("com.google.firebase:firebase-auth:24.10.3")
     testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine:5.3.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
