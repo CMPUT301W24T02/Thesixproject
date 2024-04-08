@@ -1,7 +1,10 @@
 package com.example.thesix;
 
 
+import static org.junit.Assert.assertNotNull;
+
 import android.app.Activity;
+import android.os.Bundle;
 import android.widget.EditText;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -67,6 +70,16 @@ public class OrganizerChooseOldQRActivityTest {
         solo.assertCurrentActivity("Wrong Activity", OrganizerUseNewQRActivity.class);
 
         solo.sleep(3000);
+
+    }
+    @Test
+    public void testAddingBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putLong("eventNum", 138L);
+        assertNotNull("bundle is empty",bundle);
+
+
+
 
     }
 
