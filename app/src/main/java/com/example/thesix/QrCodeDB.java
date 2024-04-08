@@ -86,7 +86,9 @@ public class QrCodeDB {
                 });
 
     }
-
+    public FirebaseFirestore getFireStore() {
+        return firestore;
+    }
 
     /** Retrieving oldQRef from firebase
      * @param deviceID  of whoever trying to get old qr
