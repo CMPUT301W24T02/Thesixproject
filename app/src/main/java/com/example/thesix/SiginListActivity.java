@@ -83,37 +83,45 @@ public class SiginListActivity extends AppCompatActivity{
                                     Toast.makeText(SiginListActivity.this, "The limit reached, but we still takes check in", Toast.LENGTH_SHORT).show();
                                 }
                             }
-                            Log.d("signlist","first"+deviceIDList.get(0));
+//                            Log.d("signlist","first"+deviceIDList.get(0));
                         }
-                        for(int j = 0; j<deviceIDList.size();j++){
-                            Log.d("signlist","loop start");
-                            String ID = (String) (deviceIDList.get(j));
-                            Log.d("signlist",ID);
-                            DocumentReference docRef = attendeeCol.document(ID);
-                            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.d("signlist","successful");
-                                        DocumentSnapshot document = task.getResult();
-                                        if (document.exists()) {
-                                            name = (String) document.get("name");
-                                            Log.d("signlist",name);
-                                            nameList.add(name);
-                                            signUpArrayAdapter.notifyDataSetChanged();
-                                        } else {
-                                            name = "guest" + count;
-                                            Log.d("signlist",name);
-                                            nameList.add(name);
-                                            count += 1;
-                                            signUpArrayAdapter.notifyDataSetChanged();
-                                        }
-                                    }else {
-                                        Log.d("signlist","not successful");
-                                    }
-                                }
-                            });
-                        }
+                        if(deviceIDList.size()>0) {
+                            for (int j = 0; j < deviceIDList.size(); j++) {
+                                Log.d("signlist", "loop start");
+                                String ID = (String) (deviceIDList.get(j));
+                                Log.d("signlist", ID);
+                                DocumentReference docRef = attendeeCol.document(ID);
+                                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d("signlist", "successful");
+                                            DocumentSnapshot document = task.getResult();
+                                            if (document.exists()) {
+                                                name = (String) document.get("name");
+                                                Log.d("signlist", name);
+                                                if (name == null){
+                                                    name = "Guest " + count;
+                                                    count += 1;
+                                                    Log.d("signlist",name);
 
+                                                }
+                                                nameList.add(name);
+                                                signUpArrayAdapter.notifyDataSetChanged();
+                                            } else {
+                                                name = "Guest " + count;
+                                                Log.d("signlist", name);
+                                                nameList.add(name);
+                                                count += 1;
+                                                Log.d("signlist",name);
+                                                signUpArrayAdapter.notifyDataSetChanged();
+                                            }
+                                        } else {
+                                            Log.d("signlist", "not successful");
+                                        }
+                                    }
+                                });
+                            }
+                        }
                     }
                 });
 
