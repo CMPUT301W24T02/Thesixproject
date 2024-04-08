@@ -20,8 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -41,7 +39,6 @@ import java.util.Set;
 
 public class AttendeeListActivity extends AppCompatActivity {
     private Button backButton;
-    ArrayList<String> nameList;
     private Button mapButton; //making back buttom
     private Button notificationButton;
     private Button signInListButton;
@@ -55,7 +52,6 @@ public class AttendeeListActivity extends AppCompatActivity {
     List<String> attendeeIDString;
     List<Long> checkinCount;
     private int totalCount;
-    CollectionReference attendeeCol;
     private ProgressBar progressBar;
 
     private String eventName;
@@ -64,13 +60,10 @@ public class AttendeeListActivity extends AppCompatActivity {
     String deviceID;
     String imageBaseString;
     String OrganizerdeviceID;
-    private int count;
     private OrganizerMainActivity oma = new OrganizerMainActivity();
 
 
-    /**
-     * Initializes UI components such as buttons and a list view in the onCreate method.
-     *
+    /**Initializes UI components such as buttons and a list view in the onCreate method.
      * @param savedInstanceState If the activity is being re-initialized after
      *                           previously being shut down then this Bundle contains the data it most
      *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
@@ -87,8 +80,6 @@ public class AttendeeListActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         mapButton = findViewById(R.id.mapButton);
         signInListButton = findViewById(R.id.SigninList);
-        nameList = new ArrayList<>();
-        count = 1;
 
         //finding buttons ids
         notificationButton = findViewById(R.id.notificationButton);
@@ -96,10 +87,9 @@ public class AttendeeListActivity extends AppCompatActivity {
         totalcheckinNumber = findViewById(R.id.totalCheckin);
         progressBar = findViewById(R.id.progress_Bar);
         QrRef = firestoreHelper.getOldQrRef(deviceID);
-        attendeeCol = firestoreHelper.getAttendeeDB();
 
         Bundle bundle = getIntent().getExtras();
-        OrganizerdeviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        OrganizerdeviceID=Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         //OrganizerdeviceID = bundle.getString("OrganizerdeviceID");
         eventNum = bundle.getLong("eventNum");
 
@@ -159,10 +149,10 @@ public class AttendeeListActivity extends AppCompatActivity {
                 //making a bundle and setting required data
                 Bundle bundle = new Bundle();
                 bundle.putLong("eventNum", eventNum);
-                bundle.putString("OrganizerdeviceID", OrganizerdeviceID);
+                bundle.putString("OrganizerdeviceID",OrganizerdeviceID);
                 Intent myIntent = new Intent(AttendeeListActivity.this, MapsActivity.class);
                 //creating log id
-                Log.d("hihi", "Before ID: " + eventNum);
+                Log.d("hihi","Before ID: "+ eventNum);
                 myIntent.putExtras(bundle);
                 startActivity(myIntent);
             }
@@ -177,20 +167,20 @@ public class AttendeeListActivity extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 bundle.putLong("eventNum", eventNum);
                 Intent myIntent = new Intent(AttendeeListActivity.this, NotificationActivity.class);
-                Log.d("hihi", "Before ID: " + eventNum);
+                Log.d("hihi","Before ID: "+ eventNum);
                 //myIntent.putExtra("eventNum", eventNum);
                 //startActivity(myIntent);
                 myIntent.putExtras(bundle);
                 startActivity(myIntent);
             }
         });
-        signInListButton.setOnClickListener(new View.OnClickListener() {
+        signInListButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putLong("eventNum", eventNum);
                 Intent myIntent = new Intent(AttendeeListActivity.this, SiginListActivity.class);
-                Log.d("hihi", "Before ID: " + eventNum);
+                Log.d("hihi","Before ID: "+ eventNum);
                 //myIntent.putExtra("eventNum", eventNum);
                 //startActivity(myIntent);
                 myIntent.putExtras(bundle);
@@ -201,17 +191,13 @@ public class AttendeeListActivity extends AppCompatActivity {
     }
 
     private interface AttendeeCallback {
-        /**
-         * Callback Interface to get Attendees
-         *
+        /** Callback Interface to get Attendees
          * @param list1 list of attendees
          */
         void onAttendeeCallback(List<Attendee> list1);
     }
 
-    /**
-     * Sets Attendee List
-     *
+    /** Sets Attendee List
      * @param attendeeCallback Callback for firebase
      */
     public void setAttendeeList(AttendeeCallback attendeeCallback) {
@@ -222,8 +208,6 @@ public class AttendeeListActivity extends AppCompatActivity {
                      */
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                        Log.d("attendlist", "1st");
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 //querying for firebase
@@ -236,33 +220,7 @@ public class AttendeeListActivity extends AppCompatActivity {
                                 //adding data list of attendees
                                 for (int i = 0; i < attendeeIDString.size(); i++) {
                                     Log.d("Mel1", "Loop");
-                                    String ID = (String) (attendeeIDString.get(i));
-                                    Log.d("Mel1", "Loop" +ID);
-                                    DocumentReference docRef = attendeeCol.document(ID);
-                                    Log.d("Mel1", "Loop" +docRef);
-                                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                Log.d("attendlist", "successful");
-                                                DocumentSnapshot document = task.getResult();
-                                                if (document.exists()) {
-                                                    String name = (String) document.get("name");
-                                                    Log.d("attendlist", name);
-                                                    nameList.add(name);
-                                                } else {
-                                                    String name = "guest" + count;
-                                                    Log.d("attendlist", name);
-                                                    nameList.add(name);
-                                                    count += 1;
-                                                }
-                                            }
-                                            else {
-                                                Log.d("attendlist", "not successful");
-                                            }
-                                        }
-                                    });
-
-                                    Attendee attendee = new Attendee(nameList.get(i), checkinCount.get(i));
+                                    Attendee attendee = new Attendee(attendeeIDString.get(i), checkinCount.get(i));
                                     dataList.add(attendee);
                                 }
                             }
@@ -272,4 +230,6 @@ public class AttendeeListActivity extends AppCompatActivity {
 
                 });
     }
+
+
 }
