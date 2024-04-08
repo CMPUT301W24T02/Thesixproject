@@ -103,7 +103,12 @@ public class AttendeeDB {
         firestore.collection("AttendeeProfileDB").document(deviceID).set(attendee);
     }
 
-
+    /**
+     *  Get attendee reference
+     */
+    public DocumentReference getAttendeeDocRef(String deviceID) {
+        return firestore.collection("AttendeeProfileDB").document(deviceID);
+    }
     /** Updates attendee information to Firestore
      * @param documentId document id .to string()
      * @param name name of attendee
