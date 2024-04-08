@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(deviceID, "this is device id ");
         Log.d("DeviceId", deviceID);
 
-        adminId = deviceID;
+        //adminId = deviceID;
         //27150c669e8b1dc4
 
         if (deviceID.equalsIgnoreCase(adminId)) {
