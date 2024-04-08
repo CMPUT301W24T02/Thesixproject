@@ -49,6 +49,7 @@ public class AdminEventsActivity extends AppCompatActivity {
     private ArrayList<String> eventnameDataList;
     private ArrayList<String> eventdescriptionDataList;
     private ArrayList<String> eventImageDataList;
+    private ArrayList<String> deviceid;
     private ArrayAdapter<String> eventnameArrayAdapter;
 
     //initializing firestore
@@ -70,8 +71,10 @@ public class AdminEventsActivity extends AppCompatActivity {
         setContentView(R.layout.event_list);
         //requesting for storage access
 
+        deviceid = new ArrayList<>();
         //String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        String deviceID = "2f7daf8e12a8cb75";
+        deviceid.add("2f7daf8e12a8cb75");
+        deviceid.add("27150c669e8b1dc4");
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
 
         //creating new Arraylists
@@ -85,7 +88,6 @@ public class AdminEventsActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         eventsRef = firestore.collection("inviteQrCodes");
         firestoreHelper = new QrCodeDB();
-        QrRef = firestoreHelper.getOldQrRef(deviceID);
 
         //building Array Adapter
         eventnameArrayAdapter = new ArrayAdapter<String>(
@@ -206,6 +208,11 @@ public class AdminEventsActivity extends AppCompatActivity {
                         });
 
 
+
+                for(int i= 0;i<deviceid.size();i++)
+                {
+                    String deviceID = deviceid.get(i);
+                    QrRef = firestoreHelper.getOldQrRef(deviceID);
                 QrRef.document(String.valueOf(eventNum))
                         .delete()
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -219,7 +226,7 @@ public class AdminEventsActivity extends AppCompatActivity {
                             public void onFailure(@NonNull Exception e) {
                                 Log.d("arjun2","Before ID: "+ eventNum);
                             }
-                        });
+                        });}
                 return true;
 
             }
