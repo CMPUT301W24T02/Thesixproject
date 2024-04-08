@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(deviceID, "this is device id ");
         Log.d("DeviceId", deviceID);
 
-        adminId = deviceID;
+        //adminId = deviceID;
         //27150c669e8b1dc4
 
         if (deviceID.equalsIgnoreCase(adminId)) {
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             //sending device id to attendeeactivitypage
 
             //Intent intent =new Intent(MainActivity.this,AttendeeMainActivity.class);
-            Intent intent =new Intent(MainActivity.this,OrganizerMainActivity.class);
+            Intent intent =new Intent(MainActivity.this,AttendeeMainActivity.class);
             intent.putExtra("deviceID",deviceID);
             startActivity(intent);
             //startActivity(new Intent(MainActivity.this, AttendeeMainActivity.class));
