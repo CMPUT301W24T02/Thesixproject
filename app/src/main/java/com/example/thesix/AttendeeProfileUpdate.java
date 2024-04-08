@@ -53,7 +53,7 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
     int[] finalColorList1;
     int[] finalColorList2;
 
-
+    int i;
     /** Initializes the activity and its views.
      * @param savedInstanceState If the activity is being re-initialized after
      *                           previously being shut down then this Bundle contains the data it most
@@ -80,7 +80,7 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
 
         // Initialize views
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
+        i = 0;
         //initizaling buttons
         nameEditText = findViewById(R.id.name_editText);
         contactEditText = findViewById(R.id.contact_editText);
@@ -96,6 +96,7 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
         // Set a click listener for the profileImageView, which allows users to select a photo from the gallery
         profileImageView.setOnClickListener(v -> {
             // Intent to pick a photo from the gallery
+            i=1;
             Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(pickPhoto, 2); // requestCode 2 for image selection
         });
@@ -153,7 +154,7 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
                     });
                 }
             } else {
-                if(imagePath == null || !imagePath.trim().isEmpty()||imagePath=="") {
+                if(i==0) {
                     Log.d("qwert","3");
                     profileBitmap = createBitmap(name+deviceID);
                     String base64 = bitmapToBase64(profileBitmap);
@@ -162,6 +163,9 @@ public class AttendeeProfileUpdate extends AppCompatActivity {
                 else {
                     Log.d("qwert","4");
                     // Logic to update existing attendee information
+                    Log.d("qwert",name);
+                    Log.d("qwert",contact);
+                    Log.d("qwert",homePage);
                     attendeeDB.updateAttendeeInfo(deviceID, name, contact, homePage, imagePath);
                     // Set flag to indicate that the profile has been updated here as well
                     editor.putBoolean("profileUpdated", true);
