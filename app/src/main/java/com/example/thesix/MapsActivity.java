@@ -19,11 +19,11 @@ import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private GoogleMap mMap; // Reference to the Google Map object
+    GoogleMap mMap; // Reference to the Google Map object
     private ActivityMapsBinding binding;  // View binding object for the activity_maps layout
     private long eventnum; // Event number associated with the map
     private String OrganizerdeviceID;
-    private AttendeeDB database;
+    public AttendeeDB database;
 
     /** On Creating Maps Activity
      * @param savedInstanceState If the activity is being re-initialized after
@@ -77,7 +77,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * installed Google Play services and returned to the app.
      * @param locationList list of Geolocations
      */
-    private void addMarkers(List<GeoPoint> locationList) {
+    public void addMarkers(List<GeoPoint> locationList) {
         for (GeoPoint point : locationList) {
             Log.i("ReceivedLocationList1", locationList.toString());
             double latitude = point.getLatitude();
