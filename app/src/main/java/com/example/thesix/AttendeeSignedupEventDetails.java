@@ -37,15 +37,15 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
- * AttendeeCheckedinEventDetails class manages the display of event details.
+ * AttendeeSignedupEventDetails class manages the display of event details.
  */
 
-public class AttendeeCheckedinEventDetails extends AppCompatActivity {
+public class AttendeeSignedupEventDetails extends AppCompatActivity {
 
     private TextView eventName;
     private TextView eventDescription;
     private ImageView eventPoster;
-    private Button backButton, announcement;
+    private Button backButton;
     long eventNum;
     CollectionReference QrRef;
     private FirebaseFirestore firestore;
@@ -53,7 +53,7 @@ public class AttendeeCheckedinEventDetails extends AppCompatActivity {
     String imageBaseString;
 
 
-    /** Creating AttendeeCheckedinEventDetails
+    /** Creating AttendeeSignedupEventDetails
      * @param savedInstanceState If the activity is being re-initialized after
      *                           previously being shut down then this Bundle contains the data it most
      *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
@@ -61,7 +61,7 @@ public class AttendeeCheckedinEventDetails extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.checked_in_event_details);
+        setContentView(R.layout.admin_event_details);
         //getting deviceID
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -70,7 +70,6 @@ public class AttendeeCheckedinEventDetails extends AppCompatActivity {
         eventDescription = findViewById(R.id.eventDescription);
         eventPoster = findViewById(R.id.eventPoster);
         backButton = findViewById(R.id.backButton);
-        announcement = findViewById(R.id.announcements);
 
         //getting instance of firestore
         firestore = FirebaseFirestore.getInstance();
@@ -99,21 +98,12 @@ public class AttendeeCheckedinEventDetails extends AppCompatActivity {
         });
 
         backButton.setOnClickListener(new View.OnClickListener() {
-            /** Start activity to AttendeeCheckedinEventsActivity
+            /** Start activity to AttendeeAllEventsActivity
              * @param v The view that was clicked.
              */
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AttendeeCheckedinEventDetails.this, AttendeeCheckedinEventsActivity.class));
-            }
-        });
-        announcement.setOnClickListener(new View.OnClickListener() {
-            /** Start activity to AttendeeCheckedinAnnouncements
-             * @param v The view that was clicked.
-             */
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(AttendeeCheckedinEventDetails.this, AttendeeCheckedinAnnouncements.class));
+                startActivity(new Intent(AttendeeSignedupEventDetails.this, AttendeeSignedupEventsActivity.class));
             }
         });
     }
