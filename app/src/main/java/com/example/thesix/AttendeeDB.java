@@ -132,7 +132,9 @@ public class AttendeeDB {
                 .addOnSuccessListener(aVoid -> Log.d("AttendeeDB", "DocumentSnapshot successfully updated"))
                 .addOnFailureListener(e -> Log.w("AttendeeDB", "Error updating document", e));
     }
-
+    public CollectionReference getAttendeeCollection() {
+        return firestore.collection("AttendeeProfileDB");
+    }
     /** encode Image To Base64
      * @param imagePath of image to encode
      * @return base string of image
@@ -235,3 +237,4 @@ public class AttendeeDB {
         });
     }
 }
+
