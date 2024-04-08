@@ -62,6 +62,8 @@ public class AttendeeCheckedinEventsActivity extends AppCompatActivity {
     private Button backButton;
     private CollectionReference eventsRef;
 
+    private ArrayList<String> eventdescriptionDataList;
+
 
     /** Creating Attendee Checked in activity
      * @param savedInstanceState If the activity is being re-initialized after
@@ -79,6 +81,8 @@ public class AttendeeCheckedinEventsActivity extends AppCompatActivity {
         eventnameDataList = new ArrayList<>();
         eventNumList = new ArrayList<>();
         checkedinEventDataList = new ArrayList<>();
+
+        eventdescriptionDataList = new ArrayList<>();
         backButton = findViewById(R.id.backButton);
         firestore = FirebaseFirestore.getInstance();
 
@@ -100,6 +104,44 @@ public class AttendeeCheckedinEventsActivity extends AppCompatActivity {
                 checkedinEventDataList = (ArrayList<String>) list1;
                 Log.d("callback", "2");
                 checkedineventnameArrayAdapter.notifyDataSetChanged();
+            }
+        });
+
+        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /** On clicking Item of eventNum
+             * @param parent   The AdapterView where the click happened.
+             * @param view     The view within the AdapterView that was clicked (this
+             *                 will be a view provided by the adapter)
+             * @param position The position of the view in the adapter.
+             * @param id       The row id of the item that was clicked.
+             */
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                //creating intent
+                Intent i = new Intent(AttendeeCheckedinEventsActivity.this, AttendeeCheckedinEventDetails.class);
+                String eventName = (String) (eventList.getItemAtPosition(position));
+                String eventDescription="";
+                //running through list
+                long eventNum = eventNumList.get(position);
+
+                Log.d("Arjun", "name" + eventName);
+                for (int j = 0; j < checkedinEventDataList.size(); j++) {
+                    String eventName1 = (String) (checkedinEventDataList.get(j));
+
+                    Log.d("Arjun", "name" + eventName1);
+                    if(eventName.equalsIgnoreCase(eventName1))
+                    {
+                        eventDescription = (String) (eventdescriptionDataList.get(j));
+                    }
+                }
+                //creating bundle of data
+                Bundle bundle = new Bundle();
+                bundle.putString("eventName", eventName);
+                bundle.putString("eventDescription", eventDescription);
+                bundle.putLong("eventNum", eventNum);
+                i.putExtras(bundle);
+                startActivity(i);
             }
         });
 
@@ -171,8 +213,11 @@ public class AttendeeCheckedinEventsActivity extends AppCompatActivity {
                                 DEVICEID = (List<String>) document.get("attendeeIDList");
                                 Log.d("Arjun", "20");
                                 //getting string eventnum
+
+                                String description = document.getString("description");
                                 String eventname = document.getString("name");
                                 Long eventNum = document.getLong("eventNum");
+
 
                                 //getting string device id
                                 String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -180,6 +225,7 @@ public class AttendeeCheckedinEventsActivity extends AppCompatActivity {
                                     if (DEVICEID.get(i).equalsIgnoreCase(deviceID)) {
                                         eventNumList.add(eventNum);
                                         checkedinEventDataList.add(eventname);
+                                        eventdescriptionDataList.add(description);
                                     }
                                 }
                             }
