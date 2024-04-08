@@ -2,6 +2,7 @@ package com.example.thesix;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -61,10 +62,9 @@ public class OrganizerMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_main_activity);
         qrCodeDB = new QrCodeDB();
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            deviceId = bundle.getString("deviceID");
-        }
+
+        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
         generateEventButton = findViewById(R.id.createEventButton);
         generateViewEventButton = findViewById(R.id.viewEventButton);
         collectionReference = qrCodeDB.getDeviceColRef(deviceId);
